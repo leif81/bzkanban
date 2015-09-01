@@ -8,6 +8,7 @@
             var bzComponent = ""
             var bzPriority = ""
             var bzAssignedTo = ""
+            var bzOrder = "priority"
 
             window.onload = loadBoard;
 
@@ -44,7 +45,7 @@
                         }
                     }
                 }
-                xhr.open("GET", bzURL + "/rest/bug?product=" + bzProduct + "&include_fields=summary,status,id,severity,priority&target_milestone=" + bzProductMilestone + "&component=" + bzComponent + "&priority=" + bzPriority + "&assigned_to=" + bzAssignedTo);
+                xhr.open("GET", bzURL + "/rest/bug?product=" + bzProduct + "&include_fields=summary,status,id,severity,priority&order=" + bzOrder + "&target_milestone=" + bzProductMilestone + "&component=" + bzComponent + "&priority=" + bzPriority + "&assigned_to=" + bzAssignedTo);
                 xhr.send();
             }
 
