@@ -76,10 +76,11 @@
 
             function doAuth(user, password) {
       		var buttonState = "";
+		bzURL = document.getElementById('textURL').value;
       		buttonState = document.getElementById("btnLogin").innerHTML;
       	
       		if (buttonState == "Log In") {
-      			var apiURL = "http://bugzilla.ddk.armysimulation.mil.ca/rest/login?login=" + user + "&password=" + password
+      			var apiURL = bzURL + "/rest/login?login=" + user + "&password=" + password
       			var client = new XMLHttpRequest();
       			client.onreadystatechange = progressListener("login");
       			client.open("GET", apiURL);
@@ -89,7 +90,7 @@
       
 			} else {
 			// Logged in already, so log out
-			var apiURL = "http://bugzilla.ddk.armysimulation.mil.ca/rest/logout?token=" + sessionToken
+			var apiURL = bzURL + "/rest/logout?token=" + sessionToken
 			var client = new XMLHttpRequest();
 			client.onreadystatechange = progressListener();
 			client.open("GET", apiURL);
