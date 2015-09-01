@@ -1,9 +1,9 @@
 <html>
     <head>
         <script type="text/javascript">
-            var bzURL = "https://landfill.bugzilla.org/bugzilla-5.0-branch";
-            var bzProduct = "FoodReplicator";
-            var bzProductMilestone = "---";
+            var bzURL = "http://bugzilla.ddk.armysimulation.mil.ca";
+            var bzProduct = "vcci";
+            var bzProductMilestone = "Release 3.8.0"
 
             window.onload = loadBoard;
 
@@ -39,7 +39,7 @@
                         }
                     }
                 }
-                xhr.open("GET", bzURL + "/rest/bug?product=" + bzProduct + "&include_fields=summary,status,id,severity,priority&target_milestone=" + bzProductMilestone + "&limit=20");
+                xhr.open("GET", bzURL + "/rest/bug?product=" + bzProduct + "&include_fields=summary,status,id,severity,priority&target_milestone=" + bzProductMilestone);
                 xhr.send();
             }
 
