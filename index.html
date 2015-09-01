@@ -94,7 +94,8 @@
                 document.getElementById("board-headings").innerHTML = "";
                 document.getElementById("board-cards").innerHTML = "";
             }
- 	    function loadParams() {
+
+            function loadParams() {
                 bzProduct = getURLParameter('product');
                 bzProductMilestone = getURLParameter('milestone');
                 document.getElementById("textProduct").value = bzProduct;
@@ -103,11 +104,11 @@
                 if (bzProduct != null) {
                     loadBoard();
                 }
- 	    }
- 
- 	    function getURLParameter(parameter) {
- 		return decodeURIComponent((new RegExp('[?|&]' + parameter + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || null;
- 	    }
+            }
+
+            function getURLParameter(parameter) {
+                return decodeURIComponent((new RegExp('[?|&]' + parameter + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || null;
+            }
         </script>
         <style>
             body {
