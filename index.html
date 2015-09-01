@@ -57,7 +57,7 @@
                 var div = document.createElement('div');
                 div.className = bug.severity + " " + "card";
                 div.innerHTML = "<a href='" + bzURL + "/show_bug.cgi?id=" + bug.id + "'>#" + bug.id + "</a> " + bug.summary;
-                document.getElementById(status).appendChild(div);
+                document.getElementById(bug.status).appendChild(div);
             }
         </script>
         <style>
