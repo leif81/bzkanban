@@ -9,7 +9,8 @@
                 </span>
                 <span>
                     <label for="textMilestone">Milestone</label>
-                    <input type="text" id="textMilestone" name="milestone" value="">
+                    <input list="milestones-datalist" id="textMilestone" name="milestone"></input>
+                    <datalist id="milestones-datalist"></datalist>
                 </span>
                 <span>
                     <button type="submit" id="btnSubmit">Submit</button>
@@ -96,6 +97,13 @@
                 document.getElementById("board-cards").innerHTML = "";
             }
 
+            function clearMilestonesList() {
+                var elem = document.getElementById("milestones-datalist");
+                while (elem.firstChild) {
+                    elem.removeChild(elem.firstChild);
+                }
+            }
+
             function loadParams() {
                 bzProduct = getURLParameter('product');
                 bzProductMilestone = getURLParameter('milestone');
@@ -104,6 +112,7 @@
 
                 loadProductsList();
                 if (bzProduct != null) {
+                    loadMilestonesList();
                     loadBoard();
                 }
             }
@@ -127,9 +136,37 @@
                 xhr.send();
             }
 
+            function loadMilestonesList() {
+                bzProduct = document.getElementById("textProduct").value;
+                clearMilestonesList();
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == XMLHttpRequest.DONE) {
+                        var response = xhr.responseText;
+                        var obj = JSON.parse(response);
+                        var milestones = obj.products[0].milestones;
+                        for (var key in milestones) {
+                            var milestone = milestones[key];
+                            var option = document.createElement('option');
+                            option.value = milestone.name;
+                            document.getElementById("milestones-datalist").appendChild(option);
+                        }
+                    }
+                }
+                xhr.open("GET", bzURL + "/rest/product?names=" + bzProduct + "&include_fields=milestones");
+                xhr.send();
+            }
+
             function getURLParameter(parameter) {
                 return decodeURIComponent((new RegExp('[?|&]' + parameter + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || null;
             }
+
+            // Register event handlers
+            document.getElementById("textProduct").addEventListener("input", function() {
+                // Clear any previous milestone selection.
+                document.getElementById("textMilestone").value = "";
+                loadMilestonesList();
+                });
         </script>
         <style>
             body {
