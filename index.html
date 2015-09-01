@@ -117,10 +117,21 @@
     </head>
     <body>
     <form id="input">
-        Site URL:<input type="text" id="textURL" value="http://bugzilla.ddk.armysimulation.mil.ca" style="width:250px;"></br>
-        Product:<input type="text" id="textProduct" value=""></br>
-        Milestone:<input type="text" id="textMilestone" value=""></br>
-        <button type="button" id="btnSubmit" onclick="doSubmit()">Submit</button>
+        <span>
+            <label for="textURL">Site URL</label>
+            <input type="text" id="textURL" value="http://bugzilla.ddk.armysimulation.mil.ca" style="width:250px;">
+        </span>
+        <span>
+            <label for="textProduct">Product</label>
+            <input type="text" id="textProduct" value="">
+        </span>
+        <span>
+            <label for="textMilestone">Milestone</label>
+            <input type="text" id="textMilestone" value="">
+        </span>
+        <span>
+            <button type="button" id="btnSubmit" onclick="doSubmit()">Submit</button>
+        </span>
     </form>
         <table id="board">
             <tr id="board-headings"></tr>
