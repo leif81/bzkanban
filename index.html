@@ -5,7 +5,7 @@
             var bzPriority = ""
             var bzAssignedTo = ""
             var bzOrder = "priority"
-            var bzURL = "";
+            var bzURL = "http://bugzilla.ddk.armysimulation.mil.ca"
             var sessionToken = "";
             var bzProduct = "";
             var bzProductMilestone = ""
@@ -14,7 +14,6 @@
 
             function loadBoard() {
                 clearBoard();
-                bzURL = document.getElementById('textURL').value;
                 var xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState == XMLHttpRequest.DONE) {
@@ -116,10 +115,6 @@
     </head>
     <body>
     <form id="input">
-        <span>
-            <label for="textURL">Site URL</label>
-            <input type="text" id="textURL" value="http://bugzilla.ddk.armysimulation.mil.ca" style="width:250px;">
-        </span>
         <span>
             <label for="textProduct">Product</label>
             <input type="text" id="textProduct" value="">
