@@ -108,25 +108,24 @@
             #board-cards {
                 vertical-align: top;
             }
-            #input {
-                width: 100%;
-            }
         </style>
     </head>
     <body>
-    <form id="input">
-        <span>
-            <label for="textProduct">Product</label>
-            <input type="text" id="textProduct" value="">
-        </span>
-        <span>
-            <label for="textMilestone">Milestone</label>
-            <input type="text" id="textMilestone" value="">
-        </span>
-        <span>
-            <button type="button" id="btnSubmit" onclick="loadBoard()">Submit</button>
-        </span>
-    </form>
+        <div>
+            <form>
+                <span>
+                    <label for="textProduct">Product</label>
+                    <input type="text" id="textProduct" value="">
+                </span>
+                <span>
+                    <label for="textMilestone">Milestone</label>
+                    <input type="text" id="textMilestone" value="">
+                </span>
+                <span>
+                    <button type="button" id="btnSubmit" onclick="loadBoard()">Submit</button>
+                </span>
+            </form>
+        </div>
         <table id="board">
             <tr id="board-headings"></tr>
             <tr id="board-cards"></tr>
