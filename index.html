@@ -11,14 +11,10 @@
             var bzProductMilestone = ""
 
             //window.onload = loadBoard;
-            function doSubmit() {
-                bzURL = document.getElementById('textURL').value;
-                document.getElementById("board-headings").innerHTML = "";
-                document.getElementById("board-cards").innerHTML = "";
-                loadBoard();
-            }
 
             function loadBoard() {
+                clearBoard();
+                bzURL = document.getElementById('textURL').value;
                 var xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState == XMLHttpRequest.DONE) {
@@ -74,7 +70,10 @@
                 document.getElementById(bug.status).appendChild(div);
             }
 
-
+            function clearBoard() {
+                document.getElementById("board-headings").innerHTML = "";
+                document.getElementById("board-cards").innerHTML = "";
+            }
         </script>
         <style>
             body {
@@ -130,7 +129,7 @@
             <input type="text" id="textMilestone" value="">
         </span>
         <span>
-            <button type="button" id="btnSubmit" onclick="doSubmit()">Submit</button>
+            <button type="button" id="btnSubmit" onclick="loadBoard()">Submit</button>
         </span>
     </form>
         <table id="board">
