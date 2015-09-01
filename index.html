@@ -4,7 +4,8 @@
             <form action="index.html" method="get">
                 <span>
                     <label for="textProduct">Product</label>
-                    <input type="text" id="textProduct" name="product" value="">
+                    <input list="products-datalist" id="textProduct" name="product"></input>
+                    <datalist id="products-datalist"></datalist>
                 </span>
                 <span>
                     <label for="textMilestone">Milestone</label>
@@ -101,9 +102,29 @@
                 document.getElementById("textProduct").value = bzProduct;
                 document.getElementById("textMilestone").value = bzProductMilestone;
 
+                loadProductsList();
                 if (bzProduct != null) {
                     loadBoard();
                 }
+            }
+
+            function loadProductsList() {
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == XMLHttpRequest.DONE) {
+                        var response = xhr.responseText;
+                        var obj = JSON.parse(response);
+                        var products = obj.products;
+                        for (var key in products) {
+                            var product = products[key];
+                            var option = document.createElement('option');
+                            option.value = product.name;
+                            document.getElementById("products-datalist").appendChild(option);
+                        }
+                    }
+                }
+                xhr.open("GET", bzURL + "/rest/product?type=enterable&include_fields=name");
+                xhr.send();
             }
 
             function getURLParameter(parameter) {
