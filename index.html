@@ -6,17 +6,17 @@
             var bzAssignedTo = ""
             var bzOrder = "priority"
             var bzURL = "";
-	    var sessionToken = "";
+            var sessionToken = "";
             var bzProduct = "";
             var bzProductMilestone = ""
 
             //window.onload = loadBoard;
-	    function doSubmit() {		
-		bzURL = document.getElementById('textURL').value;
-		document.getElementById("board-headings").innerHTML = "";
-		document.getElementById("board-cards").innerHTML = "";
-		loadBoard();
-	    }	
+            function doSubmit() {
+                bzURL = document.getElementById('textURL').value;
+                document.getElementById("board-headings").innerHTML = "";
+                document.getElementById("board-cards").innerHTML = "";
+                loadBoard();
+            }
 
             function loadBoard() {
                 var xhr = new XMLHttpRequest();
@@ -39,8 +39,8 @@
             }
 
             function loadBugs() {
-		bzProduct = document.getElementById('textProduct').value;
-		bzProductMilestone = document.getElementById('textMilestone').value;
+                bzProduct = document.getElementById('textProduct').value;
+                bzProductMilestone = document.getElementById('textMilestone').value;
                 var xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState == XMLHttpRequest.DONE) {
@@ -110,18 +110,18 @@
             #board-cards {
                 vertical-align: top;
             }
-	    #input {
-		width: 100%;
-	    }
+            #input {
+                width: 100%;
+            }
         </style>
     </head>
     <body>
-	<form id="input">
-		Site URL:<input type="text" id="textURL" value="http://bugzilla.ddk.armysimulation.mil.ca" style="width:250px;"></br>
-		Product:<input type="text" id="textProduct" value=""></br>
-		Milestone:<input type="text" id="textMilestone" value=""></br>
-		<button type="button" id="btnSubmit" onclick="doSubmit()">Submit</button>
-	</form>
+    <form id="input">
+        Site URL:<input type="text" id="textURL" value="http://bugzilla.ddk.armysimulation.mil.ca" style="width:250px;"></br>
+        Product:<input type="text" id="textProduct" value=""></br>
+        Milestone:<input type="text" id="textMilestone" value=""></br>
+        <button type="button" id="btnSubmit" onclick="doSubmit()">Submit</button>
+    </form>
         <table id="board">
             <tr id="board-headings"></tr>
             <tr id="board-cards"></tr>
