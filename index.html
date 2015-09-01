@@ -1,0 +1,89 @@
+<html>
+    <head>
+        <script type="text/javascript">
+            var bzURL = "https://landfill.bugzilla.org/bugzilla-5.0-branch";
+            var bzProduct = "FoodReplicator";
+            var bzProductMilestone = "---";
+
+            window.onload = loadBoard;
+
+            function loadBoard() {
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == XMLHttpRequest.DONE) {
+                        var response = xhr.responseText;
+                        var obj = JSON.parse(response);
+                        statuses = obj.values;
+                        for (var key in statuses) {
+                            status = statuses[key];
+                            addBoardColumn(status);
+                        }
+
+                        loadBugs();
+                    }
+                }
+                xhr.open("GET", bzURL + "/rest/field/bug/status/values");
+                xhr.send();
+            }
+
+            function loadBugs() {
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == XMLHttpRequest.DONE) {
+                        var response = xhr.responseText;
+                        var obj = JSON.parse(response);
+                        bugs = obj.bugs;
+                        for (var key in bugs) {
+                            bug = bugs[key];
+                            addCard(bug);
+                        }
+                    }
+                }
+                xhr.open("GET", bzURL + "/rest/bug?product=" + bzProduct + "&include_fields=summary,status,id,severity,priority&target_milestone=" + bzProductMilestone + "&limit=20");
+                xhr.send();
+            }
+
+            function addBoardColumn(status) {
+                var th = document.createElement('th');
+                th.innerHTML = status;
+                document.getElementById("board-headings").appendChild(th);
+
+                var td = document.createElement('td');
+                td.id = status;
+                document.getElementById("board-cards").appendChild(td);
+            }
+
+            function addCard(bug) {
+                var div = document.createElement('div');
+                div.className = bug.severity + " " + "card";
+                div.innerHTML = "<a href='" + bzURL + "/show_bug.cgi?id=" + bug.id + "'>#" + bug.id + "</a> " + bug.summary;
+                document.getElementById(status).appendChild(div);
+            }
+        </script>
+        <style>
+            #board {
+                width: 100%;
+            }
+            .card {
+                border-width: 1px;
+                border-color: black;
+                border-style: solid;
+                border-radius: 5px;
+                padding: 5px;
+                margin: 2px;
+            }
+            .enhancement {
+                background-color: green;
+            }
+            .critical {
+                background-color: red;
+            }
+        </style>
+    </head>
+    <body>
+        <table id="board">
+            <tr id="board-headings"></tr>
+            <tr id="board-cards"></tr>
+        </table>
+    </body>
+</html>
