@@ -5,6 +5,10 @@
 	    var sessionToken = "";
             var bzProduct = "";
             var bzProductMilestone = ""
+            var bzComponent = ""
+            var bzPriority = ""
+            var bzAssignedTo = ""
+            var bzOrder = "priority"
 
             //window.onload = loadBoard;
 	    function doSubmit() {		
@@ -25,6 +29,7 @@
                             status = statuses[key];
                             addBoardColumn(status);
                         }
+
 
                         loadBugs();
                     }
@@ -48,7 +53,7 @@
                         }
                     }
                 }
-                xhr.open("GET", bzURL + "/rest/bug?product=" + bzProduct + "&include_fields=summary,status,id,severity,priority&target_milestone=" + bzProductMilestone);
+                xhr.open("GET", bzURL + "/rest/bug?product=" + bzProduct + "&include_fields=summary,status,id,severity,priority&order=" + bzOrder + "&target_milestone=" + bzProductMilestone + "&component=" + bzComponent + "&priority=" + bzPriority + "&assigned_to=" + bzAssignedTo);
                 xhr.send();
             }
 
@@ -64,7 +69,7 @@
 
             function addCard(bug) {
                 var div = document.createElement('div');
-                div.className = bug.severity + " " + "card";
+                div.className = bug.severity + " " + bug.priority +" " + "card";
                 div.innerHTML = "<a href='" + bzURL + "/show_bug.cgi?id=" + bug.id + "'>#" + bug.id + "</a> " + bug.summary;
                 document.getElementById(bug.status).appendChild(div);
             }
@@ -124,22 +129,38 @@
 
         </script>
         <style>
+            body {
+                background-color: ghostwhite;
+            }
             #board {
                 width: 100%;
+                table-layout: fixed;
             }
             .card {
+                background-color: white;
                 border-width: 1px;
                 border-color: black;
-                border-style: solid;
-                border-radius: 5px;
+                border-style: dotted;
                 padding: 5px;
                 margin: 2px;
             }
             .enhancement {
-                background-color: green;
+                border-right-color: greenyellow;
+                border-right-width: 4px;
+                border-right-style: solid;
             }
             .critical {
-                background-color: red;
+                border-right-color: red;
+                border-right-width: 4px;
+                border-right-style: solid;
+            }
+            .P1 {
+                border-left-color: orange;
+                border-left-width: 4px;
+                border-left-style: solid;
+            }
+            #board-cards {
+                vertical-align: top;
             }
 	    #input {
 		width: 100%;
