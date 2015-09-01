@@ -1,9 +1,13 @@
 <html>
     <head>
         <script type="text/javascript">
+            // Customize your query by modifying these.
             var bzURL = "http://bugzilla.ddk.armysimulation.mil.ca";
             var bzProduct = "vcci";
             var bzProductMilestone = "Release 3.8.0"
+            var bzComponent = ""
+            var bzPriority = ""
+            var bzAssignedTo = ""
 
             window.onload = loadBoard;
 
@@ -18,6 +22,7 @@
                             status = statuses[key];
                             addBoardColumn(status);
                         }
+
 
                         loadBugs();
                     }
@@ -39,7 +44,7 @@
                         }
                     }
                 }
-                xhr.open("GET", bzURL + "/rest/bug?product=" + bzProduct + "&include_fields=summary,status,id,severity,priority&target_milestone=" + bzProductMilestone);
+                xhr.open("GET", bzURL + "/rest/bug?product=" + bzProduct + "&include_fields=summary,status,id,severity,priority&target_milestone=" + bzProductMilestone + "&component=" + bzComponent + "&priority=" + bzPriority + "&assigned_to=" + bzAssignedTo);
                 xhr.send();
             }
 
