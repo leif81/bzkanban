@@ -1,11 +1,18 @@
 <html>
     <head>
         <script type="text/javascript">
-            var bzURL = "http://bugzilla.ddk.armysimulation.mil.ca";
-            var bzProduct = "vcci";
-            var bzProductMilestone = "Release 3.8.0"
+            var bzURL = "";
+	    var sessionToken = "";
+            var bzProduct = "";
+            var bzProductMilestone = ""
 
-            window.onload = loadBoard;
+            //window.onload = loadBoard;
+	    function doSubmit() {		
+		bzURL = document.getElementById('textURL').value;
+		document.getElementById("board-headings").innerHTML = "";
+		document.getElementById("board-cards").innerHTML = "";
+		loadBoard();
+	    }	
 
             function loadBoard() {
                 var xhr = new XMLHttpRequest();
@@ -27,6 +34,8 @@
             }
 
             function loadBugs() {
+		bzProduct = document.getElementById('textProduct').value;
+		bzProductMilestone = document.getElementById('textMilestone').value;
                 var xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState == XMLHttpRequest.DONE) {
@@ -59,6 +68,60 @@
                 div.innerHTML = "<a href='" + bzURL + "/show_bug.cgi?id=" + bug.id + "'>#" + bug.id + "</a> " + bug.summary;
                 document.getElementById(bug.status).appendChild(div);
             }
+
+            function doAuth(user, password) {
+      		var buttonState = "";
+      		buttonState = document.getElementById("btnLogin").innerHTML;
+      	
+      		if (buttonState == "Log In") {
+      			var apiURL = "http://bugzilla.ddk.armysimulation.mil.ca/rest/login?login=" + user + "&password=" + password
+      			var client = new XMLHttpRequest();
+      			client.onreadystatechange = progressListener("login");
+      			client.open("GET", apiURL);
+      			client.setRequestHeader('Accept',       'application/json');
+      			client.setRequestHeader('Content-Type', 'application/json');
+      			client.send();
+      
+			} else {
+			// Logged in already, so log out
+			var apiURL = "http://bugzilla.ddk.armysimulation.mil.ca/rest/logout?token=" + sessionToken
+			var client = new XMLHttpRequest();
+			client.onreadystatechange = progressListener();
+			client.open("GET", apiURL);
+			client.setRequestHeader('Accept',       'application/json');
+			client.setRequestHeader('Content-Type', 'application/json');
+			client.send();
+			}
+			if (this.status == 401) {
+				alert("failed login attempt");
+			}
+			if (buttonState == "Log In") {
+				// UI changes so user knows logged in
+				document.getElementById("credentials").disabled = true;
+				document.getElementById("credentials").style.visibility='hidden';
+				document.getElementById("btnLogin").innerHTML="Log Out";
+			} else if (buttonState == "Log Out") {
+				// UI changes so user knows logged in
+				document.getElementById("credentials").disabled = false;
+				document.getElementById("credentials").style.visibility='visible';
+				document.getElementById("btnLogin").innerHTML="Log In";
+			}
+      	    }
+
+	    function handleResponse(response) {
+	    	var output = "";
+	    	var json = JSON.parse(response);
+	    	// debug
+	    	//console.log(json.token);
+	    	sessionToken = json.token;
+	    }
+
+	    function progressListener() {
+		if (this.readyState == 4 && this.status == 200) {
+			handleResponse(this.responseText);
+		}
+	    }
+
         </script>
         <style>
             #board {
@@ -78,9 +141,25 @@
             .critical {
                 background-color: red;
             }
+	    #input {
+		width: 100%;
+	    }
         </style>
     </head>
     <body>
+	<form id="credentials">
+		Username:<input type="text" name="login" value=""></br>
+		Password:<input type="password" name="password" value=""></br>
+	</form>
+	</br>
+	<form id="input">
+		<button type="button" id="btnLogin" onclick="doAuth(document.getElementsByName('login')[0].value, document.getElementsByName('password')[0].value)">Log In</button>
+		</br>
+		Site URL:<input type="text" id="textURL" value="http://bugzilla.ddk.armysimulation.mil.ca" style="width:250px;"></br>
+		Product:<input type="text" id="textProduct" value=""></br>
+		Milestone:<input type="text" id="textMilestone" value=""></br>
+		<button type="button" id="btnSubmit" onclick="doSubmit()">Submit</button>
+	</form>
         <table id="board">
             <tr id="board-headings"></tr>
             <tr id="board-cards"></tr>
