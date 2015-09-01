@@ -65,6 +65,33 @@
             form {
                 display: inline-block;
             }
+            #modal_wrapper.overlay:before {
+                content: " ";
+                width: 100%;
+                height: 100%;
+                position: fixed;
+                z-index: 100;
+                top: 0;
+                left: 0;
+                background: #000;
+                background: rgba(0,0,0,0.7);
+            }
+            #modal_window {
+                display: none;
+                z-index: 200;
+                position: fixed;
+                left: 50%;
+                top: 50%;
+                width: 360px;
+                padding: 10px 20px;
+                background: #fff;
+                border: 5px solid #999;
+                border-radius: 10px;
+                box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            }
+            #modal_wrapper.overlay #modal_window {
+                display: block;
+            }
         </style>
     </head>
     <body>
@@ -92,6 +119,7 @@
                     </span>
                     <span>
                         <button type="submit" id="btnSubmit">Submit</button>
+                        <button id="modal_open">Advanced Features</button>
                     </span>
                     <span id="spinner"></span>
                 </fieldset>
@@ -102,16 +130,36 @@
         </div>
         <div id="board">
         </div>
+        <table id="board">
+            <tr id="board-headings"></tr>
+            <tr id="board-cards"></tr>
+        </table>
+        <div id="modal_wrapper">
+            <div id="modal_window">
+                <div style="text-align: right;"><a id="modal_close" href="#">close <b>X</b></a></div>
+                <p>Please enter your Bugzilla credentials</p>
+                <form id="modal_feedback" method="POST" action="#" accept-charset="UTF-8">
+                    <p><label>Username<br>
+                    <input type="text" autofocus required size="48" id="textUsername" name="username" value=""></label></p>
+                    <p><label>Password<br>
+                    <input type="password" required size="48" id="textPassword" name="password" value=""></label></p>
+                    <p><input type="submit" name="btnAuthSubmit" value="Send"></p>
+                </form>
+            </div> <!-- #modal_window -->
+        </div> <!-- #modal_wrapper -->
+    </body>
 
         <script type="text/javascript">
-            var bzComponent = ""
-            var bzPriority = ""
-            var bzAssignedTo = ""
-            var bzOrder = "priority"
-            var bzURL = "http://bugzilla.ddk.armysimulation.mil.ca"
-            var sessionToken = "";
+            var bzComponent = "";
+            var bzPriority = "";
+            var bzAssignedTo = "";
+            var bzOrder = "priority";
+            var bzURL = "http://bugzilla.ddk.armysimulation.mil.ca";
+            var userToken = "";
+			var userID = "";
+			var userOBJ = "";
             var bzProduct = "";
-            var bzProductMilestone = ""
+            var bzProductMilestone = "";
 
             window.onload = loadParams;
 
@@ -230,6 +278,21 @@
                     }
                 });
             }
+			
+            function testAuth() {
+				console.log(userID);
+                var xhr = new XMLHttpRequest();
+				xhr.withCredentials = true;
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == XMLHttpRequest.DONE) {
+                        var response = xhr.responseText;
+                        var obj = JSON.parse(response);
+						console.log(obj);
+                    }
+                }
+                xhr.open("GET", bzURL + "/rest/user/" + userID);
+                xhr.send();
+            }
 
             function doGET(url, callback) {
                 var xhr = new XMLHttpRequest();
@@ -265,6 +328,46 @@
                 elem.removeChild(elem.firstChild);
             }
 
+            function checkURL(url) {
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == XMLHttpRequest.DONE) {
+                        var response = xhr.responseText;
+                        if (response == "") { // Working response is "5.0" for example
+                            alert("Unable to access Bugzilla REST : " + bzURL);
+                            return;
+                        }
+                    }
+                }
+                xhr.open("GET", bzURL + "/rest/version");
+                xhr.send();
+	    }
+
+            function doAuth(user, password) {
+                    var xhr = new XMLHttpRequest();
+                    xhr.onreadystatechange = function() {
+                    //if (xhr.readyState == 4 && xhr.status == 200) { // prevents us from parsing code AFTER response, synchronously
+                    if (xhr.readyState == XMLHttpRequest.DONE) {
+                        var response = xhr.responseText;
+                        var obj = JSON.parse(response);
+                        if (obj.code == '300') { // Invalid Username or Password, from Bugzilla web service doc
+                            alert(obj.message);
+                       } else if (obj.code == '301') { // Login Disabled, from Bugzilla web service doc
+                            alert(obj.message);
+                       } else {
+							userOBJ = obj;
+                            //userID = obj.id;
+                            //userToken = obj.token;
+                            // /rest/user/(id) should return what we need
+                       }
+                    }
+                }
+                xhr.open("GET", bzURL + "/rest/login?login=" + user + "&password=" + password);
+                xhr.send();
+                    //other example
+                    //bzURL + "/rest/logout?token=" + sessionToken
+            }
+
             // Register event handlers
             document.getElementById("textProduct").addEventListener("input", function() {
                 // Clear any previous milestone selection.
@@ -276,6 +379,51 @@
                 var product = document.getElementById("textProduct").value;
                 window.open(bzURL + "/enter_bug.cgi?product=" + product);
                 });
+            });
+
+            // Original JavaScript code by Chirp Internet: www.chirp.com.au
+            // Please acknowledge use of this code by including this header.
+            document.getElementById("modal_feedback").addEventListener("submit", function(e) {
+                var form = this;
+                e.preventDefault();
+                doAuth(document.getElementById("textUsername").value, document.getElementById("textPassword").value);
+				//testAuth();
+            }, false);
+
+            document.addEventListener("DOMContentLoaded", function() {
+            	var modalWrapper = document.getElementById("modal_wrapper");
+            	var modalWindow  = document.getElementById("modal_window");
+
+            	var openModal = function(e)
+            	{
+            		modalWrapper.className = "overlay";
+            		modalWindow.style.marginTop = (-modalWindow.offsetHeight)/2 + "px";
+            		modalWindow.style.marginLeft = (-modalWindow.offsetWidth)/2 + "px";
+            		e.preventDefault();
+            	};
+
+              var closeModal = function(e)
+              {
+                modalWrapper.className = "";
+                e.preventDefault();
+				console.log(userOBJ);
+              };
+
+              var clickHandler = function(e) {
+                if(e.target.tagName == "DIV") {
+                  if(e.target.id != "modal_window") closeModal(e);
+                }
+              };
+
+              var keyHandler = function(e) {
+                if(e.keyCode == 27) closeModal(e);
+              };
+
+              document.getElementById("modal_open").addEventListener("click", openModal, false);
+              document.getElementById("modal_close").addEventListener("click", closeModal, false);
+              document.addEventListener("click", clickHandler, false);
+              document.addEventListener("keydown", keyHandler, false);
+            }, false);
         </script>
     </body>
 </html>
