@@ -60,7 +60,7 @@
 
             function addCard(bug) {
                 var div = document.createElement('div');
-                div.className = bug.severity + " " + "card";
+                div.className = bug.severity + " " + bug.priority +" " + "card";
                 div.innerHTML = "<a href='" + bzURL + "/show_bug.cgi?id=" + bug.id + "'>#" + bug.id + "</a> " + bug.summary;
                 document.getElementById(bug.status).appendChild(div);
             }
@@ -86,6 +86,11 @@
                 border-right-color: red;
                 border-right-width: 4px;
                 border-right-style: solid;
+            }
+            .P1 {
+                border-left-color: orange;
+                border-left-width: 4px;
+                border-left-style: solid;
             }
             #board-cards {
                 vertical-align: top;
