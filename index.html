@@ -1,17 +1,17 @@
 <html>
     <body>
         <div>
-            <form>
+            <form action="index.html" method="get">
                 <span>
                     <label for="textProduct">Product</label>
-                    <input type="text" id="textProduct" value="">
+                    <input type="text" id="textProduct" name="product" value="">
                 </span>
                 <span>
                     <label for="textMilestone">Milestone</label>
-                    <input type="text" id="textMilestone" value="">
+                    <input type="text" id="textMilestone" name="milestone" value="">
                 </span>
                 <span>
-                    <button type="button" id="btnSubmit" onclick="loadBoard()">Submit</button>
+                    <button type="submit" id="btnSubmit">Submit</button>
                 </span>
             </form>
         </div>
@@ -99,6 +99,10 @@
                 bzProductMilestone = getURLParameter('milestone');
                 document.getElementById("textProduct").value = bzProduct;
                 document.getElementById("textMilestone").value = bzProductMilestone;
+
+                if (bzProduct != null) {
+                    loadBoard();
+                }
  	    }
  
  	    function getURLParameter(parameter) {
