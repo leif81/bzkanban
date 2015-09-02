@@ -2,25 +2,28 @@
     <body>
         <div>
             <form action="index.html" method="get">
-                <span>
-                    <label for="textProduct">Product</label>
-                    <input type="search" list="products-datalist" id="textProduct" name="product"></input>
-                    <datalist id="products-datalist"></datalist>
-                </span>
-                <span>
-                    <label for="textMilestone">Milestone</label>
-                    <input type="search" list="milestones-datalist" id="textMilestone" name="milestone"></input>
-                    <datalist id="milestones-datalist"></datalist>
-                </span>
-                <span>
-                    <label for="textAssignee">Assignee</label>
-                    <input type="search" list="assignees-datalist" id="textAssignee" name="assignee"></input>
-                    <datalist id="assignees-datalist"></datalist>
-                </span>
-                <span>
-                    <button type="submit" id="btnSubmit">Submit</button>
-                </span>
-                <span id="spinner"></span>
+                <fieldset>
+                    <legend>Query</legend>
+                    <span>
+                        <label for="textProduct">Product</label>
+                        <input type="search" list="products-datalist" id="textProduct" name="product"></input>
+                        <datalist id="products-datalist"></datalist>
+                    </span>
+                    <span>
+                        <label for="textMilestone">Milestone</label>
+                        <input type="search" list="milestones-datalist" id="textMilestone" name="milestone"></input>
+                        <datalist id="milestones-datalist"></datalist>
+                    </span>
+                    <span>
+                        <label for="textAssignee">Assignee</label>
+                        <input type="search" list="assignees-datalist" id="textAssignee" name="assignee"></input>
+                        <datalist id="assignees-datalist"></datalist>
+                    </span>
+                    <span>
+                        <button type="submit" id="btnSubmit">Submit</button>
+                    </span>
+                    <span id="spinner"></span>
+                </fieldset>
             </form>
         </div>
         <table id="board">
@@ -226,6 +229,9 @@
             }
             #board-cards {
                 vertical-align: top;
+            }
+            fieldset {
+                border-width: 1;
             }
         </style>
     </head>
