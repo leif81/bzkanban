@@ -13,6 +13,11 @@
                     <datalist id="milestones-datalist"></datalist>
                 </span>
                 <span>
+                    <label for="textAssignee">Assignee</label>
+                    <input list="assignees-datalist" id="textAssignee" name="assignee"></input>
+                    <datalist id="assignees-datalist"></datalist>
+                </span>
+                <span>
                     <button type="submit" id="btnSubmit">Submit</button>
                 </span>
             </form>
@@ -59,6 +64,7 @@
             function loadBugs() {
                 bzProduct = document.getElementById('textProduct').value;
                 bzProductMilestone = document.getElementById('textMilestone').value;
+                bzAssignedTo = document.getElementById('textAssignee').value;
                 var xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState == XMLHttpRequest.DONE) {
@@ -107,8 +113,10 @@
             function loadParams() {
                 bzProduct = getURLParameter('product');
                 bzProductMilestone = getURLParameter('milestone');
+                bzAssignedTo = getURLParameter('assignee');
                 document.getElementById("textProduct").value = bzProduct;
                 document.getElementById("textMilestone").value = bzProductMilestone;
+                document.getElementById("textAssignee").value = bzAssignedTo
 
                 loadProductsList();
                 if (bzProduct != null) {
