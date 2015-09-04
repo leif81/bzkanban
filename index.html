@@ -159,7 +159,7 @@
             var userToken = "";
             var userID = "";
             var userFullName = "";
-            var dragBugNumber = "";
+            var bugID = "";
             var bzProduct = "";
             var bzProductMilestone = "";
 
@@ -390,8 +390,8 @@
                         loadBoard();
                     }
                 }
-                // maybe check if dragBugNumber != number
-                xhr.open("PUT", bzURL + "/rest/bug/" + dragBugNumber + "?status=" + stat + "&token=" + userToken);
+                // maybe check if bugID != number
+                xhr.open("PUT", bzURL + "/rest/bug/" + bugID + "?status=" + stat + "&token=" + userToken);
                 xhr.send();
 
             }
@@ -404,8 +404,8 @@
                 ev.dataTransfer.setData("text", ev.target.id);
                 var dragBugText = ev.currentTarget.innerText;
                 var re = /[0-9]+/;
-                dragBugNumber = re.exec(dragBugText);  
-                dragBugNumber = dragBugNumber[0];
+                bugID = re.exec(dragBugText);  
+                bugID = bugID[0];
             }
 
             function drop(ev) {
