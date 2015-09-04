@@ -159,6 +159,7 @@
             var userToken = "";
             var userID = "";
             var userFullName = "";
+            var dragBugNumber = "";
             var bzProduct = "";
             var bzProductMilestone = "";
 
@@ -205,6 +206,7 @@
                 card.appendChild(meta);
                 document.getElementById(bug.status).appendChild(card);
                 card.draggable = "true";
+                card.setAttribute('ondragstart', 'drag(event)');
             }
 
             function clearBoard() {
@@ -351,8 +353,8 @@
 	    }
 
             function doAuth(user, password) {
-                    var xhr = new XMLHttpRequest();
-                    xhr.onreadystatechange = function() {
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function() {
                     //if (xhr.readyState == 4 && xhr.status == 200) { // prevents us from parsing code AFTER response, synchronously
                     if (xhr.readyState == XMLHttpRequest.DONE) {
                         var response = xhr.responseText;
@@ -374,18 +376,66 @@
                     //bzURL + "/rest/logout?token=" + sessionToken
             }
 
+            function setBugStatus(stat) {
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function() {
+                    //if (xhr.readyState == 4 && xhr.status == 200) { // prevents us from parsing code AFTER response, synchronously
+                    if (xhr.readyState == XMLHttpRequest.DONE) {
+                        var response = xhr.responseText;
+                        var obj = JSON.parse(response);
+                //        if (obj.code == '300') { // Invalid Username or Password, from Bugzilla web service doc
+                //            alert(obj.message);
+                //       } else if (obj.code == '301') { // Login Disabled, from Bugzilla web service doc
+                //            alert(obj.message);
+                //       } else {
+                //            userID = obj.id;
+                //            userToken = obj.token;
+                //            getName();
+                //       }
+                        console.log(obj);
+                        loadBoard();
+                    }
+                }
+                // maybe check if dragBugNumber != number
+                xhr.open("PUT", bzURL + "/rest/bug/" + dragBugNumber + "?status=" + stat + "&token=" + userToken);
+                xhr.send();
+
+            }
+
             function allowDrop(ev) {
                 ev.preventDefault();
             }
 
             function drag(ev) {
                 ev.dataTransfer.setData("text", ev.target.id);
+                var dragBugText = ev.currentTarget.innerText;
+                var re = /[0-9]+/;
+                dragBugNumber = re.exec(dragBugText);  
+                dragBugNumber = dragBugNumber[0];
             }
 
             function drop(ev) {
                 ev.preventDefault();
-                var data = ev.dataTransfer.getData("text");
-                ev.target.appendChild(document.getElementById(data));
+//                var data = ev.dataTransfer.getData("text");
+//                ev.target.appendChild(document.getElementById(data));
+                var target = ev.toElement;
+                var targetColumn = "";
+                switch (target.id) {
+                    case "":
+                        if (target.parentElement.id != "") {
+                        // dragged ontop of card div
+                        targetColumn = target.parentElement.id;
+                        } else if (target == "a") {
+                            // dragged ontop <a> URL in card div
+                            targetColumn = target.offsetParent.id;
+                        }
+                        break;
+                    default:
+                        // dragged directly into column div (empty space)
+                        targetColumn = target.id;
+                }
+                //alert("Setting bug to " + targetColumn);
+                setBugStatus(targetColumn);
             }
 
             // Register event handlers
