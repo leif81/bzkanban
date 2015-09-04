@@ -156,8 +156,8 @@
             var bzOrder = "priority";
             var bzURL = "http://bugzilla.ddk.armysimulation.mil.ca";
             var userToken = "";
-			var userID = "";
-			var userOBJ = "";
+            var userID = "";
+            var userOBJ = "";
             var bzProduct = "";
             var bzProductMilestone = "";
 
@@ -280,9 +280,7 @@
             }
 			
             function testAuth() {
-				console.log(userID);
                 var xhr = new XMLHttpRequest();
-				xhr.withCredentials = true;
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState == XMLHttpRequest.DONE) {
                         var response = xhr.responseText;
@@ -290,7 +288,7 @@
 						console.log(obj);
                     }
                 }
-                xhr.open("GET", bzURL + "/rest/user/" + userID);
+		xhr.open("GET", bzURL + "/rest/user/" + userID + "?token=" + userToken);
                 xhr.send();
             }
 
@@ -355,10 +353,9 @@
                        } else if (obj.code == '301') { // Login Disabled, from Bugzilla web service doc
                             alert(obj.message);
                        } else {
-							userOBJ = obj;
-                            //userID = obj.id;
-                            //userToken = obj.token;
-                            // /rest/user/(id) should return what we need
+                            userID = obj.id;
+                            userToken = obj.token;
+                            testAuth();
                        }
                     }
                 }
@@ -387,7 +384,6 @@
                 var form = this;
                 e.preventDefault();
                 doAuth(document.getElementById("textUsername").value, document.getElementById("textPassword").value);
-				//testAuth();
             }, false);
 
             document.addEventListener("DOMContentLoaded", function() {
@@ -402,27 +398,26 @@
             		e.preventDefault();
             	};
 
-              var closeModal = function(e)
-              {
-                modalWrapper.className = "";
-                e.preventDefault();
-				console.log(userOBJ);
-              };
+                var closeModal = function(e)
+                {
+                    modalWrapper.className = "";
+                    e.preventDefault();
+                };
 
-              var clickHandler = function(e) {
-                if(e.target.tagName == "DIV") {
-                  if(e.target.id != "modal_window") closeModal(e);
-                }
-              };
+                var clickHandler = function(e) {
+                    if(e.target.tagName == "DIV") {
+                        if(e.target.id != "modal_window") closeModal(e);
+                    }
+                };
 
-              var keyHandler = function(e) {
-                if(e.keyCode == 27) closeModal(e);
-              };
+                var keyHandler = function(e) {
+                    if(e.keyCode == 27) closeModal(e);
+                };
 
-              document.getElementById("modal_open").addEventListener("click", openModal, false);
-              document.getElementById("modal_close").addEventListener("click", closeModal, false);
-              document.addEventListener("click", clickHandler, false);
-              document.addEventListener("keydown", keyHandler, false);
+                document.getElementById("modal_open").addEventListener("click", openModal, false);
+                document.getElementById("modal_close").addEventListener("click", closeModal, false);
+                document.addEventListener("click", clickHandler, false);
+                document.addEventListener("keydown", keyHandler, false);
             }, false);
         </script>
     </body>
