@@ -122,7 +122,7 @@
                         <button id="modal_open">Advanced</button>
                     </span>
                     <span id="spinner"></span>
-
+                    <span id="whoami">Not Signed In</span>
                 </fieldset>
             </form>
             <span id="actions">
@@ -280,13 +280,17 @@
                 });
             }
 			
-            function testAuth() {
+            function getName() {
                 var xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function() {
                 if (xhr.readyState == XMLHttpRequest.DONE) {
                     var response = xhr.responseText;
                     var obj = JSON.parse(response);
                     userFullName = obj.users[0].real_name;
+                    if (userFullName != null) {
+                        document.getElementById("modal_open").style.display = 'none';
+                        document.getElementById("whoami").textContent = userFullName;
+                        }
                     }
                 }
                 xhr.open("GET", bzURL + "/rest/user/" + userID + "?token=" + userToken);
@@ -356,7 +360,7 @@
                        } else {
                             userID = obj.id;
                             userToken = obj.token;
-                            testAuth();
+                            getName();
                        }
                     }
                 }
@@ -420,6 +424,8 @@
                 document.addEventListener("click", clickHandler, false);
                 document.addEventListener("keydown", keyHandler, false);
             }, false);
+            ////
+
         </script>
     </body>
 </html>
