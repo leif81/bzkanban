@@ -376,22 +376,16 @@
                     //bzURL + "/rest/logout?token=" + sessionToken
             }
 
-            function setBugStatus(stat) {
+            function writeBug(stat) {
                 var xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function() {
                     //if (xhr.readyState == 4 && xhr.status == 200) { // prevents us from parsing code AFTER response, synchronously
                     if (xhr.readyState == XMLHttpRequest.DONE) {
                         var response = xhr.responseText;
                         var obj = JSON.parse(response);
-                //        if (obj.code == '300') { // Invalid Username or Password, from Bugzilla web service doc
-                //            alert(obj.message);
-                //       } else if (obj.code == '301') { // Login Disabled, from Bugzilla web service doc
-                //            alert(obj.message);
-                //       } else {
-                //            userID = obj.id;
-                //            userToken = obj.token;
-                //            getName();
-                //       }
+                        if (obj.code == '401') {
+                            alert(obj.message);
+                        }
                         console.log(obj);
                         loadBoard();
                     }
@@ -435,7 +429,7 @@
                         targetColumn = target.id;
                 }
                 //alert("Setting bug to " + targetColumn);
-                setBugStatus(targetColumn);
+                writeBug(targetColumn);
             }
 
             // Register event handlers
