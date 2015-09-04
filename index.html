@@ -40,6 +40,9 @@
             fieldset {
                 border-width: 1;
             }
+            #textSiteURL {
+               display: none;
+            }
         </style>
     </head>
     <body>
@@ -61,6 +64,9 @@
                         <label for="textAssignee">Assignee</label>
                         <input type="search" list="assignees-datalist" id="textAssignee" name="assignee"></input>
                         <datalist id="assignees-datalist"></datalist>
+                    </span>
+                    <span>
+                        <input type="text" id="textSiteURL" name="site"></input>
                     </span>
                     <span>
                         <button type="submit" id="btnSubmit">Submit</button>
@@ -162,6 +168,15 @@
                 bzProduct = getURLParameter('product');
                 bzProductMilestone = getURLParameter('milestone');
                 bzAssignedTo = getURLParameter('assignee');
+
+                // Allow the Bugzilla site URL to be overriden. Useful for testing.
+                // For most permanent deployments just change the hardcodecoded bzURL.
+                var site = getURLParameter('site');
+                if (site != null) {
+                    bzURL = site;
+                    document.getElementById("textSiteURL").value = bzURL;
+                }
+
                 document.getElementById("textProduct").value = bzProduct;
                 document.getElementById("textMilestone").value = bzProductMilestone;
                 document.getElementById("textAssignee").value = bzAssignedTo
