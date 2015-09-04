@@ -185,6 +185,8 @@
                 title = document.createElement('div');
                 title.className = "board-column-title";
                 title.innerHTML = status;
+                title.setAttribute('ondragover', 'allowDrop(event)');
+                title.setAttribute('ondrop', 'drop(event)');
                 document.getElementById(status).appendChild(title);
             }
 
@@ -202,6 +204,7 @@
                 card.appendChild(summary);
                 card.appendChild(meta);
                 document.getElementById(bug.status).appendChild(card);
+                card.draggable = "true";
             }
 
             function clearBoard() {
@@ -369,6 +372,20 @@
                 xhr.send();
                     //other example
                     //bzURL + "/rest/logout?token=" + sessionToken
+            }
+
+            function allowDrop(ev) {
+                ev.preventDefault();
+            }
+
+            function drag(ev) {
+                ev.dataTransfer.setData("text", ev.target.id);
+            }
+
+            function drop(ev) {
+                ev.preventDefault();
+                var data = ev.dataTransfer.getData("text");
+                ev.target.appendChild(document.getElementById(data));
             }
 
             // Register event handlers
