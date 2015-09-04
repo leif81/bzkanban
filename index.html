@@ -1,4 +1,46 @@
 <html>
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+        <style>
+            body {
+                background-color: ghostwhite;
+            }
+            #board {
+                width: 100%;
+                table-layout: fixed;
+            }
+            .card {
+                background-color: white;
+                border-width: 1px;
+                border-color: black;
+                border-style: dotted;
+                padding: 5px;
+                margin: 2px;
+            }
+            .enhancement {
+                border-right-color: greenyellow;
+                border-right-width: 4px;
+                border-right-style: solid;
+            }
+            .critical {
+                border-right-color: red;
+                border-right-width: 4px;
+                border-right-style: solid;
+            }
+            .P1 {
+                border-left-color: orange;
+                border-left-width: 4px;
+                border-left-style: solid;
+            }
+            #board-cards {
+                vertical-align: top;
+            }
+            fieldset {
+                border-width: 1;
+            }
+        </style>
+    </head>
     <body>
         <div>
             <form action="index.html" method="get">
@@ -30,10 +72,6 @@
             <tr id="board-headings"></tr>
             <tr id="board-cards"></tr>
         </table>
-    </body>
-    <head>
-
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 
         <script type="text/javascript">
             var bzComponent = ""
@@ -196,43 +234,5 @@
                 loadMilestonesList();
                 });
         </script>
-        <style>
-            body {
-                background-color: ghostwhite;
-            }
-            #board {
-                width: 100%;
-                table-layout: fixed;
-            }
-            .card {
-                background-color: white;
-                border-width: 1px;
-                border-color: black;
-                border-style: dotted;
-                padding: 5px;
-                margin: 2px;
-            }
-            .enhancement {
-                border-right-color: greenyellow;
-                border-right-width: 4px;
-                border-right-style: solid;
-            }
-            .critical {
-                border-right-color: red;
-                border-right-width: 4px;
-                border-right-style: solid;
-            }
-            .P1 {
-                border-left-color: orange;
-                border-left-width: 4px;
-                border-left-style: solid;
-            }
-            #board-cards {
-                vertical-align: top;
-            }
-            fieldset {
-                border-width: 1;
-            }
-        </style>
-    </head>
+    </body>
 </html>
