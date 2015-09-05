@@ -119,10 +119,10 @@
                     </span>
                     <span>
                         <button type="submit" id="btnSubmit">Submit</button>
-                        <button id="modal_open">Advanced</button>
+                        <button id="modal_open">Sign In</button>
                     </span>
                     <span id="spinner"></span>
-                    <span id="whoami">Not Signed In</span>
+                    <span id="whoami"></span>
                 </fieldset>
             </form>
             <span id="actions">
@@ -379,21 +379,22 @@
             function writeBug(stat) {
                 var xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function() {
-                    //if (xhr.readyState == 4 && xhr.status == 200) { // prevents us from parsing code AFTER response, synchronously
+                    //if (xhr.readyState == 4 && xhr.status == 200) {
                     if (xhr.readyState == XMLHttpRequest.DONE) {
                         var response = xhr.responseText;
                         var obj = JSON.parse(response);
-                        if (obj.code == '401') {
+                        if (obj.code == '410') {  // Requires us to sign in to write changes
                             alert(obj.message);
-                        }
-                        console.log(obj);
-                        loadBoard();
+                            return;
+                        } else {
+                            console.log(obj);
+                            loadBoard();
+                    }
                     }
                 }
                 // maybe check if bugID != number
                 xhr.open("PUT", bzURL + "/rest/bug/" + bugID + "?status=" + stat + "&token=" + userToken);
                 xhr.send();
-
             }
 
             function allowDrop(ev) {
