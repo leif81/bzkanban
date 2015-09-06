@@ -403,7 +403,6 @@
                             alert(obj.message);
                             return;
                         } else {
-                            console.log(obj);
                             loadBoard();
                     }
                     }
@@ -445,7 +444,6 @@
                         // dragged directly into column div (empty space)
                         targetColumn = target.id;
                 }
-                //alert("Setting bug to " + targetColumn);
                 writeBug(targetColumn);
             }
 
