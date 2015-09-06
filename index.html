@@ -53,6 +53,26 @@
                 border-left-width: 4px;
                 border-left-style: solid;
             }
+            #UNCONFIRMED {
+                border-style: solid;
+                border-width: 1;
+	        }	
+            #CONFIRMED {
+                border-style: solid;
+                border-width: 1;
+	        }	
+            #IN_PROGRESS {
+                border-style: solid;
+                border-width: 1;
+	        }	
+            #RESOLVED {
+                border-style: solid;
+                border-width: 1;
+	        }	
+            #VERIFIED {
+                border-style: solid;
+                border-width: 1;
+	        }	
             fieldset {
                 border-width: 1;
                 border-style: solid;
@@ -60,7 +80,7 @@
                 background-color: white;
             }
             #textSiteURL {
-               display: none;
+                display: none;
             }
             form {
                 display: inline-block;
@@ -131,10 +151,6 @@
         </div>
         <div id="board">
         </div>
-        <table id="board">
-            <tr id="board-headings"></tr>
-            <tr id="board-cards"></tr>
-        </table>
         <div id="modal_wrapper">
             <div id="modal_window">
                 <div style="text-align: right;"><a id="modal_close" href="#">close <b>X</b></a></div>
@@ -181,13 +197,13 @@
             function addBoardColumn(status) {
                 var div = document.createElement('div');
                 div.id = status;
+                div.setAttribute('ondragover', 'allowDrop(event)');
+                div.setAttribute('ondrop', 'drop(event)');
                 document.getElementById("board").appendChild(div);
 
                 title = document.createElement('div');
                 title.className = "board-column-title";
                 title.innerHTML = status;
-                title.setAttribute('ondragover', 'allowDrop(event)');
-                title.setAttribute('ondrop', 'drop(event)');
                 document.getElementById(status).appendChild(title);
             }
 
