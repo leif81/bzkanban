@@ -175,6 +175,7 @@
             var userToken = "";
             var userID = "";
             var userFullName = "";
+            var fromStatus = "";
             var bugID = "";
             var bzProduct = "";
             var bzProductMilestone = "";
@@ -393,6 +394,43 @@
             }
 
             function writeBug(stat) {
+                var urlAppend = "";
+                // Check bug state matrix
+                // Hardcoded for now, query GET /rest/field/bug/(id)
+                // return.values.can_change_to
+                switch (stat) {
+                    case fromStatus:
+                        // Changing to same status, do nothing
+                        return;
+                        break;
+                    case "RESOLVED":
+                    case "VERIFIED":
+                        if (fromStatus == "CONFIRMED" ||  fromStatus == "IN_PROGRESS") {
+                            // We need to set a resolution to be a valid bug change
+                            var bugResolution = "FIXED"; // popup box with valid resolutions
+                            var bugComment = ""; // previous box with comment ability
+                            if (bugComment != "") {
+                                urlAppend = "&resolution=" + bugResolution + "&comment=" + bugComment;
+                            } else {
+                                urlAppend = "&resolution=" + bugResolution;
+                            }
+				
+                        }
+                        break;
+                    case "CONFIRMED":
+                    case "IN_PROGRESS":
+                        if (fromStatus == "RESOLVED" || fromStatus == "VERIFIED") {
+                            // No need to set resolution to blank, automatically happens
+                            var bugComment = ""; // Still ask for a comment
+                            if (bugComment != "") {
+                                urlAppend = "&comment=" + bugComment;
+                            }
+                        }
+                        break;
+
+                }
+
+                // Now try trying out the bug
                 var xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function() {
                     //if (xhr.readyState == 4 && xhr.status == 200) {
@@ -407,8 +445,8 @@
                     }
                     }
                 }
-                // maybe check if bugID != number
-                xhr.open("PUT", bzURL + "/rest/bug/" + bugID + "?status=" + stat + "&token=" + userToken);
+                // TODO: maybe check if bugID != number
+                xhr.open("PUT", bzURL + "/rest/bug/" + bugID + "?status=" + stat + urlAppend + "&token=" + userToken);
                 xhr.send();
             }
 
@@ -418,6 +456,7 @@
 
             function drag(ev) {
                 ev.dataTransfer.setData("text", ev.target.id);
+                fromStatus = ev.target.parentElement.id;
                 var dragBugText = ev.currentTarget.innerText;
                 var re = /[0-9]+/;
                 bugID = re.exec(dragBugText);  
