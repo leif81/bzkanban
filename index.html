@@ -354,21 +354,6 @@
                 elem.removeChild(elem.firstChild);
             }
 
-            function checkURL(url) {
-                var xhr = new XMLHttpRequest();
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState == XMLHttpRequest.DONE) {
-                        var response = xhr.responseText;
-                        if (response == "") { // Working response is "5.0" for example
-                            alert("Unable to access Bugzilla REST : " + bzURL);
-                            return;
-                        }
-                    }
-                }
-                xhr.open("GET", bzURL + "/rest/version");
-                xhr.send();
-	    }
-
             function doAuth(user, password) {
                 var xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function() {
