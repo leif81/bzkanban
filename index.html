@@ -102,15 +102,20 @@
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState == XMLHttpRequest.DONE) {
                         var response = xhr.responseText;
-                        var obj = JSON.parse(response);
-                        statuses = obj.values;
-                        for (var key in statuses) {
-                            status = statuses[key];
-                            addBoardColumn(status);
+                        if (response == "") {
+                            alert("Unable to access Bugzilla REST : " + bzURL);
+                            stopSpinner();
+                        } else {
+                            var obj = JSON.parse(response);
+                            statuses = obj.values;
+                            for (var key in statuses) {
+                                status = statuses[key];
+                                addBoardColumn(status);
+                            }
+
+
+                            loadBugs();
                         }
-
-
-                        loadBugs();
                     }
                 }
                 xhr.open("GET", bzURL + "/rest/field/bug/status/values");
@@ -179,8 +184,6 @@
                     bzURL = site;
                     document.getElementById("textSiteURL").value = bzURL;
                 }
-                // Check site first so we don't leave the user without feed back
-                checkURL(bzURL);
 
                 document.getElementById("textProduct").value = bzProduct;
                 document.getElementById("textMilestone").value = bzProductMilestone;
@@ -246,21 +249,6 @@
             function stopSpinner() {
                 var elem = document.getElementById("spinner");
                 elem.removeChild(elem.firstChild);
-            }
-
-            function checkURL(url) {
-                var xhr = new XMLHttpRequest();
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState == XMLHttpRequest.DONE) {
-                        var response = xhr.responseText;
-                        if (response == "") { // Working response is "5.0" for example
-                            alert("Unable to access Bugzilla REST : " + bzURL);
-                            return;
-                        }
-                    }
-                }
-                xhr.open("GET", bzURL + "/rest/version");
-                xhr.send();
             }
 
             // Register event handlers
