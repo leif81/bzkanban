@@ -452,22 +452,8 @@
                 ev.preventDefault();
 //                var data = ev.dataTransfer.getData("text");
 //                ev.target.appendChild(document.getElementById(data));
-                var target = ev.toElement;
-                var targetColumn = "";
-                switch (target.id) {
-                    case "":
-                        if (target.parentElement.id != "") {
-                        // dragged ontop of card div
-                        targetColumn = target.parentElement.id;
-                        } else if (target == "a") {
-                            // dragged ontop <a> URL in card div
-                            targetColumn = target.offsetParent.id;
-                        }
-                        break;
-                    default:
-                        // dragged directly into column div (empty space)
-                        targetColumn = target.id;
-                }
+                var target = ev.currentTarget;
+                var targetColumn = target.id;
                 writeBug(targetColumn);
             }
 
