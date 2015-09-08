@@ -117,8 +117,8 @@
                         var obj = JSON.parse(response);
                         statuses = obj.values;
                         for (var key in statuses) {
-                        status = statuses[key];
-                        addBoardColumn(status);
+                            status = statuses[key];
+                            addBoardColumn(status);
                         }
                         loadBugs();
                     }
