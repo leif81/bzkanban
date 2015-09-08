@@ -27,6 +27,12 @@
                 padding: 10px;
                 margin: 5px;
             }
+            .card-meta {
+                font-size: x-small;
+                text-align: right;
+                color: lightgrey;
+                padding-top: 5px;
+            }
             .enhancement {
                 border-right-color: greenyellow;
                 border-right-width: 4px;
@@ -142,7 +148,7 @@
                         stopSpinner();
                     }
                 }
-                xhr.open("GET", bzURL + "/rest/bug?product=" + bzProduct + "&include_fields=summary,status,id,severity,priority&order=" + bzOrder + "&target_milestone=" + bzProductMilestone + "&component=" + bzComponent + "&priority=" + bzPriority + "&assigned_to=" + bzAssignedTo);
+                xhr.open("GET", bzURL + "/rest/bug?product=" + bzProduct + "&include_fields=summary,status,id,severity,priority,assigned_to&order=" + bzOrder + "&target_milestone=" + bzProductMilestone + "&component=" + bzComponent + "&priority=" + bzPriority + "&assigned_to=" + bzAssignedTo);
                 xhr.send();
             }
 
@@ -158,10 +164,19 @@
             }
 
             function addCard(bug) {
-                var div = document.createElement('div');
-                div.className = bug.severity + " " + bug.priority +" " + "card";
-                div.innerHTML = "<a href='" + bzURL + "/show_bug.cgi?id=" + bug.id + "'>#" + bug.id + "</a> " + bug.summary;
-                document.getElementById(bug.status).appendChild(div);
+                var card = document.createElement('div');
+                card.className = bug.severity + " " + bug.priority +" " + "card";
+
+                var summary = document.createElement('div');
+                summary.innerHTML = "<a href='" + bzURL + "/show_bug.cgi?id=" + bug.id + "'>#" + bug.id + "</a> " + bug.summary;
+
+                var meta = document.createElement('div');
+                meta.innerHTML = bug.assigned_to_detail.real_name;
+                meta.className = "card-meta";
+
+                card.appendChild(summary);
+                card.appendChild(meta);
+                document.getElementById(bug.status).appendChild(card);
             }
 
             function clearBoard() {
