@@ -172,8 +172,6 @@
             var bzAssignedTo = "";
             var bzOrder = "priority";
             var bzURL = "http://bugzilla.ddk.armysimulation.mil.ca";
-            var userToken = "";
-            var userID = "";
             var userFullName = "";
             var fromStatus = "";
             var bugID = "";
@@ -241,6 +239,10 @@
                 bzProduct = getURLParameter('product');
                 bzProductMilestone = getURLParameter('milestone');
                 bzAssignedTo = getURLParameter('assignee');
+
+                if (sessionStorage.userToken != null) {
+                    getName();
+                }
 
                 // Allow the Bugzilla site URL to be overriden. Useful for testing.
                 // For most permanent deployments just change the hardcodecoded bzURL.
@@ -316,7 +318,7 @@
                         }
                     }
                 }
-                xhr.open("GET", bzURL + "/rest/user/" + userID + "?token=" + userToken);
+                xhr.open("GET", bzURL + "/rest/user/" + sessionStorage.userID + "?token=" + sessionStorage.userToken);
                 xhr.send();
             }
 
@@ -366,8 +368,8 @@
                        } else if (obj.code == '301') { // Login Disabled, from Bugzilla web service doc
                             alert(obj.message);
                        } else {
-                            userID = obj.id;
-                            userToken = obj.token;
+                            sessionStorage.userID = obj.id;
+                            sessionStorage.userToken = obj.token;
                             getName();
                        }
                     }
@@ -431,7 +433,7 @@
                     }
                 }
                 // TODO: maybe check if bugID != number
-                xhr.open("PUT", bzURL + "/rest/bug/" + bugID + "?status=" + stat + urlAppend + "&token=" + userToken);
+                xhr.open("PUT", bzURL + "/rest/bug/" + bugID + "?status=" + stat + urlAppend + "&token=" + sessionStorage.userToken);
                 xhr.send();
             }
 
