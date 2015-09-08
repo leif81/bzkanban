@@ -114,20 +114,13 @@
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState == XMLHttpRequest.DONE) {
                         var response = xhr.responseText;
-                        if (response == "") {
-                            alert("Unable to access Bugzilla REST : " + bzURL);
-                            stopSpinner();
-                        } else {
-                            var obj = JSON.parse(response);
-                            statuses = obj.values;
-                            for (var key in statuses) {
-                                status = statuses[key];
-                                addBoardColumn(status);
-                            }
-
-
-                            loadBugs();
+                        var obj = JSON.parse(response);
+                        statuses = obj.values;
+                        for (var key in statuses) {
+                        status = statuses[key];
+                        addBoardColumn(status);
                         }
+                        loadBugs();
                     }
                 }
                 xhr.open("GET", bzURL + "/rest/field/bug/status/values");
@@ -222,13 +215,18 @@
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState == XMLHttpRequest.DONE) {
                         var response = xhr.responseText;
-                        var obj = JSON.parse(response);
-                        var products = obj.products;
-                        for (var key in products) {
-                            var product = products[key];
-                            var option = document.createElement('option');
-                            option.value = product.name;
-                            document.getElementById("products-datalist").appendChild(option);
+                        if (response == "") {
+                            alert("Unable to access Bugzilla REST : " + bzURL);
+                            return;
+                        } else {
+                            var obj = JSON.parse(response);
+                            var products = obj.products;
+                            for (var key in products) {
+                                var product = products[key];
+                                var option = document.createElement('option');
+                                option.value = product.name;
+                                document.getElementById("products-datalist").appendChild(option);
+                            }
                         }
                     }
                 }
