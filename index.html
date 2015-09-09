@@ -124,6 +124,7 @@
                     }
                 }
                 xhr.open("GET", bzURL + "/rest/field/bug/status/values");
+                xhr.setRequestHeader("Accept", "application/json");
                 xhr.send();
             }
 
@@ -145,6 +146,7 @@
                     }
                 }
                 xhr.open("GET", bzURL + "/rest/bug?product=" + bzProduct + "&include_fields=summary,status,id,severity,priority,assigned_to&order=" + bzOrder + "&target_milestone=" + bzProductMilestone + "&component=" + bzComponent + "&priority=" + bzPriority + "&assigned_to=" + bzAssignedTo);
+                xhr.setRequestHeader("Accept", "application/json");
                 xhr.send();
             }
 
@@ -231,6 +233,7 @@
                     }
                 }
                 xhr.open("GET", bzURL + "/rest/product?type=enterable&include_fields=name");
+                xhr.setRequestHeader("Accept", "application/json");
                 xhr.send();
             }
 
@@ -252,6 +255,7 @@
                     }
                 }
                 xhr.open("GET", bzURL + "/rest/product?names=" + bzProduct + "&include_fields=milestones");
+                xhr.setRequestHeader("Accept", "application/json");
                 xhr.send();
             }
 
