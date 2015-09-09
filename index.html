@@ -112,44 +112,15 @@
             function loadBoard() {
                 clearBoard();
                 startSpinner();
-                var xhr = new XMLHttpRequest();
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState == XMLHttpRequest.DONE) {
-                        var response = xhr.responseText;
-                        var obj = JSON.parse(response);
-                        statuses = obj.values;
-                        for (var key in statuses) {
-                            status = statuses[key];
-                            addBoardColumn(status);
-                        }
-                        loadBugs();
+                doGET("/rest/field/bug/status/values", function(response) {
+                    var obj = JSON.parse(response);
+                    statuses = obj.values;
+                    for (var key in statuses) {
+                        status = statuses[key];
+                        addBoardColumn(status);
                     }
-                }
-                xhr.open("GET", bzURL + "/rest/field/bug/status/values");
-                xhr.setRequestHeader("Accept", "application/json");
-                xhr.send();
-            }
-
-            function loadBugs() {
-                bzProduct = document.getElementById('textProduct').value;
-                bzProductMilestone = document.getElementById('textMilestone').value;
-                bzAssignedTo = document.getElementById('textAssignee').value;
-                var xhr = new XMLHttpRequest();
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState == XMLHttpRequest.DONE) {
-                        var response = xhr.responseText;
-                        var obj = JSON.parse(response);
-                        bugs = obj.bugs;
-                        for (var key in bugs) {
-                            bug = bugs[key];
-                            addCard(bug);
-                        }
-                        stopSpinner();
-                    }
-                }
-                xhr.open("GET", bzURL + "/rest/bug?product=" + bzProduct + "&include_fields=summary,status,id,severity,priority,assigned_to&order=" + bzOrder + "&target_milestone=" + bzProductMilestone + "&component=" + bzComponent + "&priority=" + bzPriority + "&assigned_to=" + bzAssignedTo);
-                xhr.setRequestHeader("Accept", "application/json");
-                xhr.send();
+                    loadBugs();
+                });
             }
 
             function addBoardColumn(status) {
@@ -214,7 +185,7 @@
                 }
             }
 
-            function loadProductsList() {
+            function doGET(url, callback) {
                 var xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState == XMLHttpRequest.DONE) {
@@ -223,42 +194,57 @@
                             alert("Unable to access Bugzilla REST : " + bzURL);
                             return;
                         } else {
-                            var obj = JSON.parse(response);
-                            var products = obj.products;
-                            for (var key in products) {
-                                var product = products[key];
-                                var option = document.createElement('option');
-                                option.value = product.name;
-                                document.getElementById("products-datalist").appendChild(option);
-                            }
+                            return callback(response);
                         }
                     }
                 }
-                xhr.open("GET", bzURL + "/rest/product?type=enterable&include_fields=name");
+                xhr.open("GET", bzURL + url);
                 xhr.setRequestHeader("Accept", "application/json");
                 xhr.send();
+            }
+            
+            function loadBugs() {
+                bzProduct = document.getElementById('textProduct').value;
+                bzProductMilestone = document.getElementById('textMilestone').value;
+                bzAssignedTo = document.getElementById('textAssignee').value;
+                doGET("/rest/bug?product=" + bzProduct + "&include_fields=summary,status,id,severity,priority,assigned_to&order=" + bzOrder + "&target_milestone=" + bzProductMilestone + "&component=" + bzComponent + "&priority=" + bzPriority + "&assigned_to=" + bzAssignedTo, function(response) {
+                    var obj = JSON.parse(response);
+                    bugs = obj.bugs;
+                    for (var key in bugs) {
+                        bug = bugs[key];
+                        addCard(bug);
+                    }
+                    stopSpinner();
+                });
+
+            }
+
+            function loadProductsList() {
+                doGET("/rest/product?type=enterable&include_fields=name", function(response) {
+                    var obj = JSON.parse(response);
+                    var products = obj.products;
+                    for (var key in products) {
+                        var product = products[key];
+                        var option = document.createElement('option');
+                        option.value = product.name;
+                        document.getElementById("products-datalist").appendChild(option);
+                    }
+                });
             }
 
             function loadMilestonesList() {
                 bzProduct = document.getElementById("textProduct").value;
                 clearMilestonesList();
-                var xhr = new XMLHttpRequest();
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState == XMLHttpRequest.DONE) {
-                        var response = xhr.responseText;
-                        var obj = JSON.parse(response);
-                        var milestones = obj.products[0].milestones;
-                        for (var key in milestones) {
-                            var milestone = milestones[key];
-                            var option = document.createElement('option');
-                            option.value = milestone.name;
-                            document.getElementById("milestones-datalist").appendChild(option);
-                        }
+                doGET("/rest/product?names=" + bzProduct + "&include_fields=milestones", function(response) {
+                    var obj = JSON.parse(response);
+                    var milestones = obj.products[0].milestones;
+                    for (var key in milestones) {
+                        var milestone = milestones[key];
+                        var option = document.createElement('option');
+                        option.value = milestone.name;
+                        document.getElementById("milestones-datalist").appendChild(option);
                     }
-                }
-                xhr.open("GET", bzURL + "/rest/product?names=" + bzProduct + "&include_fields=milestones");
-                xhr.setRequestHeader("Accept", "application/json");
-                xhr.send();
+                });
             }
 
             function getURLParameter(parameter) {
