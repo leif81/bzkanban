@@ -311,21 +311,14 @@
             }
 			
             function getName() {
-                var xhr = new XMLHttpRequest();
-                xhr.onreadystatechange = function() {
-                if (xhr.readyState == XMLHttpRequest.DONE) {
-                    var response = xhr.responseText;
-                    var obj = JSON.parse(response);
-                    userFullName = obj.users[0].real_name;
+                doGET("/rest/user/" + sessionStorage.userID + "?token=" + sessionStorage.userToken, function(response) {
+                    userFullName = response.users[0].real_name;
                     if (userFullName != null) {
                         document.getElementById("modal_open").style.display = 'none';
                         document.getElementById("modal_close").click();
                         document.getElementById("whoami").textContent = userFullName;
-                        }
                     }
-                }
-                xhr.open("GET", bzURL + "/rest/user/" + sessionStorage.userID + "?token=" + sessionStorage.userToken);
-                xhr.send();
+                });
             }
 
             function doGET(url, callback) {
@@ -363,27 +356,17 @@
             }
 
             function doAuth(user, password) {
-                var xhr = new XMLHttpRequest();
-                xhr.onreadystatechange = function() {
-                    //if (xhr.readyState == 4 && xhr.status == 200) { // prevents us from parsing code AFTER response, synchronously
-                    if (xhr.readyState == XMLHttpRequest.DONE) {
-                        var response = xhr.responseText;
-                        var obj = JSON.parse(response);
-                        if (obj.code == '300') { // Invalid Username or Password, from Bugzilla web service doc
-                            alert(obj.message);
-                       } else if (obj.code == '301') { // Login Disabled, from Bugzilla web service doc
-                            alert(obj.message);
-                       } else {
-                            sessionStorage.userID = obj.id;
-                            sessionStorage.userToken = obj.token;
-                            getName();
-                       }
+                doGET("/rest/login?login=" + user + "&password=" + password, function(response) {
+                    if (response.code == '300') { // Invalid Username or Password, from Bugzilla web service doc
+                        alert(response.message);
+                    } else if (response.code == '301') { // Login Disabled, from Bugzilla web service doc
+                        alert(response.message);
+                    } else {
+                        sessionStorage.userID = response.id;
+                        sessionStorage.userToken = response.token;
+                        getName();
                     }
-                }
-                xhr.open("GET", bzURL + "/rest/login?login=" + user + "&password=" + password);
-                xhr.send();
-                    //other example
-                    //bzURL + "/rest/logout?token=" + sessionToken
+                });
             }
 
             function writeBug(stat) {
@@ -423,7 +406,7 @@
 
                 }
 
-                // Now try  the bug
+                // Now try the bug
                 var xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function() {
                     //if (xhr.readyState == 4 && xhr.status == 200) {
@@ -440,8 +423,7 @@
                 }
                 // TODO: maybe check if bugID != number
                 xhr.open("PUT", bzURL + "/rest/bug/" + bugID + "?status=" + stat + urlAppend + "&token=" + sessionStorage.userToken);
-                xhr.send();
-            }
+                xhr.send();            }
 
             function allowDrop(ev) {
                 ev.preventDefault();
@@ -483,7 +465,7 @@
                 var form = this;
                 e.preventDefault();
                 doAuth(document.getElementById("textUsername").value, document.getElementById("textPassword").value);
-            }, false);
+                }, false);
 
             document.addEventListener("DOMContentLoaded", function() {
             	var modalWrapper = document.getElementById("modal_wrapper");
@@ -517,7 +499,7 @@
                 document.getElementById("modal_close").addEventListener("click", closeModal, false);
                 document.addEventListener("click", clickHandler, false);
                 document.addEventListener("keydown", keyHandler, false);
-            }, false);
+                }, false);
             ////
 
         </script>
