@@ -185,24 +185,6 @@
                 }
             }
 
-            function doGET(url, callback) {
-                var xhr = new XMLHttpRequest();
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState == XMLHttpRequest.DONE) {
-                        var response = xhr.responseText;
-                        if (response == "") {
-                            alert("Unable to access Bugzilla REST : " + bzURL);
-                            return;
-                        } else {
-                            return callback(response);
-                        }
-                    }
-                }
-                xhr.open("GET", bzURL + url);
-                xhr.setRequestHeader("Accept", "application/json");
-                xhr.send();
-            }
-            
             function loadBugs() {
                 bzProduct = document.getElementById('textProduct').value;
                 bzProductMilestone = document.getElementById('textMilestone').value;
@@ -245,6 +227,24 @@
                         document.getElementById("milestones-datalist").appendChild(option);
                     }
                 });
+            }
+
+            function doGET(url, callback) {
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == XMLHttpRequest.DONE) {
+                        var response = xhr.responseText;
+                        if (response == "") {
+                            alert("Unable to access Bugzilla REST : " + bzURL);
+                            return;
+                        } else {
+                            return callback(response);
+                        }
+                    }
+                }
+                xhr.open("GET", bzURL + url);
+                xhr.setRequestHeader("Accept", "application/json");
+                xhr.send();
             }
 
             function getURLParameter(parameter) {
