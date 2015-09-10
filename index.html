@@ -139,10 +139,16 @@
                     </span>
                     <span>
                         <button type="submit" id="btnSubmit">Submit</button>
-                        <button id="modal_open">Sign In</button>
                     </span>
                     <span id="spinner"></span>
                     <span id="whoami"></span>
+                </fieldset>
+                <fieldset>
+                    <legend>Other</legend>
+                    <span>
+                        <button type="submit" id="btnCreate" target="_blank">Create</button>
+                        <button id="modal_open">Sign In</button>
+                    </span>
                 </fieldset>
             </form>
             <span id="actions">
@@ -417,7 +423,7 @@
 
                 }
 
-                // Now try trying out the bug
+                // Now try  the bug
                 var xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function() {
                     //if (xhr.readyState == 4 && xhr.status == 200) {
@@ -470,7 +476,6 @@
                 var product = document.getElementById("textProduct").value;
                 window.open(bzURL + "/enter_bug.cgi?product=" + product);
                 });
-            });
 
             // Original JavaScript code by Chirp Internet: www.chirp.com.au
             // Please acknowledge use of this code by including this header.
