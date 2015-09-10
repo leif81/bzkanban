@@ -113,8 +113,7 @@
                 clearBoard();
                 startSpinner();
                 doGET("/rest/field/bug/status/values", function(response) {
-                    var obj = JSON.parse(response);
-                    statuses = obj.values;
+                    statuses = response.values;
                     for (var key in statuses) {
                         status = statuses[key];
                         addBoardColumn(status);
@@ -190,8 +189,7 @@
                 bzProductMilestone = document.getElementById('textMilestone').value;
                 bzAssignedTo = document.getElementById('textAssignee').value;
                 doGET("/rest/bug?product=" + bzProduct + "&include_fields=summary,status,id,severity,priority,assigned_to&order=" + bzOrder + "&target_milestone=" + bzProductMilestone + "&component=" + bzComponent + "&priority=" + bzPriority + "&assigned_to=" + bzAssignedTo, function(response) {
-                    var obj = JSON.parse(response);
-                    bugs = obj.bugs;
+                    bugs = response.bugs;
                     for (var key in bugs) {
                         bug = bugs[key];
                         addCard(bug);
@@ -203,8 +201,7 @@
 
             function loadProductsList() {
                 doGET("/rest/product?type=enterable&include_fields=name", function(response) {
-                    var obj = JSON.parse(response);
-                    var products = obj.products;
+                    var products = response.products;
                     for (var key in products) {
                         var product = products[key];
                         var option = document.createElement('option');
@@ -218,8 +215,7 @@
                 bzProduct = document.getElementById("textProduct").value;
                 clearMilestonesList();
                 doGET("/rest/product?names=" + bzProduct + "&include_fields=milestones", function(response) {
-                    var obj = JSON.parse(response);
-                    var milestones = obj.products[0].milestones;
+                    var milestones = response.products[0].milestones;
                     for (var key in milestones) {
                         var milestone = milestones[key];
                         var option = document.createElement('option');
@@ -238,7 +234,8 @@
                             alert("Unable to access Bugzilla REST : " + bzURL);
                             return;
                         } else {
-                            return callback(response);
+                            var obj = JSON.parse(response);
+                            return callback(obj);
                         }
                     }
                 }
