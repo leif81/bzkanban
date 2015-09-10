@@ -62,6 +62,9 @@
             #textSiteURL {
                display: none;
             }
+            form {
+                display: inline-block;
+            }
         </style>
     </head>
     <body>
@@ -92,13 +95,10 @@
                     </span>
                     <span id="spinner"></span>
                 </fieldset>
-                <fieldset>
-                    <legend>Other</legend>
-                    <span>
-                        <button type="submit" id="btnCreate" target="_blank">Create</button>
-                    </span>
-                </fieldset>
             </form>
+            <span id="actions">
+                <button id="btnCreate">Create Bug</button>
+            </span>
         </div>
         <div id="board">
         </div>
