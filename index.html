@@ -92,6 +92,12 @@
                     </span>
                     <span id="spinner"></span>
                 </fieldset>
+                <fieldset>
+                    <legend>Other</legend>
+                    <span>
+                        <button type="submit" id="btnCreate" target="_blank">Create</button>
+                    </span>
+                </fieldset>
             </form>
         </div>
         <div id="board">
@@ -264,6 +270,11 @@
                 // Clear any previous milestone selection.
                 document.getElementById("textMilestone").value = "";
                 loadMilestonesList();
+                });
+
+            document.getElementById("btnCreate").addEventListener("click", function() {
+                var product = document.getElementById("textProduct").value;
+                window.open(bzURL + "/enter_bug.cgi?product=" + product);
                 });
         </script>
     </body>
