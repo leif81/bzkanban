@@ -117,7 +117,7 @@
                     <span id="spinner"></span>
                 </fieldset>
             </form>
-            <form id="loginForm" method="POST" action="#" accept-charset="UTF-8">
+            <form id="loginForm">
                 <fieldset>
                     <legend>Login</legend>
                     <span>
@@ -128,7 +128,7 @@
                         <label for="textPassword" >Password</label>
                         <input type="password" required id="textPassword" name="password" value="">
                     </span>
-                    <input type="submit" name="btnAuthSubmit" value="Send">
+                    <input type="button" id="btnAuthSubmit" value="Send">
                 </fieldset>
             </form>
             <span id="actions">
@@ -235,9 +235,7 @@
                 document.getElementById("textMilestone").value = bzProductMilestone;
                 document.getElementById("textAssignee").value = bzAssignedTo
 
-                if (!isLoggedIn()) {
-                    showLoginForm();
-                } else {
+                if (isLoggedIn()) {
                     hideSignInButton();
                 }
 
@@ -342,12 +340,13 @@
                         sessionStorage.userID = response.id;
                         sessionStorage.userToken = response.token;
                         getName();
+                        loadBoard();
                     }
                 });
             }
 
             function isLoggedIn() {
-                return sessionStorage.userToken != "";
+                return sessionStorage.userToken != null;
             }
 
             function showLoginForm() {
@@ -459,6 +458,14 @@
             document.getElementById("btnSignIn").addEventListener("click", function() {
                 showLoginForm();
                 });
+
+            document.getElementById("btnAuthSubmit").addEventListener("click", function() {
+                var user = document.getElementById("textUsername").value;
+                var password = document.getElementById("textPassword").value;
+                doAuth(user, password);
+                });
+
+
         </script>
     </body>
 </html>
