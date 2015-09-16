@@ -172,8 +172,8 @@
                 var div = document.createElement('div');
                 div.id = status;
                 if (isLoggedIn()) {
-                    div.setAttribute('ondragover', 'allowDrop(event)');
-                    div.setAttribute('ondrop', 'drop(event)');
+                    div.setAttribute('ondragover', 'dragCardOver(event)');
+                    div.setAttribute('ondrop', 'dropCard(event)');
                 }
                 document.getElementById("board").appendChild(div);
 
@@ -199,7 +199,7 @@
 
                 if (isLoggedIn()) {
                     card.draggable = "true";
-                    card.setAttribute('ondragstart', 'drag(event)');
+                    card.setAttribute('ondragstart', 'dragCard(event)');
                 }
 
                 document.getElementById(bug.status).appendChild(card);
@@ -420,11 +420,11 @@
                 xhr.send();
             }
 
-            function allowDrop(ev) {
+            function dragCardOver(ev) {
                 ev.preventDefault();
             }
 
-            function drag(ev) {
+            function dragCard(ev) {
                 ev.dataTransfer.setData("text", ev.target.id);
                 fromStatus = ev.target.parentElement.id;
                 var dragBugText = ev.currentTarget.innerText;
@@ -433,7 +433,7 @@
                 bugID = bugID[0];
             }
 
-            function drop(ev) {
+            function dropCard(ev) {
                 ev.preventDefault();
 //                var data = ev.dataTransfer.getData("text");
 //                ev.target.appendChild(document.getElementById(data));
