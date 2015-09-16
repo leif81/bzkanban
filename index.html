@@ -340,7 +340,11 @@
                         sessionStorage.userID = response.id;
                         sessionStorage.userToken = response.token;
                         getName();
-                        loadBoard();
+                        if (getURLParameter('product') != null) {
+                            loadMilestonesList();
+                            loadBoard();
+                        }
+                        hideLoginForm();
                     }
                 });
             }
@@ -353,6 +357,11 @@
                 var elem = document.getElementById("loginForm");
                 elem.style.display = "inline-block";
                 hideSignInButton();
+            }
+
+            function hideLoginForm() {
+                var elem = document.getElementById("loginForm");
+                elem.style.display = "none";
             }
 
 
