@@ -196,8 +196,10 @@
             function addBoardColumn(status) {
                 var div = document.createElement('div');
                 div.id = status;
-                div.setAttribute('ondragover', 'allowDrop(event)');
-                div.setAttribute('ondrop', 'drop(event)');
+                if (isLoggedIn()) {
+                    div.setAttribute('ondragover', 'allowDrop(event)');
+                    div.setAttribute('ondrop', 'drop(event)');
+                }
                 document.getElementById("board").appendChild(div);
 
                 title = document.createElement('div');
@@ -219,9 +221,13 @@
 
                 card.appendChild(summary);
                 card.appendChild(meta);
+
+                if (isLoggedIn()) {
+                    card.draggable = "true";
+                    card.setAttribute('ondragstart', 'drag(event)');
+                }
+
                 document.getElementById(bug.status).appendChild(card);
-                card.draggable = "true";
-                card.setAttribute('ondragstart', 'drag(event)');
             }
 
             function clearBoard() {
@@ -240,7 +246,7 @@
                 bzProductMilestone = getURLParameter('milestone');
                 bzAssignedTo = getURLParameter('assignee');
 
-                if (sessionStorage.userToken != null) {
+                if (isLoggedIn()) {
                     getName();
                 }
 
@@ -361,6 +367,10 @@
                         getName();
                     }
                 });
+            }
+
+            function isLoggedIn() {
+                return sessionStorage.userToken != "";
             }
 
             function writeBug(stat) {
