@@ -148,8 +148,6 @@
             var bzOrder = "priority";
             var bzURL = "http://bugzilla.ddk.armysimulation.mil.ca";
             var userFullName = "";
-            var fromStatus = "";
-            var bugID = "";
             var bzProduct = "";
             var bzProductMilestone = "";
 
@@ -363,12 +361,12 @@
                 document.getElementById("btnSignIn").style.display = "none";
             }
 
-            function writeBug(stat) {
+            function writeBug(bugID, fromStatus, targetStatus) {
                 var urlAppend = "";
                 // Check bug state matrix
                 // Hardcoded for now, query GET /rest/field/bug/(id)
                 // return.values.can_change_to
-                switch (stat) {
+                switch (targetStatus) {
                     case fromStatus:
                         // Changing to same status, do nothing
                         return;
@@ -416,7 +414,7 @@
                     }
                 }
                 // TODO: maybe check if bugID != number
-                xhr.open("PUT", bzURL + "/rest/bug/" + bugID + "?status=" + stat + urlAppend + "&token=" + sessionStorage.userToken);
+                xhr.open("PUT", bzURL + "/rest/bug/" + bugID + "?status=" + targetStatus + urlAppend + "&token=" + sessionStorage.userToken);
                 xhr.send();
             }
 
@@ -425,21 +423,25 @@
             }
 
             function dragCard(ev) {
-                ev.dataTransfer.setData("text", ev.target.id);
-                fromStatus = ev.target.parentElement.id;
+                var fromStatus = ev.target.parentElement.id;
+
                 var dragBugText = ev.currentTarget.innerText;
                 var re = /[0-9]+/;
-                bugID = re.exec(dragBugText);  
+                var bugID = re.exec(dragBugText);
                 bugID = bugID[0];
+
+                var bugData = {"id": bugID, "status": fromStatus};
+                ev.dataTransfer.setData("text", JSON.stringify(bugData));
             }
 
             function dropCard(ev) {
                 ev.preventDefault();
-//                var data = ev.dataTransfer.getData("text");
-//                ev.target.appendChild(document.getElementById(data));
-                var target = ev.currentTarget;
-                var targetColumn = target.id;
-                writeBug(targetColumn);
+
+                var bugData = JSON.parse(ev.dataTransfer.getData("text"));
+
+                var targetStatus = ev.currentTarget.id;
+
+                writeBug(bugData.id, bugData.status, targetStatus);
             }
 
             // Register event handlers
