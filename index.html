@@ -82,41 +82,17 @@
             #textSiteURL {
                 display: none;
             }
-            form {
+            #queryForm {
                 display: inline-block;
             }
-            #modal_wrapper.overlay:before {
-                content: " ";
-                width: 100%;
-                height: 100%;
-                position: fixed;
-                z-index: 100;
-                top: 0;
-                left: 0;
-                background: #000;
-                background: rgba(0,0,0,0.7);
-            }
-            #modal_window {
+            #loginForm {
                 display: none;
-                z-index: 200;
-                position: fixed;
-                left: 50%;
-                top: 50%;
-                width: 360px;
-                padding: 10px 20px;
-                background: #fff;
-                border: 5px solid #999;
-                border-radius: 10px;
-                box-shadow: 0 0 10px rgba(0,0,0,0.5);
-            }
-            #modal_wrapper.overlay #modal_window {
-                display: block;
             }
         </style>
     </head>
     <body>
         <div>
-            <form action="index.html" method="get">
+            <form id="queryForm" action="index.html" method="get">
                 <fieldset>
                     <legend>Query</legend>
                     <span>
@@ -137,33 +113,32 @@
                     <span>
                         <input type="text" id="textSiteURL" name="site"></input>
                     </span>
-                    <span>
-                        <button type="submit" id="btnSubmit">Submit</button>
-                    </span>
+                    <button type="submit" id="btnSubmit">Submit</button>
                     <span id="spinner"></span>
-                    <span id="whoami"></span>
+                </fieldset>
+            </form>
+            <form id="loginForm" method="POST" action="#" accept-charset="UTF-8">
+                <fieldset>
+                    <legend>Login</legend>
+                    <span>
+                        <label for="textUserName">Username</label>
+                        <input type="text" required id="textUsername" name="username" value="">
+                    </span>
+                    <span>
+                        <label for="textPassword" >Password</label>
+                        <input type="password" required id="textPassword" name="password" value="">
+                    </span>
+                    <input type="submit" name="btnAuthSubmit" value="Send">
                 </fieldset>
             </form>
             <span id="actions">
                 <button id="btnCreate">Create Bug</button>
-                <button id="modal_open">Sign In</button>
+                <span id="whoami"></span>
+                <button id="btnSignIn">Sign In</button>
             </span>
         </div>
         <div id="board">
         </div>
-        <div id="modal_wrapper">
-            <div id="modal_window">
-                <div style="text-align: right;"><a id="modal_close" href="#">close <b>X</b></a></div>
-                <p>Please enter your Bugzilla credentials</p>
-                <form id="modal_feedback" method="POST" action="#" accept-charset="UTF-8">
-                    <p><label>Username<br>
-                    <input type="text" autofocus required size="48" id="textUsername" name="username" value=""></label></p>
-                    <p><label>Password<br>
-                    <input type="password" required size="48" id="textPassword" name="password" value=""></label></p>
-                    <p><input type="submit" name="btnAuthSubmit" value="Send"></p>
-                </form>
-            </div> <!-- #modal_window -->
-        </div> <!-- #modal_wrapper -->
     </body>
 
         <script type="text/javascript">
@@ -262,6 +237,12 @@
                 document.getElementById("textMilestone").value = bzProductMilestone;
                 document.getElementById("textAssignee").value = bzAssignedTo
 
+                if (!isLoggedIn()) {
+                    showLoginForm();
+                } else {
+                    hideSignInButton();
+                }
+
                 loadProductsList();
                 if (bzProduct != null) {
                     loadMilestonesList();
@@ -314,8 +295,6 @@
                 doGET("/rest/user/" + sessionStorage.userID + "?token=" + sessionStorage.userToken, function(response) {
                     userFullName = response.users[0].real_name;
                     if (userFullName != null) {
-                        document.getElementById("modal_open").style.display = 'none';
-                        document.getElementById("modal_close").click();
                         document.getElementById("whoami").textContent = userFullName;
                     }
                 });
@@ -371,6 +350,17 @@
 
             function isLoggedIn() {
                 return sessionStorage.userToken != "";
+            }
+
+            function showLoginForm() {
+                var elem = document.getElementById("loginForm");
+                elem.style.display = "inline-block";
+                hideSignInButton();
+            }
+
+
+            function hideSignInButton() {
+                document.getElementById("btnSignIn").style.display = "none";
             }
 
             function writeBug(stat) {
@@ -464,49 +454,9 @@
                 window.open(bzURL + "/enter_bug.cgi?product=" + product);
                 });
 
-            // Original JavaScript code by Chirp Internet: www.chirp.com.au
-            // Please acknowledge use of this code by including this header.
-            document.getElementById("modal_feedback").addEventListener("submit", function(e) {
-                var form = this;
-                e.preventDefault();
-                doAuth(document.getElementById("textUsername").value, document.getElementById("textPassword").value);
-                }, false);
-
-            document.addEventListener("DOMContentLoaded", function() {
-            	var modalWrapper = document.getElementById("modal_wrapper");
-            	var modalWindow  = document.getElementById("modal_window");
-
-            	var openModal = function(e)
-            	{
-            		modalWrapper.className = "overlay";
-            		modalWindow.style.marginTop = (-modalWindow.offsetHeight)/2 + "px";
-            		modalWindow.style.marginLeft = (-modalWindow.offsetWidth)/2 + "px";
-            		e.preventDefault();
-            	};
-
-                var closeModal = function(e)
-                {
-                    modalWrapper.className = "";
-                    e.preventDefault();
-                };
-
-                var clickHandler = function(e) {
-                    if(e.target.tagName == "DIV") {
-                        if(e.target.id != "modal_window") closeModal(e);
-                    }
-                };
-
-                var keyHandler = function(e) {
-                    if(e.keyCode == 27) closeModal(e);
-                };
-
-                document.getElementById("modal_open").addEventListener("click", openModal, false);
-                document.getElementById("modal_close").addEventListener("click", closeModal, false);
-                document.addEventListener("click", clickHandler, false);
-                document.addEventListener("keydown", keyHandler, false);
-                }, false);
-            ////
-
+            document.getElementById("btnSignIn").addEventListener("click", function() {
+                showLoginForm();
+                });
         </script>
     </body>
 </html>
