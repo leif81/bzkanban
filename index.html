@@ -340,6 +340,7 @@
                         sessionStorage.userID = response.id;
                         sessionStorage.userToken = response.token;
                         getName();
+                        loadBoard();
                     }
                 });
             }
@@ -461,7 +462,6 @@
             document.getElementById("btnAuthSubmit").addEventListener("click", function() {
                 var user = document.getElementById("textUsername").value;
                 var password = document.getElementById("textPassword").value;
-                loadParams();
                 doAuth(user, password);
                 });
 
