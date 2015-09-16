@@ -412,12 +412,13 @@
                             return;
                         } else {
                             loadBoard();
-                    }
+                        }
                     }
                 }
                 // TODO: maybe check if bugID != number
                 xhr.open("PUT", bzURL + "/rest/bug/" + bugID + "?status=" + stat + urlAppend + "&token=" + sessionStorage.userToken);
-                xhr.send();            }
+                xhr.send();
+            }
 
             function allowDrop(ev) {
                 ev.preventDefault();
