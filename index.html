@@ -419,12 +419,15 @@
             }
 
             function dragCard(ev) {
+                var fromStatus = ev.target.parentElement.id;
+
                 var cols = document.getElementsByClassName("board-column");
                 for (var i = 0; i < cols.length; i++) {
-                    cols[i].classList.add("drag-card");
+                    // highlight all target columns for dropping card
+                    if (cols[i].id != fromStatus) {
+                        cols[i].classList.add("drag-card");
+                    }
                 }
-
-                var fromStatus = ev.target.parentElement.id;
 
                 var dragBugText = ev.currentTarget.innerText;
                 var re = /[0-9]+/;
