@@ -158,8 +158,8 @@
                 div.className = "board-column";
                 div.id = status;
                 if (isLoggedIn()) {
-                    div.setAttribute('ondragover', 'dragCardOver(event)');
-                    div.setAttribute('ondrop', 'dropCard(event)');
+                    div.addEventListener('dragover', dragCardOver);
+                    div.addEventListener('drop', dropCard);
                 }
                 document.getElementById("board").appendChild(div);
 
@@ -185,7 +185,7 @@
 
                 if (isLoggedIn()) {
                     card.draggable = "true";
-                    card.setAttribute('ondragstart', 'dragCard(event)');
+                    card.addEventListener('dragstart', dragCard);
                 }
 
                 document.getElementById(bug.status).appendChild(card);
