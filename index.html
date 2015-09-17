@@ -20,6 +20,13 @@
                 text-align: center;
                 font-weight: bold;
             }
+            .board-column {
+            }
+            .board-column.drag-card {
+                outline-width: 2px;
+                outline-style: dashed;
+                outline-color: lightgrey;
+            }
             .card {
                 background-color: white;
                 border-width: 1px;
@@ -53,26 +60,6 @@
                 border-left-width: 4px;
                 border-left-style: solid;
             }
-            #UNCONFIRMED {
-                border-style: solid;
-                border-width: 1;
-	        }	
-            #CONFIRMED {
-                border-style: solid;
-                border-width: 1;
-	        }	
-            #IN_PROGRESS {
-                border-style: solid;
-                border-width: 1;
-	        }	
-            #RESOLVED {
-                border-style: solid;
-                border-width: 1;
-	        }	
-            #VERIFIED {
-                border-style: solid;
-                border-width: 1;
-	        }	
             fieldset {
                 border-width: 1;
                 border-style: solid;
@@ -168,6 +155,7 @@
 
             function addBoardColumn(status) {
                 var div = document.createElement('div');
+                div.className = "board-column";
                 div.id = status;
                 if (isLoggedIn()) {
                     div.setAttribute('ondragover', 'dragCardOver(event)');
@@ -431,6 +419,11 @@
             }
 
             function dragCard(ev) {
+                var cols = document.getElementsByClassName("board-column");
+                for (var i = 0; i < cols.length; i++) {
+                    cols[i].classList.add("drag-card");
+                }
+
                 var fromStatus = ev.target.parentElement.id;
 
                 var dragBugText = ev.currentTarget.innerText;
@@ -443,6 +436,11 @@
             }
 
             function dropCard(ev) {
+                var cols = document.getElementsByClassName("board-column");
+                for (var i = 0; i < cols.length; i++) {
+                    cols[i].classList.remove("drag-card");
+                }
+
                 ev.preventDefault();
 
                 var bugData = JSON.parse(ev.dataTransfer.getData("text"));
