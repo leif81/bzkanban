@@ -297,7 +297,11 @@
                             return;
                         } else {
                             var obj = JSON.parse(response);
-                            return callback(obj);
+                            if (obj.error != null) {
+                                alert(obj.message);
+                            } else {
+                                return callback(obj);
+                            }
                         }
                     }
                 }
