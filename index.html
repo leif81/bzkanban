@@ -19,6 +19,7 @@
             .board-column-title {
                 text-align: center;
                 font-weight: bold;
+                align-items: center;
             }
             .board-column {
             }
@@ -74,6 +75,17 @@
             }
             #loginForm {
                 display: none;
+            }
+            .resolutions {
+                width: 100%;
+                height: 5%;
+                background: green;
+                color: white;
+                text-Align: center;
+                vertical-Align: middle;
+                border: thin solid black;
+                margin: auto;
+                margin-Top: 10px;
             }
         </style>
     </head>
@@ -137,6 +149,7 @@
             var userFullName = "";
             var bzProduct = "";
             var bzProductMilestone = "";
+            var bzResolutions = [];
 
             window.onload = loadParams;
 
@@ -364,21 +377,18 @@
                 document.getElementById("btnSignIn").style.display = "none";
             }
 
-            function writeBug(bugID, fromStatus, targetStatus) {
+            function writeBug(bugID, fromStatus, targetStatus, bugResolution) {
                 var urlAppend = "";
-                // Check bug state matrix
-                // Hardcoded for now, query GET /rest/field/bug/(id)
-                // return.values.can_change_to
                 switch (targetStatus) {
                     case fromStatus:
                         // Changing to same status, do nothing
+                        removeResolutions(document.getElementById("RESOLVED"));
                         return;
                         break;
                     case "RESOLVED":
                     case "VERIFIED":
                         if (fromStatus == "CONFIRMED" ||  fromStatus == "IN_PROGRESS") {
                             // We need to set a resolution to be a valid bug change
-                            var bugResolution = "FIXED"; // popup box with valid resolutions
                             var bugComment = ""; // previous box with comment ability
                             if (bugComment != "") {
                                 urlAppend = "&resolution=" + bugResolution + "&comment=" + bugComment;
@@ -398,7 +408,6 @@
                             }
                         }
                         break;
-
                 }
 
                 // Now try the bug
@@ -409,6 +418,9 @@
                         var response = xhr.responseText;
                         var obj = JSON.parse(response);
                         if (obj.code == '410') {  // Requires us to sign in to write changes
+                            alert(obj.message);
+                            return;
+                        } else if (obj.code == '123') {
                             alert(obj.message);
                             return;
                         } else {
@@ -435,6 +447,7 @@
             }
 
             function dragCard(ev) {
+
                 var fromStatus = ev.target.parentElement.id;
 
                 // Disable pointer-events for all other cards so that we
@@ -453,6 +466,8 @@
 
                 var bugData = {"id": bugID, "status": fromStatus};
                 ev.dataTransfer.setData("text", JSON.stringify(bugData));
+
+                getResolutions();
             }
 
             function dropCard(ev) {
@@ -469,8 +484,54 @@
                 var bugData = JSON.parse(ev.dataTransfer.getData("text"));
 
                 var targetStatus = ev.currentTarget.id;
+                var targetResolution = ev.target.id;
 
-                writeBug(bugData.id, bugData.status, targetStatus);
+                writeBug(bugData.id, bugData.status, targetStatus, targetResolution);
+            }
+
+            function getResolutions() {
+                doGET("/rest/field/bug/resolution", function(response) {
+                    var arrayResolutions = response.fields;
+                    for (var i=0;i<arrayResolutions[0].values.length;i++) {
+                        bzResolutions[i] = arrayResolutions[0].values[i].name;
+                    }
+                    insertResolutions(document.getElementById("RESOLVED"));
+                });
+            }
+
+            function insertResolutions(elem) {
+                // Add our resolution boxes
+                var resolutionCount = bzResolutions.length;
+                for (var i=(resolutionCount - 1);i>0;i--) {
+                    var box = document.createElement("DIV");
+                    box.className = "resolutions";
+                    box.innerHTML += bzResolutions[i];
+                    box.id = bzResolutions[i];
+                    elem.insertBefore(box, elem.childNodes[1]);
+                }
+
+                // Render the new column
+                // Hide original
+                var childrenCount = elem.children.length;
+                for (var i=resolutionCount;i<childrenCount;i++) {
+                    elem.children[i].hidden = true;
+                }
+
+            }
+
+            function removeResolutions(elem) {
+                var resolutionCount = bzResolutions.length;
+                // Render the new column
+                // Remove Resolutions
+                for (var i=1;i<resolutionCount;i++) {
+                    elem.removeChild(elem.childNodes[1]);
+                }
+
+                // Restore cards
+                var childrenCount = elem.children.length;
+                for (var i=1;i<childrenCount;i++) {
+                    elem.children[i].hidden = false;
+                }
             }
 
             // Register event handlers
