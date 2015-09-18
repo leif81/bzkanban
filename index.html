@@ -76,6 +76,17 @@
             #loginForm {
                 display: none;
             }
+            .resolutions {
+                width: 100%;
+                height: 5%;
+                background: green;
+                color: white;
+                text-Align: center;
+                vertical-Align: middle;
+                border: thin solid black;
+                margin: auto;
+                margin-Top: 10px;
+            }
         </style>
     </head>
     <body>
@@ -397,7 +408,6 @@
                             }
                         }
                         break;
-
                 }
 
                 // Now try the bug
@@ -494,15 +504,7 @@
                 var resolutionCount = bzResolutions.length;
                 for (var i=(resolutionCount - 1);i>0;i--) {
                     var box = document.createElement("DIV");
-                    box.style.width = "100%";
-                    box.style.height = "5%";
-                    box.style.background = "green";
-                    box.style.color = "white";
-                    box.style.textAlign = "center";
-                    box.style.verticalAlign = "middle";
-                    box.style.border = "thin solid black";
-                    box.style.margin = "auto";
-                    box.style.marginTop = "10px";
+                    box.className = "resolutions";
                     box.innerHTML += bzResolutions[i];
                     box.id = bzResolutions[i];
                     elem.insertBefore(box, elem.childNodes[1]);
