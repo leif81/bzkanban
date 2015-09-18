@@ -410,6 +410,9 @@
                         if (obj.code == '410') {  // Requires us to sign in to write changes
                             alert(obj.message);
                             return;
+                        } else if (obj.code == '123') {
+                            alert(obj.message);
+                            return;
                         } else {
                             loadBoard();
                         }
