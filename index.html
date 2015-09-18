@@ -160,6 +160,8 @@
                 if (isLoggedIn()) {
                     div.addEventListener('dragover', dragCardOver);
                     div.addEventListener('drop', dropCard);
+                    div.addEventListener('dragenter', dragCardEnter);
+                    div.addEventListener('dragleave', dragCardLeave);
                 }
                 document.getElementById("board").appendChild(div);
 
@@ -172,6 +174,7 @@
             function addCard(bug) {
                 var card = document.createElement('div');
                 card.className = bug.severity + " " + bug.priority +" " + "card";
+                card.id = "card-" + bug.id;
 
                 var summary = document.createElement('div');
                 summary.innerHTML = "<a href='" + bzURL + "/show_bug.cgi?id=" + bug.id + "'>#" + bug.id + "</a> " + bug.summary;
@@ -418,14 +421,24 @@
                 ev.preventDefault();
             }
 
+            function dragCardEnter(ev) {
+                ev.preventDefault();
+                ev.currentTarget.classList.add("drag-card");
+            }
+
+            function dragCardLeave(ev) {
+                ev.currentTarget.classList.remove("drag-card");
+            }
+
             function dragCard(ev) {
                 var fromStatus = ev.target.parentElement.id;
 
-                var cols = document.getElementsByClassName("board-column");
-                for (var i = 0; i < cols.length; i++) {
-                    // highlight all target columns for dropping card
-                    if (cols[i].id != fromStatus) {
-                        cols[i].classList.add("drag-card");
+                // Disable pointer-events for all other cards so that we
+                // can reliably detect when a card enters and leaves a column.
+                var cards = document.getElementsByClassName("card");
+                for (var i = 0; i < cards.length; i++) {
+                    if (cards[i].id != ev.currentTarget.id) {
+                        cards[i].style.pointerEvents = "none";
                     }
                 }
 
@@ -439,10 +452,13 @@
             }
 
             function dropCard(ev) {
-                var cols = document.getElementsByClassName("board-column");
-                for (var i = 0; i < cols.length; i++) {
-                    cols[i].classList.remove("drag-card");
+                // Re-enable pointer events for all cards.
+                var cards = document.getElementsByClassName("card");
+                for (var i = 0; i < cards.length; i++) {
+                    cards[i].style.pointerEvents = "auto";
                 }
+
+                ev.currentTarget.classList.remove("drag-card");
 
                 ev.preventDefault();
 
