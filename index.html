@@ -423,9 +423,14 @@
                         var obj = JSON.parse(response);
                         if (obj.code == '410') {  // Requires us to sign in to write changes
                             alert(obj.message);
+                            removeResolutions(document.getElementById("RESOLVED"));
+                            toggleCards(document.getElementById("VERIFIED"), 1, false);
                             return;
                         } else if (obj.code == '123') {
                             alert(obj.message);
+                            removeResolutions(document.getElementById("RESOLVED"));
+                            toggleCards(document.getElementById("VERIFIED"), 1, false);
+                            return;
                         } else if (obj.code == '404' || bugResolution == targetStatus) {
                             alert(obj.message);
                             removeResolutions(document.getElementById("RESOLVED"));
