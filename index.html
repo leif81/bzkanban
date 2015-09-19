@@ -426,6 +426,10 @@
                             return;
                         } else if (obj.code == '123') {
                             alert(obj.message);
+                        } else if (obj.code == '404' || bugResolution == targetStatus) {
+                            alert(obj.message);
+                            removeResolutions(document.getElementById("RESOLVED"));
+                            toggleCards(document.getElementById("VERIFIED"), 1, false);
                             return;
                         } else {
                             loadBoard();
