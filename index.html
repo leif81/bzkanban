@@ -383,6 +383,7 @@
                     case fromStatus:
                         // Changing to same status, do nothing
                         removeResolutions(document.getElementById("RESOLVED"));
+                        toggleCards(document.getElementById("VERIFIED"), 1, false);
                         return;
                         break;
                     case "RESOLVED":
@@ -496,6 +497,7 @@
                         bzResolutions[i] = arrayResolutions[0].values[i].name;
                     }
                     insertResolutions(document.getElementById("RESOLVED"));
+                    toggleCards(document.getElementById("VERIFIED"), 1, true);
                 });
             }
 
