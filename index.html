@@ -516,14 +516,13 @@
                 }
 
                 // Hide original cards
-                toggleCards(elem, resolutionCount, true);
+                toggleCards(elem, true);
             }
 
-            function toggleCards(elem, startIndex, state) {
-                // Hide cards
-                var childrenCount = elem.children.length;
-                for (var i=startIndex;i<childrenCount;i++) {
-                    elem.children[i].hidden = state;
+            function toggleCards(elem, state) {
+                var cards = elem.getElementsByClassName("card");
+                for (var i=0;i<cards.length;i++) {
+                    cards[i].hidden = state;
                 }
             }
 
@@ -534,7 +533,7 @@
                 for (var i=1;i<resolutionCount;i++) {
                     elem.removeChild(elem.childNodes[1]);
                 }
-                toggleCards(elem, 1, false);
+                toggleCards(elem, false);
             }
 
             // Register event handlers
