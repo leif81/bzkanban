@@ -442,7 +442,11 @@
 
             function dragCardEnter(ev) {
                 ev.preventDefault();
-                ev.currentTarget.classList.add("drag-card");
+
+                var bugData = JSON.parse(ev.dataTransfer.getData("text"));
+                if (bugData.status != ev.currentTarget.id) {
+                    ev.currentTarget.classList.add("drag-card");
+                }
             }
 
             function dragCardLeave(ev) {
