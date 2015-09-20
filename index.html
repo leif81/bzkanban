@@ -400,7 +400,6 @@
                     case fromStatus:
                         // Changing to same status, do nothing
                         removeResolutions(document.getElementById("RESOLVED"));
-                        toggleCards(document.getElementById("VERIFIED"), 1, false);
                         return;
                         break;
                     case "CONFIRMED":
@@ -425,7 +424,6 @@
                         if (obj.error != null) {
                             alert(obj.message);
                             removeResolutions(document.getElementById("RESOLVED"));
-                            toggleCards(document.getElementById("VERIFIED"), 1, false);
                             return;
                         } else {
                             loadBoard();
