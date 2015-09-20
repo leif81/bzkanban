@@ -240,6 +240,7 @@
 
                 if (isLoggedIn()) {
                     hideSignInButton();
+                    getResolutions();
                 }
 
                 loadProductsList();
@@ -474,7 +475,7 @@
                 var bugData = {"id": bugID, "status": fromStatus};
                 ev.dataTransfer.setData("text", JSON.stringify(bugData));
 
-                getResolutions();
+                insertResolutions(document.getElementById("RESOLVED"));
             }
 
             function dropCard(ev) {
@@ -502,7 +503,6 @@
                     for (var i=0;i<arrayResolutions[0].values.length;i++) {
                         bzResolutions[i] = arrayResolutions[0].values[i].name;
                     }
-                    insertResolutions(document.getElementById("RESOLVED"));
                 });
             }
 
