@@ -380,29 +380,34 @@
             function writeBug(bugID, fromStatus, targetStatus, bugResolution) {
                 var urlAppend = "";
                 switch (targetStatus) {
-                    case fromStatus:
-                        // Changing to same status, do nothing
-                        removeResolutions(document.getElementById("RESOLVED"));
-                        return;
-                        break;
                     case "RESOLVED":
                     case "VERIFIED":
-                        if (fromStatus == "CONFIRMED" ||  fromStatus == "IN_PROGRESS") {
-                            // We need to set a resolution to be a valid bug change
-                            var bugComment = ""; // previous box with comment ability
+                        if (targetStatus == "VERIFIED") {
+                            // Assume resolution is valid from RESOLVED state
+                            doGET("/rest/bug/" + bugID, function(response) {
+                                bugResolution = response.bugs[0].resolution;
+                            });
+                            // else is set to board-column title (invalid, throw error, do nothing)
+                        } else {
+                            var bugComment = ""; // TODO: Comment box popup
                             if (bugComment != "") {
                                 urlAppend = "&resolution=" + bugResolution + "&comment=" + bugComment;
                             } else {
                                 urlAppend = "&resolution=" + bugResolution;
                             }
-				
                         }
+                        break;
+                    case fromStatus:
+                        // Changing to same status, do nothing
+                        removeResolutions(document.getElementById("RESOLVED"));
+                        toggleCards(document.getElementById("VERIFIED"), 1, false);
+                        return;
                         break;
                     case "CONFIRMED":
                     case "IN_PROGRESS":
                         if (fromStatus == "RESOLVED" || fromStatus == "VERIFIED") {
                             // No need to set resolution to blank, automatically happens
-                            var bugComment = ""; // Still ask for a comment
+                            var bugComment = ""; // TODO: Comment box popup
                             if (bugComment != "") {
                                 urlAppend = "&comment=" + bugComment;
                             }
@@ -417,11 +422,10 @@
                     if (xhr.readyState == XMLHttpRequest.DONE) {
                         var response = xhr.responseText;
                         var obj = JSON.parse(response);
-                        if (obj.code == '410') {  // Requires us to sign in to write changes
+                        if (obj.error != null) {
                             alert(obj.message);
-                            return;
-                        } else if (obj.code == '123') {
-                            alert(obj.message);
+                            removeResolutions(document.getElementById("RESOLVED"));
+                            toggleCards(document.getElementById("VERIFIED"), 1, false);
                             return;
                         } else {
                             loadBoard();
@@ -496,6 +500,7 @@
                         bzResolutions[i] = arrayResolutions[0].values[i].name;
                     }
                     insertResolutions(document.getElementById("RESOLVED"));
+                    toggleCards(document.getElementById("VERIFIED"), 1, true);
                 });
             }
 
@@ -510,13 +515,16 @@
                     elem.insertBefore(box, elem.childNodes[1]);
                 }
 
-                // Render the new column
-                // Hide original
-                var childrenCount = elem.children.length;
-                for (var i=resolutionCount;i<childrenCount;i++) {
-                    elem.children[i].hidden = true;
-                }
+                // Hide original cards
+                toggleCards(elem, resolutionCount, true);
+            }
 
+            function toggleCards(elem, startIndex, state) {
+                // Hide cards
+                var childrenCount = elem.children.length;
+                for (var i=startIndex;i<childrenCount;i++) {
+                    elem.children[i].hidden = state;
+                }
             }
 
             function removeResolutions(elem) {
@@ -526,12 +534,7 @@
                 for (var i=1;i<resolutionCount;i++) {
                     elem.removeChild(elem.childNodes[1]);
                 }
-
-                // Restore cards
-                var childrenCount = elem.children.length;
-                for (var i=1;i<childrenCount;i++) {
-                    elem.children[i].hidden = false;
-                }
+                toggleCards(elem, 1, false);
             }
 
             // Register event handlers
