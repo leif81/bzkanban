@@ -380,33 +380,34 @@
             function writeBug(bugID, fromStatus, targetStatus, bugResolution) {
                 var urlAppend = "";
                 switch (targetStatus) {
+                    case "RESOLVED":
+                    case "VERIFIED":
+                        if (targetStatus == "VERIFIED") {
+                            // Assume resolution is valid from RESOLVED state
+                            doGET("/rest/bug/" + bugID, function(response) {
+                                bugResolution = response.bugs[0].resolution;
+                            });
+                            // else is set to board-column title (invalid, throw error, do nothing)
+                        } else {
+                            var bugComment = ""; // TODO: Comment box popup
+                            if (bugComment != "") {
+                                urlAppend = "&resolution=" + bugResolution + "&comment=" + bugComment;
+                            } else {
+                                urlAppend = "&resolution=" + bugResolution;
+                            }
+                        }
+                        break;
                     case fromStatus:
                         // Changing to same status, do nothing
                         removeResolutions(document.getElementById("RESOLVED"));
                         toggleCards(document.getElementById("VERIFIED"), 1, false);
                         return;
                         break;
-                    case "RESOLVED":
-                    case "VERIFIED":
-                        if (fromStatus == "CONFIRMED" ||  fromStatus == "IN_PROGRESS") {
-                            var bugComment = ""; // previous box with comment ability
-                            if (bugComment != "") {
-                                urlAppend = "&resolution=" + bugResolution + "&comment=" + bugComment;
-                            } else {
-                                urlAppend = "&resolution=" + bugResolution;
-                            }
-				
-                        } else if (fromStatus == "RESOLVED") {
-                            doGET("/rest/bug/" + bugID, function(response) {
-                                bugResolution = response.bugs[0].resolution;
-                            });
-                        }
-                        break;
                     case "CONFIRMED":
                     case "IN_PROGRESS":
                         if (fromStatus == "RESOLVED" || fromStatus == "VERIFIED") {
                             // No need to set resolution to blank, automatically happens
-                            var bugComment = ""; // Still ask for a comment
+                            var bugComment = ""; // TODO: Comment box popup
                             if (bugComment != "") {
                                 urlAppend = "&comment=" + bugComment;
                             }
