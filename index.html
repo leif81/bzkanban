@@ -389,7 +389,6 @@
                     case "RESOLVED":
                     case "VERIFIED":
                         if (fromStatus == "CONFIRMED" ||  fromStatus == "IN_PROGRESS") {
-                            // We need to set a resolution to be a valid bug change
                             var bugComment = ""; // previous box with comment ability
                             if (bugComment != "") {
                                 urlAppend = "&resolution=" + bugResolution + "&comment=" + bugComment;
@@ -397,6 +396,10 @@
                                 urlAppend = "&resolution=" + bugResolution;
                             }
 				
+                        } else if (fromStatus == "RESOLVED") {
+                            doGET("/rest/bug/" + bugID, function(response) {
+                                bugResolution = response.bugs[0].resolution;
+                            });
                         }
                         break;
                     case "CONFIRMED":
