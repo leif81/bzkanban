@@ -498,7 +498,7 @@
             function getResolutions() {
                 doGET("/rest/field/bug/resolution", function(response) {
                     var arrayResolutions = response.fields;
-                    for (var i=0;i<arrayResolutions[0].values.length;i++) {
+                    for (var i = 0;  i < arrayResolutions[0].values.length; i++) {
                         bzResolutions[i] = arrayResolutions[0].values[i].name;
                     }
                 });
@@ -507,7 +507,7 @@
             function insertResolutions(elem) {
                 // Add our resolution boxes
                 var resolutionCount = bzResolutions.length;
-                for (var i=(resolutionCount - 1);i>0;i--) {
+                for (var i = (resolutionCount - 1); i > 0; i--) {
                     var box = document.createElement("div");
                     box.className = "resolutions";
                     box.innerHTML += bzResolutions[i];
@@ -521,7 +521,7 @@
 
             function toggleCards(elem, state) {
                 var cards = elem.getElementsByClassName("card");
-                for (var i=0;i<cards.length;i++) {
+                for (var i = 0; i < cards.length; i++) {
                     cards[i].hidden = state;
                 }
             }
@@ -530,7 +530,7 @@
                 var resolutionCount = bzResolutions.length;
                 // Render the new column
                 // Remove Resolutions
-                for (var i=1;i<resolutionCount;i++) {
+                for (var i = 1; i < resolutionCount; i++) {
                     elem.removeChild(elem.childNodes[1]);
                 }
                 toggleCards(elem, false);
