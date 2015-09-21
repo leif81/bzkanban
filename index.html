@@ -223,7 +223,7 @@
                 bzAssignedTo = getURLParameter('assignee');
 
                 if (isLoggedIn()) {
-                    getName();
+                    loadName();
                     hideSignInButton();
                 }
 
@@ -256,7 +256,7 @@
                         bug = bugs[key];
                         addCard(bug);
                     }
-                    getResolutions();
+                    loadResolutions();
                     stopSpinner();
                 });
 
@@ -288,7 +288,7 @@
                 });
             }
 			
-            function getName() {
+            function loadName() {
                 doGET("/rest/user/" + sessionStorage.userID + "?token=" + sessionStorage.userToken, function(response) {
                     userFullName = response.users[0].real_name;
                     if (userFullName != null) {
@@ -344,7 +344,7 @@
                     } else {
                         sessionStorage.userID = response.id;
                         sessionStorage.userToken = response.token;
-                        getName();
+                        loadName();
                         if (bzProduct != null) {
                             loadMilestonesList();
                             loadBoard();
@@ -492,7 +492,7 @@
                 writeBug(bugData.id, bugData.status, targetStatus, targetResolution);
             }
 
-            function getResolutions() {
+            function loadResolutions() {
                 doGET("/rest/field/bug/resolution", function(response) {
                     var arrayResolutions = response.fields;
 
