@@ -379,21 +379,19 @@
                 var urlAppend = "";
                 switch (targetStatus) {
                     case "RESOLVED":
-                    case "VERIFIED":
-                        if (targetStatus == "VERIFIED") {
-                            // Assume resolution is valid from RESOLVED state
-                            doGET("/rest/bug/" + bugID, function(response) {
-                                bugResolution = response.bugs[0].resolution;
-                            });
-                            // else is set to board-column title (invalid, throw error, do nothing)
+                        var bugComment = ""; // TODO: Comment box popup
+                        if (bugComment != "") {
+                            urlAppend = "&resolution=" + bugResolution + "&comment=" + bugComment;
                         } else {
-                            var bugComment = ""; // TODO: Comment box popup
-                            if (bugComment != "") {
-                                urlAppend = "&resolution=" + bugResolution + "&comment=" + bugComment;
-                            } else {
-                                urlAppend = "&resolution=" + bugResolution;
-                            }
+                            urlAppend = "&resolution=" + bugResolution;
                         }
+                        break;
+                    case "VERIFIED":
+                        // Assume resolution is valid from RESOLVED state
+                        doGET("/rest/bug/" + bugID, function(response) {
+                            bugResolution = response.bugs[0].resolution;
+                        });
+                        // else is set to board-column title (invalid, throw error, do nothing)
                         break;
                     case fromStatus:
                         // Changing to same status, do nothing
