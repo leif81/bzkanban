@@ -469,7 +469,10 @@
                 var bugData = {"id": bugID, "status": fromStatus};
                 ev.dataTransfer.setData("text", JSON.stringify(bugData));
 
-                showResolutions(document.getElementById("RESOLVED"));
+                // HACK compensate for race condition that was causing the dragged card to disappear
+                window.setTimeout(function() {
+                    showResolutions(document.getElementById("RESOLVED"));
+                }, 1000);
             }
 
             function dropCard(ev) {
