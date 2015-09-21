@@ -255,7 +255,9 @@
                         bug = bugs[key];
                         addCard(bug);
                     }
-                    loadResolutions();
+                    if (isLoggedIn()) {
+                        loadResolutions();
+                    }
                     stopSpinner();
                 });
 
