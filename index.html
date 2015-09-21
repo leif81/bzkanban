@@ -520,19 +520,19 @@
                 toggleCards(elem, true);
             }
 
-            function toggleCards(elem, state) {
-                var cards = elem.getElementsByClassName("card");
-                for (var i = 0; i < cards.length; i++) {
-                    cards[i].hidden = state;
-                }
-            }
-
             function hideResolutions(elem) {
                 var resolutions = elem.getElementsByClassName("resolutions");
                 for (var i = 0; i < resolutions.length; i++) {
                     resolutions[i].hidden = true;
                 }
                 toggleCards(elem, false);
+            }
+
+            function toggleCards(elem, state) {
+                var cards = elem.getElementsByClassName("card");
+                for (var i = 0; i < cards.length; i++) {
+                    cards[i].hidden = state;
+                }
             }
 
             // Register event handlers
