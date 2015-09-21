@@ -169,6 +169,8 @@
                 div.className = "board-column";
                 div.id = status;
                 if (isLoggedIn()) {
+                    div.addEventListener('drag', dragCardStart);
+                    div.addEventListener('dragend', dragCardEnd);
                     div.addEventListener('dragover', dragCardOver);
                     div.addEventListener('drop', dropCard);
                     div.addEventListener('dragenter', dragCardEnter);
@@ -378,18 +380,19 @@
             function writeBug(bugID, fromStatus, targetStatus, bugResolution) {
                 var urlAppend = "";
                 switch (targetStatus) {
-                    case fromStatus:
-                        // Changing to same status, do nothing
-                        hideResolutions(document.getElementById("RESOLVED"));
-                        return;
-                        break;
                     case "RESOLVED":
+                        // Only column we allow same state changes
                         var bugComment = ""; // TODO: Comment box popup
                         if (bugComment != "") {
                             urlAppend = "&resolution=" + bugResolution + "&comment=" + bugComment;
                         } else {
                             urlAppend = "&resolution=" + bugResolution;
                         }
+                        break;
+                    case fromStatus:
+                        // Changing to same status, do nothing
+                        hideResolutions(document.getElementById("RESOLVED"));
+                        return;
                         break;
                     case "VERIFIED":
                         // Assume resolution is valid from RESOLVED state
@@ -468,11 +471,14 @@
 
                 var bugData = {"id": bugID, "status": fromStatus};
                 ev.dataTransfer.setData("text", JSON.stringify(bugData));
+            }
 
-                // HACK compensate for race condition that was causing the dragged card to disappear
-                window.setTimeout(function() {
-                    showResolutions(document.getElementById("RESOLVED"));
-                }, 1000);
+            function dragCardStart(ev) {
+                showResolutions(document.getElementById("RESOLVED"));
+            }
+
+            function dragCardEnd(ev) {
+                hideResolutions(document.getElementById("RESOLVED"));
             }
 
             function dropCard(ev) {
