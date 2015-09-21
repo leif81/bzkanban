@@ -76,7 +76,7 @@
             #loginForm {
                 display: none;
             }
-            .resolutions {
+            .resolution {
                 width: 100%;
                 height: 5%;
                 background: green;
@@ -224,6 +224,7 @@
 
                 if (isLoggedIn()) {
                     getName();
+                    hideSignInButton();
                 }
 
                 // Allow the Bugzilla site URL to be overriden. Useful for testing.
@@ -237,11 +238,6 @@
                 document.getElementById("textProduct").value = bzProduct;
                 document.getElementById("textMilestone").value = bzProductMilestone;
                 document.getElementById("textAssignee").value = bzAssignedTo
-
-                if (isLoggedIn()) {
-                    hideSignInButton();
-                    getResolutions();
-                }
 
                 loadProductsList();
                 if (bzProduct != null) {
@@ -260,6 +256,7 @@
                         bug = bugs[key];
                         addCard(bug);
                     }
+                    getResolutions();
                     stopSpinner();
                 });
 
@@ -399,7 +396,7 @@
                         break;
                     case fromStatus:
                         // Changing to same status, do nothing
-                        removeResolutions(document.getElementById("RESOLVED"));
+                        hideResolutions(document.getElementById("RESOLVED"));
                         return;
                         break;
                     case "CONFIRMED":
@@ -423,7 +420,7 @@
                         var obj = JSON.parse(response);
                         if (obj.error != null) {
                             alert(obj.message);
-                            removeResolutions(document.getElementById("RESOLVED"));
+                            hideResolutions(document.getElementById("RESOLVED"));
                             return;
                         } else {
                             loadBoard();
@@ -473,7 +470,7 @@
                 var bugData = {"id": bugID, "status": fromStatus};
                 ev.dataTransfer.setData("text", JSON.stringify(bugData));
 
-                insertResolutions(document.getElementById("RESOLVED"));
+                showResolutions(document.getElementById("RESOLVED"));
             }
 
             function dropCard(ev) {
@@ -498,24 +495,28 @@
             function getResolutions() {
                 doGET("/rest/field/bug/resolution", function(response) {
                     var arrayResolutions = response.fields;
+
+                    var resolutions = document.createElement("div");
+                    resolutions.className = "resolutions";
+                    resolutions.hidden = true;
+
                     for (var i = 0;  i < arrayResolutions[0].values.length; i++) {
-                        bzResolutions[i] = arrayResolutions[0].values[i].name;
+                        var box = document.createElement("div");
+                        box.className = "resolution";
+                        box.innerText += arrayResolutions[0].values[i].name;
+                        box.id = arrayResolutions[0].values[i].name;
+                        resolutions.appendChild(box);
                     }
+
+                    document.getElementById("RESOLVED").appendChild(resolutions);
                 });
             }
 
-            function insertResolutions(elem) {
-                // Add our resolution boxes
-                var resolutionCount = bzResolutions.length;
-                for (var i = (resolutionCount - 1); i > 0; i--) {
-                    var box = document.createElement("div");
-                    box.className = "resolutions";
-                    box.innerHTML += bzResolutions[i];
-                    box.id = bzResolutions[i];
-                    elem.insertBefore(box, elem.childNodes[1]);
+            function showResolutions(elem) {
+                var resolutions = elem.getElementsByClassName("resolutions");
+                for (var i = 0; i < resolutions.length; i++) {
+                    resolutions[i].hidden = false;
                 }
-
-                // Hide original cards
                 toggleCards(elem, true);
             }
 
@@ -526,12 +527,10 @@
                 }
             }
 
-            function removeResolutions(elem) {
-                var resolutionCount = bzResolutions.length;
-                // Render the new column
-                // Remove Resolutions
-                for (var i = 1; i < resolutionCount; i++) {
-                    elem.removeChild(elem.childNodes[1]);
+            function hideResolutions(elem) {
+                var resolutions = elem.getElementsByClassName("resolutions");
+                for (var i = 0; i < resolutions.length; i++) {
+                    resolutions[i].hidden = true;
                 }
                 toggleCards(elem, false);
             }
