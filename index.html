@@ -500,11 +500,14 @@
                     resolutions.hidden = true;
 
                     for (var i = 0;  i < arrayResolutions[0].values.length; i++) {
-                        var box = document.createElement("div");
-                        box.className = "resolution";
-                        box.innerText += arrayResolutions[0].values[i].name;
-                        box.id = arrayResolutions[0].values[i].name;
-                        resolutions.appendChild(box);
+                        var resolutionName = arrayResolutions[0].values[i].name;
+                        if (resolutionName != "") {
+                            var box = document.createElement("div");
+                            box.className = "resolution";
+                            box.innerText += resolutionName;
+                            box.id = resolutionName;
+                            resolutions.appendChild(box);
+                        }
                     }
 
                     document.getElementById("RESOLVED").appendChild(resolutions);
