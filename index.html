@@ -162,6 +162,11 @@
                     }
                     loadBugs();
                 });
+                doGET("/rest/product/" + bzProduct, function(response) {
+                    if (!(response.products[0].has_unconfirmed)) {
+                        document.getElementsByClassName("board-column").UNCONFIRMED.hidden = true;
+                    }
+                });
             }
 
             function addBoardColumn(status) {
