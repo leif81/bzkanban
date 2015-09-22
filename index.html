@@ -87,6 +87,9 @@
                 margin: 5px;
                 font-size: small;
             }
+            .fullname {
+                padding: 5px;
+            }
         </style>
     </head>
     <body>
@@ -300,6 +303,7 @@
                 doGET("/rest/user/" + sessionStorage.userID + "?token=" + sessionStorage.userToken, function(response) {
                     userFullName = response.users[0].real_name;
                     if (userFullName != null) {
+                        document.getElementById("whoami").className = "fullname";
                         document.getElementById("whoami").textContent = userFullName;
                     }
                 });
