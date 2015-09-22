@@ -93,6 +93,9 @@
                 background-color: white;
                 margin: 3px;
             }
+            #notification {
+                display: none;
+            }
         </style>
     </head>
     <body>
@@ -140,6 +143,7 @@
                 <button id="btnCreate" style="padding: 5px">Add Bug</button>
                 <span id="whoami"></span>
                 <button id="btnSignIn" style="padding: 5px">Login</button>
+                <i id="notification" class="fa fa-bell"></i>
             </span>
         </div>
         <div id="board">
@@ -154,6 +158,8 @@
             var userFullName = "";
             var bzProduct = "";
             var bzProductMilestone = "";
+            var bzBoardLoadTime = "";
+            var bzRestGetBugsUrl = "";
 
             window.onload = loadParams;
 
@@ -262,7 +268,9 @@
                 bzProduct = document.getElementById('textProduct').value;
                 bzProductMilestone = document.getElementById('textMilestone').value;
                 bzAssignedTo = document.getElementById('textAssignee').value;
-                doGET("/rest/bug?product=" + bzProduct + "&include_fields=summary,status,id,severity,priority,assigned_to&order=" + bzOrder + "&target_milestone=" + bzProductMilestone + "&component=" + bzComponent + "&priority=" + bzPriority + "&assigned_to=" + bzAssignedTo, function(response) {
+                bzBoardLoadTime = new Date().toISOString();
+                bzRestGetBugsUrl = "/rest/bug?product=" + bzProduct + "&include_fields=summary,status,id,severity,priority,assigned_to,last_updated&order=" + bzOrder + "&target_milestone=" + bzProductMilestone + "&component=" + bzComponent + "&priority=" + bzPriority + "&assigned_to=" + bzAssignedTo;
+                doGET(bzRestGetBugsUrl, function(response) {
                     bugs = response.bugs;
                     for (var key in bugs) {
                         bug = bugs[key];
@@ -272,6 +280,7 @@
                         loadResolutions();
                     }
                     stopSpinner();
+                    scheduleCheckForUpdates();
                 });
 
             }
@@ -442,6 +451,21 @@
                 // TODO: maybe check if bugID != number
                 xhr.open("PUT", bzURL + "/rest/bug/" + bugID + "?status=" + targetStatus + urlAppend + "&token=" + sessionStorage.userToken);
                 xhr.send();
+            }
+
+            function scheduleCheckForUpdates() {
+                window.setTimeout(function() {
+                    doGET(bzRestGetBugsUrl + "&last_change_time=" + bzBoardLoadTime, function(response) {
+                        if (response.bugs.length > 0) {
+                            var bell = document.getElementById("notification");
+                            bell.style.display = "inline";
+                            bell.title = response.bugs.length + " bug(s) have been updated externally. Hit refresh!";
+                        }
+
+                        // Repeat.
+                        scheduleCheckForUpdates();
+                    });
+                }, 60000);
             }
 
             function dragCardOver(ev) {
