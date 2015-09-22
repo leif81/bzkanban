@@ -160,12 +160,12 @@
                         status = statuses[key];
                         addBoardColumn(status);
                     }
+                    doGET("/rest/product/" + bzProduct, function(response) {
+                        if (!(response.products[0].has_unconfirmed)) {
+                            document.getElementsByClassName("board-column").UNCONFIRMED.hidden = true;
+                        }
+                    });
                     loadBugs();
-                });
-                doGET("/rest/product/" + bzProduct, function(response) {
-                    if (!(response.products[0].has_unconfirmed)) {
-                        document.getElementsByClassName("board-column").UNCONFIRMED.hidden = true;
-                    }
                 });
             }
 
