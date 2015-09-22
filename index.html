@@ -78,14 +78,20 @@
             }
             .resolution {
                 height: 5%;
-                background: green;
-                color: white;
-                text-align: center;
-                vertical-align: middle;
+                background: darkgray;
+                color: black;
+                text-align: -webkit-center;
                 border: thin solid black;
-                margin: auto;
                 margin-top: 10px;
                 padding: 10px;
+                margin: 5px;
+                font-size: small;
+            }
+            .fullname {
+                padding: 5px;
+                border: 1px solid lightgray;
+                background-color: white;
+                margin: 3px;
             }
         </style>
     </head>
@@ -131,9 +137,9 @@
                 </fieldset>
             </form>
             <span id="actions">
-                <button id="btnCreate">Create Bug</button>
+                <button id="btnCreate" style="padding: 5px">Add Bug</button>
                 <span id="whoami"></span>
-                <button id="btnSignIn">Sign In</button>
+                <button id="btnSignIn" style="padding: 5px">Login</button>
             </span>
         </div>
         <div id="board">
@@ -300,6 +306,7 @@
                 doGET("/rest/user/" + sessionStorage.userID + "?token=" + sessionStorage.userToken, function(response) {
                     userFullName = response.users[0].real_name;
                     if (userFullName != null) {
+                        document.getElementById("whoami").className = "fullname";
                         document.getElementById("whoami").textContent = userFullName;
                     }
                 });
