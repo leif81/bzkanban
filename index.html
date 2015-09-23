@@ -350,6 +350,13 @@
                         } else {
                             var obj = JSON.parse(response);
                             if (obj.error != null) {
+                                switch (obj.code) {
+                                    case 32000:
+                                        // auth token has expired
+                                        sessionStorage.removeItem("userID");
+                                        sessionStorage.removeItem("userToken");
+                                        break;
+                                }
                                 alert(obj.message);
                             } else {
                                 return callback(obj);
