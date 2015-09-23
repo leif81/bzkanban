@@ -21,6 +21,11 @@
                 font-weight: bold;
                 align-items: center;
             }
+            .board-column-card-count {
+                font-size: small;
+                color: grey;
+                margin-left: 10px;
+            }
             .board-column {
             }
             .board-column.drag-card {
@@ -279,6 +284,7 @@
                     if (isLoggedIn()) {
                         loadResolutions();
                     }
+                    setColumnCounts();
                     stopSpinner();
                     scheduleCheckForUpdates();
                 });
@@ -396,6 +402,17 @@
 
             function hideSignInButton() {
                 document.getElementById("btnSignIn").style.display = "none";
+            }
+
+            function setColumnCounts() {
+                var cols = document.getElementsByClassName("board-column");
+                for (var i = 0; i < cols.length; i++) {
+                    var cardCount = document.createElement('span');
+                    cardCount.className = "board-column-card-count";
+                    cardCount.innerText += "(" + cols[i].getElementsByClassName("card").length + ")";
+                    var title = cols[i].firstChild;
+                    title.appendChild(cardCount);
+                }
             }
 
             function writeBug(bugID, fromStatus, targetStatus, bugResolution) {
