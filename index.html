@@ -334,7 +334,7 @@
             function doGET(url, callback) {
                 var xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function() {
-                    if (xhr.readyState == XMLHttpRequest.DONE) {
+                    if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
                         var response = xhr.responseText;
                         if (response == "") {
                             alert("Unable to access Bugzilla REST : " + bzURL);
