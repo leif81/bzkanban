@@ -295,6 +295,9 @@
             function loadProductsList() {
                 doGET("/rest/product?type=enterable&include_fields=name", function(response) {
                     var products = response.products;
+                    products.sort(function(a, b) {
+                        return a.name.localeCompare(b.name);
+                    });
                     for (var key in products) {
                         var product = products[key];
                         var option = document.createElement('option');
