@@ -331,7 +331,15 @@
                 });
             }
 
+            function doPUT(url, callback) {
+                doRequest("PUT", url, callback);
+            }
+
             function doGET(url, callback) {
+                doRequest("GET", url, callback);
+            }
+
+            function doRequest(method, url, callback) {
                 var xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
@@ -349,7 +357,7 @@
                         }
                     }
                 }
-                xhr.open("GET", bzURL + url);
+                xhr.open(method, bzURL + url);
                 xhr.setRequestHeader("Accept", "application/json");
                 xhr.send();
             }
@@ -454,24 +462,10 @@
                         break;
                 }
 
-                // Now try the bug
-                var xhr = new XMLHttpRequest();
-                xhr.onreadystatechange = function() {
-                    //if (xhr.readyState == 4 && xhr.status == 200) {
-                    if (xhr.readyState == XMLHttpRequest.DONE) {
-                        var response = xhr.responseText;
-                        var obj = JSON.parse(response);
-                        if (obj.error != null) {
-                            alert(obj.message);
-                            return;
-                        } else {
-                            loadBoard();
-                        }
-                    }
-                }
                 // TODO: maybe check if bugID != number
-                xhr.open("PUT", bzURL + "/rest/bug/" + bugID + "?status=" + targetStatus + urlAppend + "&token=" + sessionStorage.userToken);
-                xhr.send();
+                doPUT(bzURL + "/rest/bug/" + bugID + "?status=" + targetStatus + urlAppend + "&token=" + sessionStorage.userToken, function() {
+                    loadBoard();
+                });
             }
 
             function scheduleCheckForUpdates() {
