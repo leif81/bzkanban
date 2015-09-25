@@ -285,7 +285,7 @@
                     if (isLoggedIn()) {
                         loadResolutions();
                     }
-                    setColumnCounts();
+                    showColumnCounts();
                     stopSpinner();
                     scheduleCheckForUpdates();
                 });
@@ -416,7 +416,7 @@
                 document.getElementById("btnSignIn").style.display = "none";
             }
 
-            function setColumnCounts() {
+            function showColumnCounts() {
                 var cols = document.getElementsByClassName("board-column");
                 for (var i = 0; i < cols.length; i++) {
                     var cardCount = document.createElement('span');
@@ -616,7 +616,6 @@
                 var password = document.getElementById("textPassword").value;
                 doAuth(user, password);
                 });
-
 
         </script>
     </body>
