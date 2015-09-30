@@ -266,6 +266,9 @@
                 loadProductsList();
                 if (bzProduct != null) {
                     loadMilestonesList();
+                }
+
+                if (bzProduct != null || bzAssignedTo != null) {
                     loadBoard();
                 }
             }
