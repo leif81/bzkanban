@@ -135,12 +135,8 @@
                 <fieldset>
                     <legend>Login</legend>
                     <span>
-                        <label for="textUserName">Username</label>
-                        <input type="text" required id="textUsername" name="username" value="">
-                    </span>
-                    <span>
-                        <label for="textPassword" >Password</label>
-                        <input type="password" required id="textPassword" name="password" value="">
+                        <label for="textUserAPIKey">User API Key</label>
+                        <input type="text" required id="textUserAPIKey" value="">
                     </span>
                     <input type="button" id="btnAuthSubmit" value="Submit">
                 </fieldset>
@@ -325,7 +321,10 @@
             }
 			
             function loadName() {
-                doGET("/rest/user/" + sessionStorage.userID + "?token=" + sessionStorage.userToken, function(response) {
+                // TODO we'll have to wait for the 'whoami' endpoint to go upstream.
+                return;
+
+                doGET("/rest/user/" + sessionStorage.userID + "?api_key=" + sessionStorage.bzUserApiKey, function(response) {
                     userFullName = response.users[0].real_name;
                     if (userFullName != null) {
                         document.getElementById("whoami").className = "fullname";
@@ -353,13 +352,6 @@
                         } else {
                             var obj = JSON.parse(response);
                             if (obj.error != null) {
-                                switch (obj.code) {
-                                    case 32000:
-                                        // auth token has expired
-                                        sessionStorage.removeItem("userID");
-                                        sessionStorage.removeItem("userToken");
-                                        break;
-                                }
                                 alert(obj.message);
                             } else {
                                 return callback(obj);
@@ -387,27 +379,9 @@
                 elem.removeChild(elem.firstChild);
             }
 
-            function doAuth(user, password) {
-                doGET("/rest/login?login=" + user + "&password=" + password, function(response) {
-                    if (response.code == '300') { // Invalid Username or Password, from Bugzilla web service doc
-                        alert(response.message);
-                    } else if (response.code == '301') { // Login Disabled, from Bugzilla web service doc
-                        alert(response.message);
-                    } else {
-                        sessionStorage.userID = response.id;
-                        sessionStorage.userToken = response.token;
-                        loadName();
-                        if (bzProduct != null) {
-                            loadMilestonesList();
-                            loadBoard();
-                        }
-                        hideLoginForm();
-                    }
-                });
-            }
 
             function isLoggedIn() {
-                return sessionStorage.userToken != null;
+                return sessionStorage.bzUserApiKey != null;
             }
 
             function showLoginForm() {
@@ -473,7 +447,7 @@
                 }
 
                 // TODO: maybe check if bugID != number
-                doPUT(bzURL + "/rest/bug/" + bugID + "?status=" + targetStatus + urlAppend + "&token=" + sessionStorage.userToken, function() {
+                doPUT(bzURL + "/rest/bug/" + bugID + "?status=" + targetStatus + urlAppend + "&api_key=" + sessionStorage.bzUserApiKey, function() {
                     loadBoard();
                 });
             }
@@ -622,10 +596,14 @@
                 });
 
             document.getElementById("btnAuthSubmit").addEventListener("click", function() {
-                var user = document.getElementById("textUsername").value;
-                var password = document.getElementById("textPassword").value;
-                doAuth(user, password);
-                });
+                sessionStorage.bzUserApiKey = document.getElementById("textUserAPIKey").value;
+                loadName();
+                if (bzProduct != null) {
+                    loadMilestonesList();
+                    loadBoard();
+                }
+                hideLoginForm();
+            });
 
         </script>
     </body>
