@@ -392,6 +392,7 @@
                     sessionStorage.userID = response.id;
                     sessionStorage.userToken = response.token;
                     loadName();
+                    // Rebuild the board so dnd events are registered.
                     if (bzProduct != null) {
                         loadMilestonesList();
                         loadBoard();
