@@ -349,8 +349,8 @@
                         var response = xhr.responseText;
                         if (response == "") {
                             var msg = "Unable to access Bugzilla REST : " + bzURL;
-                            alert(msg);
                             console.warning(msg);
+                            alert(msg);
                             return;
                         }
 
@@ -367,8 +367,8 @@
                                     sessionStorage.removeItem("userToken");
                                     break;
                             }
-                            alert(obj.message);
                             console.error(obj.message);
+                            alert(obj.message);
                         }
                     }
                 }
