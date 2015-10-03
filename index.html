@@ -349,7 +349,7 @@
                         var response = xhr.responseText;
                         if (response == "") {
                             var msg = "Unable to access Bugzilla REST : " + bzURL;
-                            console.warning(msg);
+                            console.warn(msg);
                             alert(msg);
                             return;
                         }
