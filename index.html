@@ -436,15 +436,14 @@
 
             function writeBug(bugID, fromStatus, targetStatus, bugResolution) {
                 var urlAppend = "";
-                switch (targetStatus) {
-                    case "RESOLVED":
-                        // Only column we allow same state changes
-                        urlAppend = "&resolution=" + bugResolution;
-                        break;
-                    case fromStatus:
-                        // Changing to same status, do nothing
-                        return;
-                        break;
+
+                if (targetStatus == fromStatus) {
+                    // Changing to same status, do nothing
+                    return;
+                }
+
+                if (bugResolution != "") {
+                    urlAppend = "&resolution=" + bugResolution;
                 }
 
                 var bugComment = ""; // TODO: Comment box popup
@@ -534,7 +533,10 @@
                 var bugData = JSON.parse(ev.dataTransfer.getData("text"));
 
                 var targetStatus = ev.currentTarget.id;
-                var targetResolution = ev.target.id;
+                var targetResolution = "";
+                if (ev.target.className == "resolution") {
+                    targetResolution = ev.target.id;
+                }
 
                 writeBug(bugData.id, bugData.status, targetStatus, targetResolution);
             }
