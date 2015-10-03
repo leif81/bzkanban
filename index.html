@@ -470,7 +470,7 @@
                 }
 
                 // TODO: maybe check if bugID != number
-                doPUT(bzURL + "/rest/bug/" + bugID + "?status=" + targetStatus + urlAppend + "&token=" + sessionStorage.userToken, function() {
+                doPUT("/rest/bug/" + bugID + "?status=" + targetStatus + urlAppend + "&token=" + sessionStorage.userToken, function() {
                     loadBoard();
                 });
             }
