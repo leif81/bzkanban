@@ -439,12 +439,7 @@
                 switch (targetStatus) {
                     case "RESOLVED":
                         // Only column we allow same state changes
-                        var bugComment = ""; // TODO: Comment box popup
-                        if (bugComment != "") {
-                            urlAppend = "&resolution=" + bugResolution + "&comment=" + bugComment;
-                        } else {
-                            urlAppend = "&resolution=" + bugResolution;
-                        }
+                        urlAppend = "&resolution=" + bugResolution;
                         break;
                     case fromStatus:
                         // Changing to same status, do nothing
@@ -461,12 +456,13 @@
                     case "IN_PROGRESS":
                         if (fromStatus == "RESOLVED" || fromStatus == "VERIFIED") {
                             // No need to set resolution to blank, automatically happens
-                            var bugComment = ""; // TODO: Comment box popup
-                            if (bugComment != "") {
-                                urlAppend = "&comment=" + bugComment;
-                            }
                         }
                         break;
+                }
+
+                var bugComment = ""; // TODO: Comment box popup
+                if (bugComment != "") {
+                    urlAppend += "&comment=" + bugComment;
                 }
 
                 // TODO: maybe check if bugID != number
