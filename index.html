@@ -389,20 +389,14 @@
 
             function doAuth(user, password) {
                 doGET("/rest/login?login=" + user + "&password=" + password, function(response) {
-                    if (response.code == '300') { // Invalid Username or Password, from Bugzilla web service doc
-                        alert(response.message);
-                    } else if (response.code == '301') { // Login Disabled, from Bugzilla web service doc
-                        alert(response.message);
-                    } else {
-                        sessionStorage.userID = response.id;
-                        sessionStorage.userToken = response.token;
-                        loadName();
-                        if (bzProduct != null) {
-                            loadMilestonesList();
-                            loadBoard();
-                        }
-                        hideLoginForm();
+                    sessionStorage.userID = response.id;
+                    sessionStorage.userToken = response.token;
+                    loadName();
+                    if (bzProduct != null) {
+                        loadMilestonesList();
+                        loadBoard();
                     }
+                    hideLoginForm();
                 });
             }
 
