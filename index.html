@@ -345,28 +345,30 @@
             function doRequest(method, url, callback) {
                 var xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function() {
-                    if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
+                    if (xhr.readyState == XMLHttpRequest.DONE) {
                         var response = xhr.responseText;
                         if (response == "") {
                             var msg = "Unable to access Bugzilla REST : " + bzURL;
                             alert(msg);
                             console.warning(msg);
                             return;
-                        } else {
-                            var obj = JSON.parse(response);
-                            if (obj.error != null) {
-                                switch (obj.code) {
-                                    case 32000:
-                                        // auth token has expired
-                                        sessionStorage.removeItem("userID");
-                                        sessionStorage.removeItem("userToken");
-                                        break;
-                                }
-                                alert(obj.message);
-                                console.error(obj.message);
-                            } else {
-                                return callback(obj);
+                        }
+
+                        var obj = JSON.parse(response);
+                        if (xhr.status == 200) {
+                            return callback(obj);
+                        }
+
+                        if (obj.error != null) {
+                            switch (obj.code) {
+                                case 32000:
+                                    // auth token has expired
+                                    sessionStorage.removeItem("userID");
+                                    sessionStorage.removeItem("userToken");
+                                    break;
                             }
+                            alert(obj.message);
+                            console.error(obj.message);
                         }
                     }
                 }
