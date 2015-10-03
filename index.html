@@ -452,12 +452,6 @@
                         });
                         // else is set to board-column title (invalid, throw error, do nothing)
                         break;
-                    case "CONFIRMED":
-                    case "IN_PROGRESS":
-                        if (fromStatus == "RESOLVED" || fromStatus == "VERIFIED") {
-                            // No need to set resolution to blank, automatically happens
-                        }
-                        break;
                 }
 
                 var bugComment = ""; // TODO: Comment box popup
