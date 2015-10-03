@@ -348,7 +348,9 @@
                     if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
                         var response = xhr.responseText;
                         if (response == "") {
-                            alert("Unable to access Bugzilla REST : " + bzURL);
+                            var msg = "Unable to access Bugzilla REST : " + bzURL;
+                            alert(msg);
+                            console.warning(msg);
                             return;
                         } else {
                             var obj = JSON.parse(response);
@@ -361,6 +363,7 @@
                                         break;
                                 }
                                 alert(obj.message);
+                                console.error(obj.message);
                             } else {
                                 return callback(obj);
                             }
