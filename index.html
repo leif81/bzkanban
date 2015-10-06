@@ -172,13 +172,13 @@
             function loadBoard() {
                 clearBoard();
                 startSpinner();
-                doGET("/rest/field/bug/status/values", function(response) {
+                httpGet("/rest/field/bug/status/values", function(response) {
                     statuses = response.values;
                     for (var key in statuses) {
                         status = statuses[key];
                         addBoardColumn(status);
                     }
-                    doGET("/rest/product/" + bzProduct + "?include_fields=has_unconfirmed", function(response) {
+                    httpGet("/rest/product/" + bzProduct + "?include_fields=has_unconfirmed", function(response) {
                         if (!(response.products[0].has_unconfirmed)) {
                             document.getElementsByClassName("board-column").UNCONFIRMED.hidden = true;
                         }
@@ -279,7 +279,7 @@
                 bzAssignedTo = document.getElementById('textAssignee').value;
                 bzBoardLoadTime = new Date().toISOString();
                 bzRestGetBugsUrl = "/rest/bug?product=" + bzProduct + "&include_fields=summary,status,id,severity,priority,assigned_to,last_updated&order=" + bzOrder + "&target_milestone=" + bzProductMilestone + "&component=" + bzComponent + "&priority=" + bzPriority + "&assigned_to=" + bzAssignedTo;
-                doGET(bzRestGetBugsUrl, function(response) {
+                httpGet(bzRestGetBugsUrl, function(response) {
                     bugs = response.bugs;
                     for (var key in bugs) {
                         bug = bugs[key];
@@ -296,7 +296,7 @@
             }
 
             function loadProductsList() {
-                doGET("/rest/product?type=enterable&include_fields=name", function(response) {
+                httpGet("/rest/product?type=enterable&include_fields=name", function(response) {
                     var products = response.products;
                     products.sort(function(a, b) {
                         return a.name.localeCompare(b.name);
@@ -313,7 +313,7 @@
             function loadMilestonesList() {
                 bzProduct = document.getElementById("textProduct").value;
                 clearMilestonesList();
-                doGET("/rest/product?names=" + bzProduct + "&include_fields=milestones", function(response) {
+                httpGet("/rest/product?names=" + bzProduct + "&include_fields=milestones", function(response) {
                     var milestones = response.products[0].milestones;
                     for (var key in milestones) {
                         var milestone = milestones[key];
@@ -325,7 +325,7 @@
             }
 			
             function loadName() {
-                doGET("/rest/user/" + sessionStorage.userID + "?token=" + sessionStorage.userToken, function(response) {
+                httpGet("/rest/user/" + sessionStorage.userID + "?token=" + sessionStorage.userToken, function(response) {
                     userFullName = response.users[0].real_name;
                     if (userFullName != null) {
                         document.getElementById("whoami").className = "fullname";
@@ -334,15 +334,15 @@
                 });
             }
 
-            function doPUT(url, callback) {
-                doRequest("PUT", url, callback);
+            function httpPut(url, callback) {
+                httpRequest("PUT", url, callback);
             }
 
-            function doGET(url, callback) {
-                doRequest("GET", url, callback);
+            function httpGet(url, callback) {
+                httpRequest("GET", url, callback);
             }
 
-            function doRequest(method, url, callback) {
+            function httpRequest(method, url, callback) {
                 var xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState == XMLHttpRequest.DONE) {
@@ -393,7 +393,7 @@
             }
 
             function doAuth(user, password) {
-                doGET("/rest/login?login=" + user + "&password=" + password, function(response) {
+                httpGet("/rest/login?login=" + user + "&password=" + password, function(response) {
                     sessionStorage.userID = response.id;
                     sessionStorage.userToken = response.token;
                     loadName();
@@ -454,14 +454,14 @@
                 }
 
                 // TODO: maybe check if bugID != number
-                doPUT("/rest/bug/" + bugID + "?status=" + targetStatus + urlAppend + "&token=" + sessionStorage.userToken, function() {
+                httpPut("/rest/bug/" + bugID + "?status=" + targetStatus + urlAppend + "&token=" + sessionStorage.userToken, function() {
                     loadBoard();
                 });
             }
 
             function scheduleCheckForUpdates() {
                 window.setTimeout(function() {
-                    doGET(bzRestGetBugsUrl + "&last_change_time=" + bzBoardLoadTime, function(response) {
+                    httpGet(bzRestGetBugsUrl + "&last_change_time=" + bzBoardLoadTime, function(response) {
                         if (response.bugs.length > 0) {
                             var bell = document.getElementById("notification");
                             bell.style.display = "inline";
@@ -544,7 +544,7 @@
             }
 
             function loadResolutions() {
-                doGET("/rest/field/bug/resolution", function(response) {
+                httpGet("/rest/field/bug/resolution", function(response) {
                     var arrayResolutions = response.fields;
 
                     var resolutions = document.createElement("div");
