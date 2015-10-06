@@ -300,7 +300,6 @@
                     hideSpinner();
                     scheduleCheckForUpdates();
                 });
-
             }
 
             function loadProductsList() {
@@ -331,7 +330,7 @@
                     }
                 });
             }
-			
+
             function loadName() {
                 httpGet("/rest/user/" + sessionStorage.userID + "?token=" + sessionStorage.userToken, function(response) {
                     userFullName = response.users[0].real_name;
@@ -436,7 +435,6 @@
                 elem.style.display = "none";
             }
 
-
             function hideSignInButton() {
                 document.getElementById("btnSignIn").style.display = "none";
             }
@@ -508,7 +506,6 @@
             }
 
             function dragCard(ev) {
-
                 var fromStatus = ev.target.parentElement.id;
 
                 // Disable pointer-events for all other cards so that we
