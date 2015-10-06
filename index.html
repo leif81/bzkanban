@@ -278,7 +278,15 @@
                 bzProductMilestone = document.getElementById('textMilestone').value;
                 bzAssignedTo = document.getElementById('textAssignee').value;
                 bzBoardLoadTime = new Date().toISOString();
-                bzRestGetBugsUrl = "/rest/bug?product=" + bzProduct + "&include_fields=summary,status,id,severity,priority,assigned_to,last_updated&order=" + bzOrder + "&target_milestone=" + bzProductMilestone + "&component=" + bzComponent + "&priority=" + bzPriority + "&assigned_to=" + bzAssignedTo;
+
+                bzRestGetBugsUrl = "/rest/bug?product=" + bzProduct;
+                bzRestGetBugsUrl += "&include_fields=summary,status,id,severity,priority,assigned_to,last_updated";
+                bzRestGetBugsUrl += "&order=" + bzOrder;
+                bzRestGetBugsUrl += "&target_milestone=" + bzProductMilestone;
+                bzRestGetBugsUrl += "&component=" + bzComponent;
+                bzRestGetBugsUrl += "&priority=" + bzPriority;
+                bzRestGetBugsUrl += "&assigned_to=" + bzAssignedTo;
+
                 httpGet(bzRestGetBugsUrl, function(response) {
                     bugs = response.bugs;
                     for (var key in bugs) {
