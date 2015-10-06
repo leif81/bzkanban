@@ -170,7 +170,7 @@
             window.onload = loadParams;
 
             function loadBoard() {
-                startSpinner();
+                showSpinner();
                 httpGet("/rest/field/bug/status/values", function(response) {
                     clearBoard();
                     statuses = response.values;
@@ -289,7 +289,7 @@
                         loadResolutions();
                     }
                     showColumnCounts();
-                    stopSpinner();
+                    hideSpinner();
                     scheduleCheckForUpdates();
                 });
 
@@ -381,13 +381,13 @@
                 return decodeURIComponent((new RegExp('[?|&]' + parameter + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || null;
             }
 
-            function startSpinner() {
+            function showSpinner() {
                 var i = document.createElement('i');
                 i.className = "fa fa-cog fa-spin fa-lg"
                 document.getElementById("spinner").appendChild(i);
             }
 
-            function stopSpinner() {
+            function hideSpinner() {
                 var elem = document.getElementById("spinner");
                 elem.removeChild(elem.firstChild);
             }
