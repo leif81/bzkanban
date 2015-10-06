@@ -128,7 +128,6 @@
                         <input type="text" id="textSiteURL" name="site"></input>
                     </span>
                     <button type="submit" id="btnSubmit">Submit</button>
-                    <span id="spinner"></span>
                 </fieldset>
             </form>
             <form id="loginForm">
@@ -151,6 +150,7 @@
                 <button id="btnSignIn" style="padding: 5px">Login</button>
                 <i id="notification" class="fa fa-bell"></i>
             </span>
+            <span id="spinner"></span>
         </div>
         <div id="board">
         </div>
@@ -401,7 +401,9 @@
             }
 
             function doAuth(user, password) {
+                showSpinner();
                 httpGet("/rest/login?login=" + user + "&password=" + password, function(response) {
+                    hideSpinner();
                     sessionStorage.userID = response.id;
                     sessionStorage.userToken = response.token;
                     loadName();
