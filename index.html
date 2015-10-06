@@ -170,9 +170,9 @@
             window.onload = loadParams;
 
             function loadBoard() {
-                clearBoard();
                 startSpinner();
                 httpGet("/rest/field/bug/status/values", function(response) {
+                    clearBoard();
                     statuses = response.values;
                     for (var key in statuses) {
                         status = statuses[key];
