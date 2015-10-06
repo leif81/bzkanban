@@ -342,15 +342,15 @@
                 });
             }
 
-            function httpPut(url, callback) {
-                httpRequest("PUT", url, callback);
+            function httpPut(url, successCallback, errorCallback) {
+                httpRequest("PUT", url, successCallback, errorCallback);
             }
 
-            function httpGet(url, callback) {
-                httpRequest("GET", url, callback);
+            function httpGet(url, successCallback, errorCallback) {
+                httpRequest("GET", url, successCallback, errorCallback);
             }
 
-            function httpRequest(method, url, callback) {
+            function httpRequest(method, url, successCallback, errorCallback) {
                 var xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState == XMLHttpRequest.DONE) {
@@ -364,7 +364,7 @@
 
                         var obj = JSON.parse(response);
                         if (xhr.status == 200) {
-                            return callback(obj);
+                            return successCallback(obj);
                         }
 
                         if (obj.error != null) {
@@ -375,8 +375,14 @@
                                     sessionStorage.removeItem("userToken");
                                     break;
                             }
+
                             console.error(obj.message);
-                            alert(obj.message);
+
+                            if (errorCallback != undefined) {
+                                errorCallback(obj);
+                            } else {
+                                alert(obj.message);
+                            }
                         }
                     }
                 }
