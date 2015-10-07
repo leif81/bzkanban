@@ -7,10 +7,12 @@
             body {
                 background-color: ghostwhite;
                 font-family: sans-serif;
+                margin: 0;
             }
             #board {
                 width: 100%;
                 display: flex;
+                padding-top: 20px;
             }
             #board div {
                 flex: 1;
@@ -70,8 +72,7 @@
             fieldset {
                 border-width: 1;
                 border-style: solid;
-                border-color: lightgrey;
-                background-color: white;
+                border-color: white;
             }
             #textSiteURL {
                 display: none;
@@ -104,6 +105,11 @@
             }
             #nav {
                 display: flex;
+                padding: 5px;
+                background-color: lightsteelblue;
+                border-bottom-width: thin;
+                border-bottom-style: dotted;
+                border-bottom-color: black;
             }
             #nav span {
                 align-self: center;
@@ -111,13 +117,16 @@
             #nav .spring {
                 flex: 1;
             }
+            #spinner {
+                padding: 5px;
+            }
         </style>
     </head>
     <body>
         <div id="nav">
             <form id="queryForm" action="index.html" method="get">
                 <fieldset>
-                    <legend>Query</legend>
+                    <legend>Board</legend>
                     <span>
                         <i class="fa fa-book"></i>
                         <input type="search" list="products-datalist" id="textProduct" name="product" placeholder="Product"></input>
@@ -154,13 +163,13 @@
                 </fieldset>
             </form>
             <span class="spring"></span>
+            <span id="spinner"></span>
             <span id="actions">
                 <button id="btnCreate">Add Bug</button>
                 <span id="whoami"></span>
                 <button id="btnSignIn">Login</button>
                 <i id="notification" class="fa fa-bell"></i>
             </span>
-            <span id="spinner"></span>
         </div>
         <div id="board">
         </div>
