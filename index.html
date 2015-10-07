@@ -102,10 +102,19 @@
             #notification {
                 display: none;
             }
+            #nav {
+                display: flex;
+            }
+            #nav span {
+                align-self: center;
+            }
+            #nav .spring {
+                flex: 1;
+            }
         </style>
     </head>
     <body>
-        <div>
+        <div id="nav">
             <form id="queryForm" action="index.html" method="get">
                 <fieldset>
                     <legend>Query</legend>
@@ -144,6 +153,7 @@
                     <input type="button" id="btnAuthSubmit" value="Submit">
                 </fieldset>
             </form>
+            <span class="spring"></span>
             <span id="actions">
                 <button id="btnCreate">Add Bug</button>
                 <span id="whoami"></span>
