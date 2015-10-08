@@ -367,7 +367,7 @@
                     if (xhr.readyState == XMLHttpRequest.DONE) {
                         var response = xhr.responseText;
                         if (response == "") {
-                            var msg = "Unable to access Bugzilla REST : " + bzURL;
+                            var msg = "No response from " + bzURL;
                             console.warn(msg);
                             alert(msg);
                             return;
