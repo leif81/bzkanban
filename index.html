@@ -46,6 +46,9 @@
                 font-size: small;
                 transition: box-shadow 200ms;
             }
+            .card-summary {
+                margin-left: 5px
+            }
             .card-meta {
                 font-size: x-small;
                 text-align: right;
@@ -230,13 +233,20 @@
                 card.className = bug.severity + " " + bug.priority +" " + "card";
                 card.id = "card-" + bug.id;
 
-                var summary = document.createElement('div');
-                summary.innerHTML = "<a href='" + bzURL + "/show_bug.cgi?id=" + bug.id + "'>#" + bug.id + "</a> " + bug.summary;
+                var buglink = document.createElement('a');
+                buglink.href= bzURL + "/show_bug.cgi?id=" + bug.id;
+                buglink.innerHTML = "#" + bug.id;
+                buglink.className = "card-ref";
+
+                var summary = document.createElement('span');
+                summary.innerHTML =  bug.summary;
+                summary.className = "card-summary";
 
                 var meta = document.createElement('div');
                 meta.innerHTML = bug.assigned_to_detail.real_name;
                 meta.className = "card-meta";
 
+                card.appendChild(buglink);
                 card.appendChild(summary);
                 card.appendChild(meta);
 
