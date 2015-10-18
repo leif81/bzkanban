@@ -195,85 +195,6 @@
 
             window.onload = loadParams;
 
-            function loadBoard() {
-                showSpinner();
-                httpGet("/rest/field/bug/status/values", function(response) {
-                    clearBoard();
-                    statuses = response.values;
-                    for (var key in statuses) {
-                        status = statuses[key];
-                        addBoardColumn(status);
-                    }
-                    httpGet("/rest/product/" + bzProduct + "?include_fields=has_unconfirmed", function(response) {
-                        if (!(response.products[0].has_unconfirmed)) {
-                            document.getElementsByClassName("board-column").UNCONFIRMED.hidden = true;
-                        }
-                    });
-                    loadBugs();
-                });
-            }
-
-            function addBoardColumn(status) {
-                var div = document.createElement('div');
-                div.className = "board-column";
-                div.id = status;
-                if (isLoggedIn()) {
-                    div.addEventListener('drag', dragCardStart);
-                    div.addEventListener('dragend', dragCardEnd);
-                    div.addEventListener('dragover', dragCardOver);
-                    div.addEventListener('drop', dropCard);
-                    div.addEventListener('dragenter', dragCardEnter);
-                    div.addEventListener('dragleave', dragCardLeave);
-                }
-                document.getElementById("board").appendChild(div);
-
-                title = document.createElement('div');
-                title.className = "board-column-title";
-                title.innerHTML = status;
-                document.getElementById(status).appendChild(title);
-            }
-
-            function addCard(bug) {
-                var card = document.createElement('div');
-                card.className = "severity-" + bug.severity + " priority-" + bug.priority +" " + "card";
-                card.id = "card-" + bug.id;
-
-                var buglink = document.createElement('a');
-                buglink.href= bzURL + "/show_bug.cgi?id=" + bug.id;
-                buglink.innerHTML = "#" + bug.id;
-                buglink.className = "card-ref";
-
-                var summary = document.createElement('span');
-                summary.innerHTML =  bug.summary;
-                summary.className = "card-summary";
-
-                var meta = document.createElement('div');
-                meta.innerHTML = bug.assigned_to_detail.real_name;
-                meta.className = "card-meta";
-
-                card.appendChild(buglink);
-                card.appendChild(summary);
-                card.appendChild(meta);
-
-                if (isLoggedIn()) {
-                    card.draggable = "true";
-                    card.addEventListener('dragstart', dragCard);
-                }
-
-                document.getElementById(bug.status).appendChild(card);
-            }
-
-            function clearBoard() {
-                document.getElementById("board").innerHTML = "";
-            }
-
-            function clearMilestonesList() {
-                var elem = document.getElementById("milestones-datalist");
-                while (elem.firstChild) {
-                    elem.removeChild(elem.firstChild);
-                }
-            }
-
             function loadParams() {
                 bzProduct = getURLParameter('product');
                 bzProductMilestone = getURLParameter('milestone');
@@ -304,6 +225,24 @@
                 if (bzProduct != null || bzAssignedTo != null) {
                     loadBoard();
                 }
+            }
+
+            function loadBoard() {
+                showSpinner();
+                httpGet("/rest/field/bug/status/values", function(response) {
+                    clearBoard();
+                    statuses = response.values;
+                    for (var key in statuses) {
+                        status = statuses[key];
+                        addBoardColumn(status);
+                    }
+                    httpGet("/rest/product/" + bzProduct + "?include_fields=has_unconfirmed", function(response) {
+                        if (!(response.products[0].has_unconfirmed)) {
+                            document.getElementsByClassName("board-column").UNCONFIRMED.hidden = true;
+                        }
+                    });
+                    loadBugs();
+                });
             }
 
             function loadBugs() {
@@ -371,6 +310,91 @@
                         document.getElementById("whoami").textContent = userFullName;
                     }
                 });
+            }
+
+            function loadResolutions() {
+                httpGet("/rest/field/bug/resolution", function(response) {
+                    var arrayResolutions = response.fields;
+
+                    var resolutions = document.createElement("div");
+                    resolutions.className = "resolutions";
+                    resolutions.hidden = true;
+
+                    for (var i = 0;  i < arrayResolutions[0].values.length; i++) {
+                        var resolutionName = arrayResolutions[0].values[i].name;
+                        if (resolutionName != "") {
+                            var box = document.createElement("div");
+                            box.className = "resolution";
+                            box.innerText += resolutionName;
+                            box.id = resolutionName;
+                            resolutions.appendChild(box);
+                        }
+                    }
+
+                    // FIXME: this assumes the column name, but it may have been renamed by the bz instance.
+                    document.getElementById("RESOLVED").appendChild(resolutions);
+                });
+            }
+
+            function addBoardColumn(status) {
+                var div = document.createElement('div');
+                div.className = "board-column";
+                div.id = status;
+                if (isLoggedIn()) {
+                    div.addEventListener('drag', dragCardStart);
+                    div.addEventListener('dragend', dragCardEnd);
+                    div.addEventListener('dragover', dragCardOver);
+                    div.addEventListener('drop', dropCard);
+                    div.addEventListener('dragenter', dragCardEnter);
+                    div.addEventListener('dragleave', dragCardLeave);
+                }
+                document.getElementById("board").appendChild(div);
+
+                title = document.createElement('div');
+                title.className = "board-column-title";
+                title.innerHTML = status;
+                document.getElementById(status).appendChild(title);
+            }
+
+            function addCard(bug) {
+                var card = document.createElement('div');
+                card.className = "severity-" + bug.severity + " priority-" + bug.priority +" " + "card";
+                card.id = "card-" + bug.id;
+
+                var buglink = document.createElement('a');
+                buglink.href= bzURL + "/show_bug.cgi?id=" + bug.id;
+                buglink.innerHTML = "#" + bug.id;
+                buglink.className = "card-ref";
+
+                var summary = document.createElement('span');
+                summary.innerHTML =  bug.summary;
+                summary.className = "card-summary";
+
+                var meta = document.createElement('div');
+                meta.innerHTML = bug.assigned_to_detail.real_name;
+                meta.className = "card-meta";
+
+                card.appendChild(buglink);
+                card.appendChild(summary);
+                card.appendChild(meta);
+
+                if (isLoggedIn()) {
+                    card.draggable = "true";
+                    card.addEventListener('dragstart', dragCard);
+                }
+
+                document.getElementById(bug.status).appendChild(card);
+            }
+
+            function clearBoard() {
+                document.getElementById("board").innerHTML = "";
+            }
+
+            function clearMilestonesList() {
+                var elem = document.getElementById("milestones-datalist");
+                while (elem.firstChild) {
+                    elem.removeChild(elem.firstChild);
+                }
             }
 
             function httpPut(url, successCallback, errorCallback) {
@@ -586,30 +610,6 @@
                 }
 
                 writeBug(bugData.id, bugData.status, targetStatus, targetResolution);
-            }
-
-            function loadResolutions() {
-                httpGet("/rest/field/bug/resolution", function(response) {
-                    var arrayResolutions = response.fields;
-
-                    var resolutions = document.createElement("div");
-                    resolutions.className = "resolutions";
-                    resolutions.hidden = true;
-
-                    for (var i = 0;  i < arrayResolutions[0].values.length; i++) {
-                        var resolutionName = arrayResolutions[0].values[i].name;
-                        if (resolutionName != "") {
-                            var box = document.createElement("div");
-                            box.className = "resolution";
-                            box.innerText += resolutionName;
-                            box.id = resolutionName;
-                            resolutions.appendChild(box);
-                        }
-                    }
-
-                    // FIXME: this assumes the column name, but it may have been renamed by the bz instance.
-                    document.getElementById("RESOLVED").appendChild(resolutions);
-                });
             }
 
             function showResolutions(elem) {
