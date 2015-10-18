@@ -197,6 +197,7 @@
             var bzProductMilestone = "";
             var bzBoardLoadTime = "";
             var bzRestGetBugsUrl = "";
+            var shouldCheckForUpdates = true;
 
             window.onload = loadParams;
 
@@ -338,6 +339,21 @@
 
                     // FIXME: this assumes the column name, but it may have been renamed by the bz instance.
                     document.getElementById("RESOLVED").appendChild(resolutions);
+                });
+            }
+
+            function loadCheckForUpdates() {
+                httpGet(bzRestGetBugsUrl + "&last_change_time=" + bzBoardLoadTime, function(response) {
+                    if (response.bugs.length > 0) {
+                        var bell = document.getElementById("notification");
+                        bell.style.display = "inline";
+                        bell.title = response.bugs.length + " bug(s) have been updated externally. Hit refresh!";
+                    }
+
+                    if (shouldCheckForUpdates) {
+                        // Repeat.
+                        scheduleCheckForUpdates();
+                    }
                 });
             }
 
@@ -536,16 +552,7 @@
 
             function scheduleCheckForUpdates() {
                 window.setTimeout(function() {
-                    httpGet(bzRestGetBugsUrl + "&last_change_time=" + bzBoardLoadTime, function(response) {
-                        if (response.bugs.length > 0) {
-                            var bell = document.getElementById("notification");
-                            bell.style.display = "inline";
-                            bell.title = response.bugs.length + " bug(s) have been updated externally. Hit refresh!";
-                        }
-
-                        // Repeat.
-                        scheduleCheckForUpdates();
-                    });
+                    loadCheckForUpdates();
                 }, 600000);
             }
 
@@ -660,6 +667,15 @@
                 var user = document.getElementById("textUsername").value;
                 var password = document.getElementById("textPassword").value;
                 doAuth(user, password);
+                });
+
+            document.addEventListener("visibilitychange", function() {
+                if (document.hidden) {
+                    shouldCheckForUpdates = false;
+                } else {
+                    shouldCheckForUpdates = true;
+                    loadCheckForUpdates();
+                }
                 });
 
         </script>
