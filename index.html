@@ -191,7 +191,7 @@
             var bzPriority = "";
             var bzAssignedTo = "";
             var bzOrder = "priority,bug_severity,assigned_to";
-            var bzURL = "http://bugzilla.ddk.armysimulation.mil.ca";
+            var bzSiteUrl = "http://bugzilla.ddk.armysimulation.mil.ca";
             var userFullName = "";
             var bzProduct = "";
             var bzProductMilestone = "";
@@ -212,11 +212,11 @@
                 }
 
                 // Allow the Bugzilla site URL to be overriden. Useful for testing.
-                // For most permanent deployments just change the hardcodecoded bzURL.
+                // For most permanent deployments just change the hardcodecoded bzSiteUrl.
                 var site = getURLParameter('site');
                 if (site != null) {
-                    bzURL = site;
-                    document.getElementById("textSiteURL").value = bzURL;
+                    bzSiteUrl = site;
+                    document.getElementById("textSiteURL").value = bzSiteUrl;
                 }
 
                 document.getElementById("textProduct").value = bzProduct;
@@ -383,7 +383,7 @@
                 card.id = "card-" + bug.id;
 
                 var buglink = document.createElement('a');
-                buglink.href= bzURL + "/show_bug.cgi?id=" + bug.id;
+                buglink.href= bzSiteUrl + "/show_bug.cgi?id=" + bug.id;
                 buglink.innerHTML = "#" + bug.id;
                 buglink.className = "card-ref";
 
@@ -432,7 +432,7 @@
                     if (xhr.readyState == XMLHttpRequest.DONE) {
                         var response = xhr.responseText;
                         if (response == "") {
-                            var msg = "No response from " + bzURL;
+                            var msg = "No response from " + bzSiteUrl;
                             console.warn(msg);
                             alert(msg);
                             return;
@@ -462,7 +462,7 @@
                         }
                     }
                 }
-                xhr.open(method, bzURL + url);
+                xhr.open(method, bzSiteUrl + url);
                 xhr.setRequestHeader("Accept", "application/json");
                 xhr.send();
             }
@@ -656,7 +656,7 @@
 
             document.getElementById("btnCreate").addEventListener("click", function() {
                 var product = document.getElementById("textProduct").value;
-                window.open(bzURL + "/enter_bug.cgi?product=" + product);
+                window.open(bzSiteUrl + "/enter_bug.cgi?product=" + product);
                 });
 
             document.getElementById("btnSignIn").addEventListener("click", function() {
