@@ -58,22 +58,22 @@
             .card:hover {
                 box-shadow: 0px 0px 4px steelblue;
             }
-            .enhancement {
+            .severity-enhancement {
                 border-right-color: greenyellow;
                 border-right-width: 4px;
                 border-right-style: solid;
             }
-            .critical, .major {
+            .severity-critical, .severity-major {
                 border-right-color: red;
                 border-right-width: 4px;
                 border-right-style: solid;
             }
-            .minor, .trivial {
+            .severity-minor, .severity-trivial {
                 border-right-color: lightgrey;
                 border-right-width: 2px;
                 border-right-style: dotted;
             }
-            .P1 {
+            .priority-P1 {
                 border-left-color: gold;
                 border-left-width: 5px;
                 border-left-style: double;
@@ -235,7 +235,7 @@
 
             function addCard(bug) {
                 var card = document.createElement('div');
-                card.className = bug.severity + " " + bug.priority +" " + "card";
+                card.className = "severity-" + bug.severity + " priority-" + bug.priority +" " + "card";
                 card.id = "card-" + bug.id;
 
                 var buglink = document.createElement('a');
