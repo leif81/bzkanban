@@ -388,7 +388,7 @@
                 buglink.className = "card-ref";
 
                 var summary = document.createElement('span');
-                summary.innerHTML =  bug.summary;
+                summary.appendChild(document.createTextNode(bug.summary)); // so that we get HTML string escaping for free
                 summary.className = "card-summary";
 
                 var meta = document.createElement('div');
