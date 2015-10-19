@@ -2,18 +2,19 @@
 
 == About
 
-A simple web client Kanban board for Bugzilla. Useful for visualizing milestone status.
+A simple web client Kanban board for Bugzilla. Useful for visualizing milestone status as cards and columns.
 
 == Requirements
 
  . Client: A modern web browser capable of HTML5, CSS3, and JavaScript.
- . Server: An existing Bugzilla 5.0+ server (because the board uses the new REST API).
+ . Server: An existing Bugzilla 5.0+ server (because the board accesses bug data using the new Bugzilla REST API).
 
 == Usage
 
  . Clone this git repo.
- . Configure the Bugzilla instance to use by modifying the hardcoded `bzSiteUrl` value in the `index.html` code.
+ . Configure which Bugzilla instance to connect to by modifying the hardcoded `bzSiteUrl` value in the `index.html` code.
  . Open the `index.html` in your web brower.
+ . Pick a product and milestone and view the board!
 
 == Demo
 
