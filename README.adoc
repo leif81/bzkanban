@@ -2,7 +2,7 @@
 
 == About
 
-A simple web client Kanban board for Bugzilla. Useful for visualizing milestone status as cards and columns.
+Visualize Bugzilla bugs as cards and columns with a Kanban inspired board.
 
 == Requirements
 
