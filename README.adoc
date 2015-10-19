@@ -16,6 +16,12 @@ Visualize Bugzilla bugs as cards and columns with a Kanban inspired board.
  . Open the `index.html` in your web brower.
  . Pick a product and milestone and view the board!
 
+== FAQ
+
+ . What do the colours on the cards represent?
+  * The left hand side represents the bug priority (e.g. gold is p1)
+  * The right hand side represents the bug severity (e.g. red is > normal, grey is < normal, green is an enhancement)
+
 == Demo
 
 https://rawgit.com/leif81/bzkanban/master/index.html?product=Bugzilla&milestone=Bugzilla+6.0&assignee=&site=https%3A%2F%2Fbugzilla.mozilla.org[Try it].
