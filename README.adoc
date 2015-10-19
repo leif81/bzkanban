@@ -9,10 +9,13 @@ Visualize Bugzilla bugs as cards and columns with a Kanban inspired board.
  . Client: A modern web browser capable of HTML5, CSS3, and JavaScript.
  . Server: An existing Bugzilla 5.0+ server (because the board accesses bug data using the new Bugzilla REST API).
 
-== Usage
+== Installation
 
  . Clone this git repo.
  . Configure which Bugzilla instance to connect to by modifying the hardcoded `bzSiteUrl` value in the `index.html` code.
+
+== Usage
+
  . Open the `index.html` in your web brower.
  . Pick a product and milestone and view the board!
 
