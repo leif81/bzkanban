@@ -4,6 +4,8 @@
 
 Visualize Bugzilla bugs as cards and columns with a Kanban inspired board.
 
+The goal is to compliment an existing Bugzilla workflow, so board columns represent actual bug statuses.
+
 == Requirements
 
  . Client: A modern web browser capable of HTML5, CSS3, and JavaScript.
