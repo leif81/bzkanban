@@ -58,27 +58,30 @@
             .card:hover {
                 box-shadow: 0px 0px 4px steelblue;
             }
-            .severity-enhancement {
+            .card[data-severity='enhancement'] {
                 border-right-color: greenyellow;
                 border-right-width: 4px;
                 border-right-style: double;
             }
-            .severity-blocker, .severity-critical, .severity-major {
+            .card[data-severity='blocker'],
+            .card[data-severity='critical'],
+            .card[data-severity='major'] {
                 border-right-color: red;
                 border-right-width: 4px;
                 border-right-style: double;
             }
-            .severity-minor, .severity-trivial {
+            .card[data-severity='minor'],
+            .card[data-severity='trivial'] {
                 border-right-color: lightgrey;
                 border-right-width: 4px;
                 border-right-style: double;
             }
-            .priority-P1 {
+            .card[data-priority='P1'] {
                 border-left-color: gold;
                 border-left-width: 4px;
                 border-left-style: solid;
             }
-            .priority-P2 {
+            .card[data-priority='P2'] {
                 border-left-color: plum;
                 border-left-width: 4px;
                 border-left-style: solid;
@@ -379,8 +382,10 @@
 
             function addCard(bug) {
                 var card = document.createElement('div');
-                card.className = "severity-" + bug.severity + " priority-" + bug.priority +" " + "card";
+                card.className = "card";
                 card.dataset.bugId = bug.id;
+                card.dataset.severity = bug.severity;
+                card.dataset.priority = bug.priority;
 
                 var buglink = document.createElement('a');
                 buglink.href= bzSiteUrl + "/show_bug.cgi?id=" + bug.id;
