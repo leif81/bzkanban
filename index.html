@@ -380,7 +380,7 @@
             function addCard(bug) {
                 var card = document.createElement('div');
                 card.className = "severity-" + bug.severity + " priority-" + bug.priority +" " + "card";
-                card.id = "card-" + bug.id;
+                card.dataset.bugId = bug.id;
 
                 var buglink = document.createElement('a');
                 buglink.href= bzSiteUrl + "/show_bug.cgi?id=" + bug.id;
@@ -585,11 +585,7 @@
                     }
                 }
 
-                var dragBugText = ev.currentTarget.innerText;
-                var re = /[0-9]+/;
-                var bugID = re.exec(dragBugText);
-                bugID = bugID[0];
-
+                var bugID = ev.currentTarget.dataset.bugId;
                 var bugData = {"id": bugID, "status": fromStatus};
                 ev.dataTransfer.setData("text", JSON.stringify(bugData));
             }
