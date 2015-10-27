@@ -91,7 +91,7 @@
                 border-style: solid;
                 border-color: white;
             }
-            #textSiteURL {
+            #queryForm #textSiteURL, #queryForm #textBugs {
                 display: none;
             }
             #queryForm {
@@ -160,6 +160,9 @@
                     <span>
                         <input type="text" id="textSiteURL" name="site"></input>
                     </span>
+                    <span>
+                        <input type="text" id="textBugs" name="bugs"></input>
+                    </span>
                     <button type="submit" id="btnSubmit">Submit</button>
                 </fieldset>
             </form>
@@ -200,6 +203,7 @@
             var bzProductMilestone = "";
             var bzBoardLoadTime = "";
             var bzRestGetBugsUrl = "";
+            var bzBugs = ""
             var shouldCheckForUpdates = true;
 
             window.onload = loadParams;
@@ -208,6 +212,7 @@
                 bzProduct = getURLParameter('product');
                 bzProductMilestone = getURLParameter('milestone');
                 bzAssignedTo = getURLParameter('assignee');
+                bzBugs = getURLParameter('bugs');
 
                 if (isLoggedIn()) {
                     loadName();
@@ -225,13 +230,14 @@
                 document.getElementById("textProduct").value = bzProduct;
                 document.getElementById("textMilestone").value = bzProductMilestone;
                 document.getElementById("textAssignee").value = bzAssignedTo
+                document.getElementById("textBugs").value = bzBugs;
 
                 loadProductsList();
                 if (bzProduct != null) {
                     loadMilestonesList();
                 }
 
-                if (bzProduct != null || bzAssignedTo != null) {
+                if (bzProduct != null || bzAssignedTo != null || bzBugs != null) {
                     loadBoard();
                 }
             }
@@ -262,6 +268,7 @@
                 bzProduct = document.getElementById('textProduct').value;
                 bzProductMilestone = document.getElementById('textMilestone').value;
                 bzAssignedTo = document.getElementById('textAssignee').value;
+                bzBugs = document.getElementById('textBugs').value;
                 bzBoardLoadTime = new Date().toISOString();
 
                 bzRestGetBugsUrl = "/rest/bug?product=" + bzProduct;
@@ -271,6 +278,7 @@
                 bzRestGetBugsUrl += "&component=" + bzComponent;
                 bzRestGetBugsUrl += "&priority=" + bzPriority;
                 bzRestGetBugsUrl += "&assigned_to=" + bzAssignedTo;
+                bzRestGetBugsUrl += "&id=" + bzBugs;
 
                 httpGet(bzRestGetBugsUrl, function(response) {
                     bugs = response.bugs;
