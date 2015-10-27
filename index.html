@@ -245,11 +245,15 @@
                         status = statuses[key];
                         addBoardColumn(status);
                     }
-                    httpGet("/rest/product/" + bzProduct + "?include_fields=has_unconfirmed", function(response) {
-                        if (!(response.products[0].has_unconfirmed)) {
-                            document.getElementsByClassName("board-column").UNCONFIRMED.hidden = true;
-                        }
-                    });
+                    // Hide UNCONFIRMED column if product has disabled it.
+                    // But, product name may not have been provided if querying only on email.
+                    if (bzProduct != null) {
+                        httpGet("/rest/product/" + bzProduct + "?include_fields=has_unconfirmed", function(response) {
+                            if (!(response.products[0].has_unconfirmed)) {
+                                document.getElementsByClassName("board-column").UNCONFIRMED.hidden = true;
+                            }
+                        });
+                    }
                     loadBugs();
                 });
             }
