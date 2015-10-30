@@ -5,6 +5,7 @@
 Visualize Bugzilla bugs as cards and columns with a Kanban inspired board.
 
 The goal is to compliment an existing Bugzilla workflow, so board columns represent actual bug statuses.
+And bug updates (commenting, changing status, etc) require using the existing Bugzilla interface.
 
 == Requirements
 
