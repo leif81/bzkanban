@@ -10,7 +10,7 @@ And bug updates (commenting, changing status, etc) require using the existing Bu
 == Requirements
 
  . Client: A modern web browser capable of HTML5, CSS3, and JavaScript.
- . Server: An existing Bugzilla 5.0+ server (because the board accesses bug data using the new Bugzilla REST API).
+ . Server: An existing Bugzilla 5.0+ server (because the board uses the awesome new Bugzilla REST API).
 
 == Installation
 
