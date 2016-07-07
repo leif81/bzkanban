@@ -102,6 +102,9 @@
             #queryForm .fa {
                 vertical-align: middle;
             }
+            #queryForm select {
+                width: 150px;
+            }
             #loginForm {
                 display: none;
             }
@@ -149,18 +152,15 @@
                     <legend>Bz Kanban Board</legend>
                     <span>
                         <i class="fa fa-book"></i>
-                        <input type="search" list="products-datalist" id="textProduct" name="product" placeholder="Product"></input>
-                        <datalist id="products-datalist"></datalist>
+                        <select id="textProduct" name="product" placeholder="Product"></select>
                     </span>
                     <span>
                         <i class="fa fa-flag"></i>
-                        <input type="search" list="milestones-datalist" id="textMilestone" name="milestone" placeholder="Milestone"></input>
-                        <datalist id="milestones-datalist"></datalist>
+                        <select id="textMilestone" name="milestone" placeholder="Milestone"></select>
                     </span>
                     <span>
                         <i class="fa fa-user"></i>
-                        <input type="search" list="assignees-datalist" id="textAssignee" name="assignee" placeholder="Assignee Email"></input>
-                        <datalist id="assignees-datalist"></datalist>
+                        <input id="textAssignee" name="assignee" placeholder="Assignee Email"></input>
                     </span>
                     <span>
                         <input type="text" id="textSiteURL" name="site"></input>
@@ -199,7 +199,7 @@
             var bzPriority = "";
             var bzAssignedTo = "";
             var bzOrder = "priority,bug_severity,assigned_to";
-            var bzSiteUrl = "http://bugzilla.ddk.armysimulation.mil.ca";
+            var bzSiteUrl = "http://bugzilla.msec.local";
             var userFullName = "";
             var bzProduct = "";
             var bzProductMilestone = "";
@@ -227,18 +227,9 @@
                     document.getElementById("textSiteURL").value = bzSiteUrl;
                 }
 
-                document.getElementById("textProduct").value = bzProduct;
-                document.getElementById("textMilestone").value = bzProductMilestone;
-                document.getElementById("textAssignee").value = bzAssignedTo
-
                 loadProductsList();
-                if (bzProduct != null) {
-                    loadMilestonesList();
-                }
 
-                if (bzProduct != null || bzAssignedTo != null) {
-                    loadBoard();
-                }
+                document.getElementById("textAssignee").value = bzAssignedTo
             }
 
             function loadBoard() {
@@ -302,7 +293,13 @@
                         var product = products[key];
                         var option = document.createElement('option');
                         option.value = product.name;
-                        document.getElementById("products-datalist").appendChild(option);
+                        option.text = product.name;
+                        document.getElementById("textProduct").appendChild(option);
+                    }
+                    // select it in list.
+                    document.getElementById("textProduct").value = bzProduct;
+                    if (bzProduct != null) {
+                        loadMilestonesList();
                     }
                 });
             }
@@ -316,7 +313,13 @@
                         var milestone = milestones[key];
                         var option = document.createElement('option');
                         option.value = milestone.name;
-                        document.getElementById("milestones-datalist").appendChild(option);
+                        option.text = milestone.name;
+                        document.getElementById("textMilestone").appendChild(option);
+                    }
+                    // select it in list.
+                    document.getElementById("textMilestone").value = bzProductMilestone;
+                    if (bzProduct != "" && bzProductMilestone != "") {
+                        loadBoard();
                     }
                 });
             }
@@ -426,7 +429,7 @@
             }
 
             function clearMilestonesList() {
-                var elem = document.getElementById("milestones-datalist");
+                var elem = document.getElementById("textMilestone");
                 while (elem.firstChild) {
                     elem.removeChild(elem.firstChild);
                 }
@@ -660,7 +663,7 @@
             // Register event handlers
             document.getElementById("textProduct").addEventListener("input", function() {
                 // Clear any previous milestone selection.
-                document.getElementById("textMilestone").value = "";
+                bzProductMilestone = "";
                 loadMilestonesList();
                 });
 
