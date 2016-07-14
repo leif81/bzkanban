@@ -695,6 +695,13 @@
                 }
                 });
 
+            document.getElementById("textPassword").addEventListener("keyup", function(event) {
+                event.preventDefault();
+                if (event.keyCode == 13) {
+                    document.getElementById("btnAuthSubmit").click();
+                }
+                });
+
         </script>
     </body>
 </html>
