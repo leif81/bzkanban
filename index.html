@@ -51,9 +51,14 @@
             }
             .card-meta {
                 font-size: x-small;
-                text-align: right;
                 color: lightgrey;
                 padding-top: 5px;
+            }
+            .card-meta #fullname {
+                float: right;
+            }
+            .card-meta #icons {
+                float: initial;
             }
             .card:hover {
                 box-shadow: 0px 0px 4px steelblue;
@@ -336,8 +341,7 @@
                     bugAttr = '[data-bug-id="' + bug.id + '"]';
                     var card = document.querySelector(bugAttr);
                     if (!(response.bugs[bug.id].comments[0].text === "")) {
-                        card.children[3].style.visibility = "visible";
-                        // Need to change from array value to the div by name if children gets reordered
+                        card.children.cardmeta.children.icons.children.comment.style.visibility = "visible";
                     }
 
                 });
@@ -428,17 +432,25 @@
                 summary.className = "card-summary";
 
                 var meta = document.createElement('div');
-                meta.innerHTML = bug.assigned_to_detail.real_name;
                 meta.className = "card-meta";
+                meta.setAttribute("id", "cardmeta");
+                var fullname = document.createElement('span');
+                fullname.setAttribute("id", "fullname");
+                fullname.innerHTML = bug.assigned_to_detail.real_name;
+                var icons = document.createElement('span');
+                icons.setAttribute("id", "icons");
 
-                var comment = document.createElement('div');
+                var comment = document.createElement('span');
+                comment.setAttribute("id", "comment");
                 comment.className = "fa fa-comment-o fa-sm";
                 comment.style.visibility = "hidden";
 
                 card.appendChild(buglink);
                 card.appendChild(summary);
                 card.appendChild(meta);
-                card.appendChild(comment);
+                meta.appendChild(icons);
+                    icons.appendChild(comment);
+                meta.appendChild(fullname);
 
                 if (isLoggedIn()) {
                     card.draggable = "true";
