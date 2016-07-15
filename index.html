@@ -274,9 +274,11 @@
 
                 httpGet(bzRestGetBugsUrl, function(response) {
                     bugs = response.bugs;
+
                     for (var key in bugs) {
                         bug = bugs[key];
                         addCard(bug);
+                        checkComment(bug);
                     }
                     if (isLoggedIn()) {
                         loadResolutions();
@@ -285,6 +287,7 @@
                     hideSpinner();
                     scheduleCheckForUpdates();
                 });
+
             }
 
             function loadProductsList() {
@@ -325,6 +328,18 @@
                     if (bzProduct != "" && bzProductMilestone != "") {
                         loadBoard();
                     }
+                });
+            }
+
+            function checkComment(bug) {
+                httpGet("/rest/bug/" + bug.id + "/comment", function(response) {
+                    bugAttr = '[data-bug-id="' + bug.id + '"]';
+                    var card = document.querySelector(bugAttr);
+                    if (!(response.bugs[bug.id].comments[0].text === "")) {
+                        card.children[3].style.visibility = "visible";
+                        // Need to change from array value to the div by name if children gets reordered
+                    }
+
                 });
             }
 
@@ -416,9 +431,14 @@
                 meta.innerHTML = bug.assigned_to_detail.real_name;
                 meta.className = "card-meta";
 
+                var comment = document.createElement('div');
+                comment.className = "fa fa-comment-o fa-sm";
+                comment.style.visibility = "hidden";
+
                 card.appendChild(buglink);
                 card.appendChild(summary);
                 card.appendChild(meta);
+                card.appendChild(comment);
 
                 if (isLoggedIn()) {
                     card.draggable = "true";
