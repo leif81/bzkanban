@@ -337,7 +337,7 @@
             }
 
             function checkComment(bug) {
-                httpGet("/rest/bug/" + bug.id + "/comment", function(response) {
+                httpGet("/rest/bug/" + bug.id + "/comment?include_fields=text", function(response) {
                     bugAttr = '[data-bug-id="' + bug.id + '"]';
                     var card = document.querySelector(bugAttr);
                     if (!(response.bugs[bug.id].comments[0].text === "")) {
