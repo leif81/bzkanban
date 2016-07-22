@@ -60,6 +60,12 @@
             .card-meta #icons {
                 float: initial;
             }
+            .card-meta #comment {
+                padding: 2px;
+            }
+            .card-meta #deadline {
+                padding: 2px;
+            }
             .card:hover {
                 box-shadow: 0px 0px 4px steelblue;
             }
@@ -284,6 +290,7 @@
                         bug = bugs[key];
                         addCard(bug);
                         checkComment(bug);
+                        checkDeadline(bug);
                     }
                     if (isLoggedIn()) {
                         loadResolutions();
@@ -342,6 +349,39 @@
                     var card = document.querySelector(bugAttr);
                     if (!(response.bugs[bug.id].comments[0].text === "")) {
                         card.children.cardmeta.children.icons.children.comment.style.visibility = "visible";
+                    }
+
+                });
+            }
+
+            function checkDeadline(bug) {
+                httpGet("/rest/bug/" + bug.id + "?include_fields=deadline", function(response) {
+                    if (!(response.bugs[0].deadline === null)) {
+                        bugAttr = '[data-bug-id="' + bug.id + '"]';
+                        var card = document.querySelector(bugAttr);
+                        var cardDateArray = response.bugs[0].deadline.split('-');
+                        var todayDate = Date.now();
+                        var cardDate = new Date();
+                        cardDate.setFullYear(cardDateArray[0], cardDateArray[1] - 1, cardDateArray[2]);
+
+                        var month = new Array();
+                        month[0] = "Jan";
+                        month[1] = "Feb";
+                        month[2] = "Mar";
+                        month[3] = "Apr";
+                        month[4] = "May";
+                        month[5] = "Jun";
+                        month[6] = "Jul";
+                        month[7] = "Aug";
+                        month[8] = "Sept";
+                        month[9] = "Oct";
+                        month[10] = "Nov";
+                        month[11] = "Dec";
+                        if (cardDate > todayDate) {
+                            // make it a different colour
+                        }
+                        card.children.cardmeta.children.icons.children.deadline.style.visibility = "visible";
+                        card.children.cardmeta.children.icons.children.deadline.innerText = " " + month[cardDate.getMonth()] + cardDate.getDate();
                     }
 
                 });
@@ -445,11 +485,17 @@
                 comment.className = "fa fa-comment-o fa-sm";
                 comment.style.visibility = "hidden";
 
+                var deadline = document.createElement('span');
+                deadline.setAttribute("id", "deadline");
+                deadline.className = "fa fa-calendar-o fa-sm";
+                deadline.style.visibility = "hidden";
+
                 card.appendChild(buglink);
                 card.appendChild(summary);
                 card.appendChild(meta);
                 meta.appendChild(icons);
                     icons.appendChild(comment);
+                    icons.appendChild(deadline);
                 meta.appendChild(fullname);
 
                 if (isLoggedIn()) {
