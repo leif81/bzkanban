@@ -347,7 +347,7 @@
                 httpGet("/rest/bug/" + bug.id + "/comment?include_fields=id", function(response) {
                     bugAttr = '[data-bug-id="' + bug.id + '"]';
                     var card = document.querySelector(bugAttr);
-                    if (response.bugs[bug.id].comments.length > 1 && response.bugs[bug.id].comments[1].text !== "") {
+                    if (response.bugs[bug.id].comments.length > 1) {
                         commentCount = response.bugs[bug.id].comments.length - 1;
                         card.children.cardmeta.children.icons.children.comment.style.visibility = "visible";
                         card.children.cardmeta.children.icons.children.comment.innerText = " " + commentCount;
