@@ -358,7 +358,7 @@
 
             function checkDeadline(bug) {
                 httpGet("/rest/bug/" + bug.id + "?include_fields=deadline", function(response) {
-                    if (!(response.bugs[0].deadline === null)) {
+                    if (response.bugs[0].deadline != undefined && response.bugs[0].deadline != null) {
                         bugAttr = '[data-bug-id="' + bug.id + '"]';
                         var card = document.querySelector(bugAttr);
                         var cardDateArray = response.bugs[0].deadline.split('-');
