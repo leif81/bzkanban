@@ -155,9 +155,6 @@
             #spinner {
                 padding: 5px;
             }
-            #btnSignIn {
-                display: none;
-            }
         </style>
     </head>
     <body>
@@ -366,19 +363,7 @@
                         var cardDate = new Date();
                         cardDate.setFullYear(cardDateArray[0], cardDateArray[1] - 1, cardDateArray[2]);
 
-                        var month = new Array();
-                        month[0] = "Jan";
-                        month[1] = "Feb";
-                        month[2] = "Mar";
-                        month[3] = "Apr";
-                        month[4] = "May";
-                        month[5] = "Jun";
-                        month[6] = "Jul";
-                        month[7] = "Aug";
-                        month[8] = "Sept";
-                        month[9] = "Oct";
-                        month[10] = "Nov";
-                        month[11] = "Dec";
+                        var month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
                         if (cardDate > todayDate) {
                             // make it a different colour
                         }
