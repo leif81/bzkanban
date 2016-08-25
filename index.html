@@ -218,17 +218,17 @@
                 bzProductMilestone = getURLParameter('milestone');
                 bzAssignedTo = getURLParameter('assignee');
 
-                if (isLoggedIn()) {
-                    loadName();
-                    hideSignInButton();
-                }
-
                 // Allow the Bugzilla site URL to be overriden. Useful for testing.
                 // For most permanent deployments just change the hardcodecoded bzSiteUrl.
                 var site = getURLParameter('site');
                 if (site != null) {
                     bzSiteUrl = site;
                     document.getElementById("textSiteURL").value = bzSiteUrl;
+                }
+
+                if (isLoggedIn()) {
+                    loadName();
+                    hideSignInButton();
                 }
 
                 loadProductsList();
