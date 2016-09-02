@@ -351,9 +351,9 @@
 
             function checkDeadline(bug) {
                 httpGet("/rest/bug/" + bug.id + "?include_fields=deadline", function(response) {
+                    bugAttr = '[data-bug-id="' + bug.id + '"]';
+                    var card = document.querySelector(bugAttr);
                     if (response.bugs[0].deadline != undefined && response.bugs[0].deadline != null) {
-                        bugAttr = '[data-bug-id="' + bug.id + '"]';
-                        var card = document.querySelector(bugAttr);
                         var cardDateArray = response.bugs[0].deadline.split('-');
                         var todayDate = Date.now();
                         var cardDate = new Date();
@@ -365,8 +365,9 @@
                         }
                         card.children.cardmeta.children.icons.children.deadline.style.visibility = "visible";
                         card.children.cardmeta.children.icons.children.deadline.innerText = " " + month[cardDate.getMonth()] + cardDate.getDate();
+                    } else {
+                        card.children.cardmeta.children.icons.children.deadline.remove();
                     }
-
                 });
             }
 
