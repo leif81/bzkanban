@@ -51,9 +51,10 @@
             }
             .card-meta {
                 font-size: small;
-                color: lightgrey;
-                padding-top: 5px;
-                height: 13px;
+                color: grey;
+                padding: 1px;
+                font-size: small;
+                margin-top: 5px;
             }
             .card-meta #fullname {
                 float: right;
@@ -82,21 +83,33 @@
                 border-right-width: 4px;
                 border-right-style: solid;
             }
-            .card[data-priority='P1'],
-            .card[data-priority='Highest'] {
-                border-left-color: gold;
-                border-left-width: 4px;
-                border-left-style: solid;
+            .card-meta #priority[data-priority='P1'],
+            .card-meta #priority[data-priority='Highest'] {
+                color: black;
+                background-color: red;
+                border-radius: 3px;
+                border-width: 1px;
+                border-style: solid;
+                margin: 5px;
             }
-            .card[data-priority='P2'],
-            .card[data-priority='High'] {
-                border-left-color: silver;
-                border-left-width: 4px;
-                border-left-style: solid;
+            .card-meta #priority[data-priority='P2'],
+            .card-meta #priority[data-priority='High'] {
+                color: black;
+                background-color: yellow;
+                border-radius: 3px;
+                border-width: 1px;
+                border-style: solid;
+                margin: 5px;
             }
-            .card[data-priority='P3'],
-            .card[data-priority='Normal'],
-            .card[data-priority='---'] {
+            .card-meta #priority[data-priority='P3'],
+            .card-meta #priority[data-priority='Normal'],
+            .card-meta #priority[data-priority='---'] {
+                color: black;
+                background-color: green;
+                border-radius: 3px;
+                border-width: 1px;
+                border-style: solid;
+                margin: 5px;
             }
             fieldset {
                 border-width: 1;
@@ -443,8 +456,6 @@
                 var card = document.createElement('div');
                 card.className = "card";
                 card.dataset.bugId = bug.id;
-                card.dataset.severity = bug.severity;
-                card.dataset.priority = bug.priority;
 
                 var buglink = document.createElement('a');
                 buglink.href= bzSiteUrl + "/show_bug.cgi?id=" + bug.id;
@@ -458,9 +469,11 @@
                 var meta = document.createElement('div');
                 meta.className = "card-meta";
                 meta.setAttribute("id", "cardmeta");
+
                 var fullname = document.createElement('span');
                 fullname.setAttribute("id", "fullname");
                 fullname.innerHTML = bug.assigned_to_detail.real_name;
+
                 var icons = document.createElement('span');
                 icons.setAttribute("id", "icons");
 
@@ -474,10 +487,17 @@
                 deadline.className = "fa fa-calendar-o fa-sm";
                 deadline.style.visibility = "hidden";
 
+                var priority = document.createElement('span');
+                priority.setAttribute("id", "priority");
+                //priority.className = "fa fa-exclamation fa-sm";
+                priority.innerHTML = bug.priority;
+                priority.dataset.priority = bug.priority;
+
                 card.appendChild(buglink);
                 card.appendChild(summary);
                 card.appendChild(meta);
                 meta.appendChild(icons);
+                    icons.appendChild(priority);
                     icons.appendChild(comment);
                     icons.appendChild(deadline);
                 meta.appendChild(fullname);
