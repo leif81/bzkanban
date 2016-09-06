@@ -65,64 +65,50 @@
             .card:hover {
                 box-shadow: 0px 0px 4px steelblue;
             }
+            .card-meta #severity {
+                border-radius: 3px;
+                border-width: 1px;
+                border-style: solid;
+                margin: 3px;
+                padding: 1px;
+                font-size: smaller;
+            }
             .card-meta #severity[data-severity='blocker'],
             .card-meta #severity[data-severity='critical'],
             .card-meta #severity[data-severity='major'] {
                 color: black;
                 background-color: red;
-                border-radius: 3px;
-                border-width: 1px;
-                border-style: solid;
-                margin: 3px;
-                padding: 1px;
             }
             .card-meta #severity[data-severity='minor'],
             .card-meta #severity[data-severity='trivial'] {
                 color: black;
                 background-color: gray;
-                border-radius: 3px;
-                border-width: 1px;
-                border-style: solid;
-                margin: 3px;
-                padding: 1px;
             }
             .card-meta #severity[data-severity='enhancement'],
             .card-meta #severity[data-severity='normal'] {
                 color: gray;
+            }
+            .card-meta #priority {
                 border-radius: 3px;
                 border-width: 1px;
                 border-style: solid;
                 margin: 3px;
                 padding: 1px;
+                font-size: smaller;
             }
             .card-meta #priority[data-priority='P1'],
             .card-meta #priority[data-priority='Highest'] {
                 color: red;
-                border-radius: 3px;
-                border-width: 1px;
-                border-style: solid;
-                margin: 3px;
-                padding: 1px;
             }
             .card-meta #priority[data-priority='P2'],
             .card-meta #priority[data-priority='High'] {
                 color: orange;
-                border-radius: 3px;
-                border-width: 1px;
-                border-style: solid;
-                margin: 3px;
-                padding: 1px;
             }
             .card-meta #priority[data-priority='P3'],
             .card-meta #priority[data-priority='Normal'],
             .card-meta #priority[data-priority='normal'],
             .card-meta #priority[data-priority='---'] {
                 color: green;
-                border-radius: 3px;
-                border-width: 1px;
-                border-style: solid;
-                margin: 3px;
-                padding: 1px;
             }
             fieldset {
                 border-width: 1;
