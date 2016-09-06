@@ -65,23 +65,32 @@
             .card:hover {
                 box-shadow: 0px 0px 4px steelblue;
             }
-            .card[data-severity='enhancement'] {
-                border-right-color: greenyellow;
-                border-right-width: 4px;
-                border-right-style: solid;
+            .card-meta #severity[data-severity='enhancement'] {
+                color: black;
+                background-color: greenyellow;
+                border-radius: 3px;
+                border-width: 1px;
+                border-style: solid;
+                margin: 5px;
             }
-            .card[data-severity='blocker'],
-            .card[data-severity='critical'],
-            .card[data-severity='major'] {
-                border-right-color: red;
-                border-right-width: 4px;
-                border-right-style: solid;
+            .card-meta #severity[data-severity='blocker'],
+            .card-meta #severity[data-severity='critical'],
+            .card-meta #severity[data-severity='major'] {
+                color: black;
+                background-color: red;
+                border-radius: 3px;
+                border-width: 1px;
+                border-style: solid;
+                margin: 5px;
             }
-            .card[data-severity='minor'],
-            .card[data-severity='trivial'] {
-                border-right-color: lightgrey;
-                border-right-width: 4px;
-                border-right-style: solid;
+            .card-meta #severity[data-severity='minor'],
+            .card-meta #severity[data-severity='trivial'] {
+                color: black;
+                background-color: gray;
+                border-radius: 3px;
+                border-width: 1px;
+                border-style: solid;
+                margin: 5px;
             }
             .card-meta #priority {
                 border-radius: 3px;
@@ -485,11 +494,17 @@
                 priority.innerHTML = bug.priority;
                 priority.dataset.priority = bug.priority;
 
+                var severity = document.createElement('span');
+                severity.setAttribute("id", "severity");
+                severity.innerHTML = bug.severity;
+                severity.dataset.severity = bug.severity;
+
                 card.appendChild(buglink);
                 card.appendChild(summary);
                 card.appendChild(meta);
                 meta.appendChild(icons);
                     icons.appendChild(priority);
+                    icons.appendChild(severity);
                     icons.appendChild(comment);
                     icons.appendChild(deadline);
                 meta.appendChild(fullname);
