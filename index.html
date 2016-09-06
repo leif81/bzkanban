@@ -358,7 +358,7 @@
                     if (response.bugs[bug.id].comments.length > 1) {
                         commentCount = response.bugs[bug.id].comments.length - 1;
                         card.children.cardmeta.children.icons.children.comment.style.visibility = "visible";
-                        card.children.cardmeta.children.icons.children.comment.innerText = " " + commentCount;
+                        card.children.cardmeta.children.icons.children.comment.innerHTML = "<i class='fa fa-comment-o fa-sm'></i> " + commentCount;
                     } else {
                         card.children.cardmeta.children.icons.children.comment.remove();
                     }
@@ -380,7 +380,7 @@
                             // make it a different colour
                         }
                         card.children.cardmeta.children.icons.children.deadline.style.visibility = "visible";
-                        card.children.cardmeta.children.icons.children.deadline.innerText = " " + month[cardDate.getMonth()] + cardDate.getDate();
+                        card.children.cardmeta.children.icons.children.deadline.innerHTML = "<i class='fa fa-calendar-o fa-sm'></i> " + month[cardDate.getMonth()] + cardDate.getDate();
                     } else {
                         card.children.cardmeta.children.icons.children.deadline.remove();
                     }
@@ -482,12 +482,10 @@
 
                 var comment = document.createElement('span');
                 comment.setAttribute("id", "comment");
-                comment.className = "fa fa-comment-o fa-sm";
                 comment.style.visibility = "hidden";
 
                 var deadline = document.createElement('span');
                 deadline.setAttribute("id", "deadline");
-                deadline.className = "fa fa-calendar-o fa-sm";
                 deadline.style.visibility = "hidden";
 
                 var priority = document.createElement('span');
