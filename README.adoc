@@ -25,9 +25,3 @@ https://rawgit.com/leif81/bzkanban/master/index.html?product=Bugzilla&milestone=
 
  . Open the `index.html` in your web brower.
  . Pick a product and milestone and view the board!
-
-== FAQ
-
- . What do the colours on the cards represent?
-  * The left hand side represents the bug priority (e.g. gold is p1)
-  * The right hand side represents the bug severity (e.g. red is > normal, grey is < normal, green is an enhancement)
