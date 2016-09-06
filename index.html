@@ -65,11 +65,17 @@
             .card:hover {
                 box-shadow: 0px 0px 4px steelblue;
             }
+            .card-meta #deadline {
+                margin-right: 5px;
+            }
+            .card-meta #comment {
+                margin-right: 5px;
+            }
             .card-meta #severity {
                 border-radius: 3px;
                 border-width: 1px;
                 border-style: solid;
-                margin: 0px 3px 0px;
+                margin-right: 5px;
                 padding: 1px;
                 font-size: smaller;
             }
@@ -90,7 +96,7 @@
                 border-radius: 3px;
                 border-width: 1px;
                 border-style: solid;
-                margin: 0px 3px 0px;
+                margin-right: 5px;
                 padding: 1px;
                 font-size: smaller;
             }
@@ -478,13 +484,11 @@
                 comment.setAttribute("id", "comment");
                 comment.className = "fa fa-comment-o fa-sm";
                 comment.style.visibility = "hidden";
-                comment.style.margin = "0px 4px 0px";
 
                 var deadline = document.createElement('span');
                 deadline.setAttribute("id", "deadline");
                 deadline.className = "fa fa-calendar-o fa-sm";
                 deadline.style.visibility = "hidden";
-                deadline.style.margin = "0px 4px 0px";
 
                 var priority = document.createElement('span');
                 priority.setAttribute("id", "priority");
