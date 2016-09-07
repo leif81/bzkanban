@@ -353,8 +353,7 @@
 
             function loadComments(bug) {
                 httpGet("/rest/bug/" + bug.id + "/comment?include_fields=id", function(response) {
-                    bugAttr = '[data-bug-id="' + bug.id + '"]';
-                    var card = document.querySelector(bugAttr);
+                    var card = getCardElement(bug.id);
                     if (response.bugs[bug.id].comments.length > 1) {
                         commentCount = response.bugs[bug.id].comments.length - 1;
                         card.children.cardmeta.children.icons.children.comment.style.visibility = "visible";
@@ -367,8 +366,7 @@
 
             function loadDeadline(bug) {
                 httpGet("/rest/bug/" + bug.id + "?include_fields=deadline", function(response) {
-                    bugAttr = '[data-bug-id="' + bug.id + '"]';
-                    var card = document.querySelector(bugAttr);
+                    var card = getCardElement(bug.id);
                     if (response.bugs[0].deadline != undefined && response.bugs[0].deadline != null) {
                         var cardDateArray = response.bugs[0].deadline.split('-');
                         var todayDate = Date.now();
@@ -583,6 +581,11 @@
 
             function getURLParameter(parameter) {
                 return decodeURIComponent((new RegExp('[?|&]' + parameter + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || null;
+            }
+
+            function getCardElement(bugId) {
+                var bugAttr = '[data-bug-id="' + bugId + '"]';
+                return document.querySelector(bugAttr);
             }
 
             function showSpinner() {
