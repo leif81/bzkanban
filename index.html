@@ -322,8 +322,8 @@
                     for (var key in bugs) {
                         bug = bugs[key];
                         addCard(bug);
-                        checkComment(bug);
-                        checkDeadline(bug);
+                        loadComments(bug);
+                        loadDeadline(bug);
                     }
                     if (isLoggedIn()) {
                         loadResolutions();
@@ -376,7 +376,7 @@
                 });
             }
 
-            function checkComment(bug) {
+            function loadComments(bug) {
                 httpGet("/rest/bug/" + bug.id + "/comment?include_fields=id", function(response) {
                     bugAttr = '[data-bug-id="' + bug.id + '"]';
                     var card = document.querySelector(bugAttr);
@@ -390,7 +390,7 @@
                 });
             }
 
-            function checkDeadline(bug) {
+            function loadDeadline(bug) {
                 httpGet("/rest/bug/" + bug.id + "?include_fields=deadline", function(response) {
                     bugAttr = '[data-bug-id="' + bug.id + '"]';
                     var card = document.querySelector(bugAttr);
