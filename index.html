@@ -377,7 +377,18 @@
 
                         var month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
                         if (cardDate > todayDate) {
-                            // make it a different colour
+                            card.children.cardmeta.children.icons.children.deadline.style.color = "red";
+                            daysDifference = Math.round((todayDate - cardDate)/(1000*60*60*24));
+                            console.log(daysDifference);
+                            if (daysDifference >= -7 && daysDifference <= 0) { // One week out
+                                card.children.cardmeta.children.icons.children.deadline.style.color = "orange";
+                            } else if (daysDifference >= -2 && daysDifference <= 0) { // Two days out
+                                card.children.cardmeta.children.icons.children.deadline.style.color = "red";
+                            } else { // Beyond a week, no colour
+                                card.children.cardmeta.children.icons.children.deadline.style.color = "grey";
+                            }
+                        } else { // Has expired
+                            card.children.cardmeta.children.icons.children.deadline.style.color = "red";
                         }
                         card.children.cardmeta.children.icons.children.deadline.style.visibility = "visible";
                         card.children.cardmeta.children.icons.children.deadline.innerHTML = "<i class='fa fa-calendar-o fa-sm'></i> " + cardDate.getDate() + " " + month[cardDate.getMonth()] + " " + cardDate.getFullYear();
