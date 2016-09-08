@@ -582,7 +582,7 @@
                     if (xhr.readyState == XMLHttpRequest.DONE) {
                         var response = xhr.responseText;
                         if (response == "") {
-                            var msg = "No response from " + bzSiteUrl;
+                            var msg = "No response from " + bzSiteUrl + " for request " + url;
                             console.warn(msg);
                             alert(msg);
                             return;
