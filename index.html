@@ -402,6 +402,10 @@
             }
 
             function loadCheckForUpdates() {
+                if (bzBoardLoadTime == "") {
+                    shouldCheckForUpdates = false;
+                    return;
+                }
                 httpGet(bzRestGetBugsUrl + "&last_change_time=" + bzBoardLoadTime, function(response) {
                     if (response.bugs.length > 0) {
                         var bell = document.getElementById("notification");
