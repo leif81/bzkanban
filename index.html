@@ -356,10 +356,8 @@
                     var card = getCardElement(bug.id);
                     if (response.bugs[bug.id].comments.length > 1) {
                         commentCount = response.bugs[bug.id].comments.length - 1;
-                        card.children.cardmeta.children.icons.children.comment.style.visibility = "visible";
+                        card.children.cardmeta.children.icons.children.comment.style.display = null; // unhide it
                         card.children.cardmeta.children.icons.children.comment.innerHTML = "<i class='fa fa-comment-o fa-sm'></i> " + commentCount;
-                    } else {
-                        card.children.cardmeta.children.icons.children.comment.remove();
                     }
                 });
             }
@@ -382,10 +380,8 @@
                         } else { // Has expired
                             card.children.cardmeta.children.icons.children.deadline.style.color = "red";
                         }
-                        card.children.cardmeta.children.icons.children.deadline.style.visibility = "visible";
+                        card.children.cardmeta.children.icons.children.deadline.style.display = null; // unhide it
                         card.children.cardmeta.children.icons.children.deadline.innerHTML = "<i class='fa fa-calendar-o fa-sm'></i> " + cardDate.getDate() + " " + month[cardDate.getMonth()] + " " + cardDate.getFullYear();
-                    } else {
-                        card.children.cardmeta.children.icons.children.deadline.remove();
                     }
                 });
             }
@@ -485,11 +481,11 @@
 
                 var comment = document.createElement('span');
                 comment.setAttribute("id", "comment");
-                comment.style.visibility = "hidden";
+                comment.style.display = "none";
 
                 var deadline = document.createElement('span');
                 deadline.setAttribute("id", "deadline");
-                deadline.style.visibility = "hidden";
+                deadline.style.display = "none";
 
                 var priority = document.createElement('span');
                 priority.setAttribute("id", "priority");
