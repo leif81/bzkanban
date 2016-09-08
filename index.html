@@ -353,8 +353,8 @@
             function loadComments(bug) {
                 httpGet("/rest/bug/" + bug.id + "/comment?include_fields=id", function(response) {
                     var card = getCardElement(bug.id);
-                    if (response.bugs[bug.id].comments.length > 1) {
-                        commentCount = response.bugs[bug.id].comments.length - 1;
+                    var commentCount = response.bugs[bug.id].comments.length - 1;
+                    if (commentCount > 1) {
                         card.children.cardmeta.children.icons.children.comment.style.display = null; // unhide it
                         card.children.cardmeta.children.icons.children.comment.innerHTML = "<i class='fa fa-comment-o fa-sm'></i> " + commentCount;
                     }
