@@ -380,8 +380,15 @@
                     var card = getCardElement(bug.id);
                     var commentCount = response.bugs[bug.id].comments.length - 1;
                     if (commentCount > 1) {
-                        card.children.cardmeta.children.icons.children.comment.style.display = null; // unhide it
-                        card.children.cardmeta.children.icons.children.comment.innerHTML = "<i class='fa fa-comment-o fa-sm'></i> " + commentCount;
+                        var commentElement = card.children.cardmeta.children.icons.children.comment;
+                        commentElement.style.display = null; // unhide it
+
+                        var icon = document.createElement('i');
+                        icon.setAttribute("class", "fa fa-comment-o fa-sm");
+                        icon.style.marginRight = "4px";
+
+                        commentElement.appendChild(icon);
+                        commentElement.appendChild(document.createTextNode(commentCount));
                     }
                 });
             }
