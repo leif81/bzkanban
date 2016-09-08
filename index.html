@@ -8,7 +8,7 @@
                 background-color: ghostwhite;
                 font-family: sans-serif;
                 margin: 0;
-                background: #2980b9 url('animated_background.png') repeat 0 0;
+                background: #2980b9;
                 -webkit-animation: 10s linear 0s normal none infinite animate;
                 -moz-animation: 10s linear 0s normal none infinite animate;
                 -ms-animation: 10s linear 0s normal none infinite animate;
@@ -246,6 +246,7 @@
             var bzComponent = "";
             var bzPriority = "";
             var bzAssignedTo = "";
+            var bzBackground = "";
             var bzOrder = "priority,bug_severity,assigned_to";
             var bzSiteUrl = "http://bugzilla.msec.local";
             var userFullName = "";
@@ -261,6 +262,11 @@
                 bzProduct = getURLParameter('product');
                 bzProductMilestone = getURLParameter('milestone');
                 bzAssignedTo = getURLParameter('assignee');
+                bzBackground = getURLParameter('imgfile');
+
+                if (bzBackground) {
+                    document.body.style.background = "url('"+ bzBackground + "') repeat 0 0";
+                }
 
                 // Allow the Bugzilla site URL to be overriden. Useful for testing.
                 // For most permanent deployments just change the hardcodecoded bzSiteUrl.
