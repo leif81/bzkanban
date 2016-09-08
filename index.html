@@ -284,7 +284,7 @@
                 bzBoardLoadTime = new Date().toISOString();
 
                 bzRestGetBugsUrl = "/rest/bug?product=" + bzProduct;
-                bzRestGetBugsUrl += "&include_fields=summary,status,id,severity,priority,assigned_to,last_updated";
+                bzRestGetBugsUrl += "&include_fields=summary,status,id,severity,priority,assigned_to,last_updated,deadline";
                 bzRestGetBugsUrl += "&order=" + bzOrder;
                 bzRestGetBugsUrl += "&target_milestone=" + bzProductMilestone;
                 bzRestGetBugsUrl += "&component=" + bzComponent;
@@ -298,7 +298,6 @@
                         bug = bugs[key];
                         addCard(bug);
                         loadComments(bug);
-                        loadDeadline(bug);
                     }
                     if (isLoggedIn()) {
                         loadResolutions();
@@ -358,30 +357,6 @@
                         commentCount = response.bugs[bug.id].comments.length - 1;
                         card.children.cardmeta.children.icons.children.comment.style.display = null; // unhide it
                         card.children.cardmeta.children.icons.children.comment.innerHTML = "<i class='fa fa-comment-o fa-sm'></i> " + commentCount;
-                    }
-                });
-            }
-
-            function loadDeadline(bug) {
-                httpGet("/rest/bug/" + bug.id + "?include_fields=deadline", function(response) {
-                    var card = getCardElement(bug.id);
-                    if (response.bugs[0].deadline != undefined && response.bugs[0].deadline != null) {
-                        var cardDateArray = response.bugs[0].deadline.split('-');
-                        var todayDate = Date.now();
-                        var cardDate = new Date();
-                        cardDate.setFullYear(cardDateArray[0], cardDateArray[1] - 1, cardDateArray[2]);
-
-                        var month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
-                        if (cardDate > todayDate) {
-                            daysDifference = Math.round((todayDate - cardDate)/(1000*60*60*24));
-                            if (daysDifference >= -7 && daysDifference <= 0) { // One week out
-                                card.children.cardmeta.children.icons.children.deadline.style.color = "orange";
-                            }
-                        } else { // Has expired
-                            card.children.cardmeta.children.icons.children.deadline.style.color = "red";
-                        }
-                        card.children.cardmeta.children.icons.children.deadline.style.display = null; // unhide it
-                        card.children.cardmeta.children.icons.children.deadline.innerHTML = "<i class='fa fa-calendar-o fa-sm'></i> " + cardDate.getDate() + " " + month[cardDate.getMonth()] + " " + cardDate.getFullYear();
                     }
                 });
             }
@@ -483,9 +458,7 @@
                 comment.setAttribute("id", "comment");
                 comment.style.display = "none";
 
-                var deadline = document.createElement('span');
-                deadline.setAttribute("id", "deadline");
-                deadline.style.display = "none";
+                var deadline = createDeadlineElement(bug.deadline);
 
                 var priority = document.createElement('span');
                 priority.setAttribute("id", "priority");
@@ -514,6 +487,43 @@
 
                 document.getElementById(bug.status).appendChild(card);
             }
+
+            function createDeadlineElement(deadline) {
+                var deadlineElement = document.createElement('span');
+                deadlineElement.setAttribute("id", "deadline");
+
+                if (deadline == undefined || deadline == null) {
+                    deadlineElement.style.display = "none";
+                    return deadlineElement;
+                }
+
+                var month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
+                var todayDate = Date.now();
+                var cardDate = new Date();
+                var dateArray = deadline.split('-');
+                cardDate.setFullYear(dateArray[0], dateArray[1] - 1, dateArray[2]);
+
+                var icon = document.createElement('i');
+                icon.setAttribute("class", "fa fa-calendar-o fa-sm");
+                icon.style.marginRight = "4px";
+
+                var dateText = document.createTextNode(cardDate.getDate() + " " + month[cardDate.getMonth()] + " " + cardDate.getFullYear());
+
+                deadlineElement.appendChild(icon);
+                deadlineElement.appendChild(dateText);
+
+                if (cardDate > todayDate) {
+                    var daysDifference = Math.round((todayDate - cardDate)/(1000*60*60*24));
+                    if (daysDifference >= -7 && daysDifference <= 0) { // One week out
+                        deadlineElement.style.color = "orange";
+                    }
+                } else { // Has expired
+                    deadlineElement.style.color = "red";
+                }
+
+                return deadlineElement;
+            }
+
 
             function clearBoard() {
                 document.getElementById("board").innerHTML = "";
