@@ -697,8 +697,9 @@
             function dragCardEnter(ev) {
                 ev.preventDefault();
 
-                if (ev.dataTransfer.getData("text")) {
-                    var bugData = JSON.parse(ev.dataTransfer.getData("text"));
+                var getCardEvData = ev.dataTransfer.getData("text");
+                if (getCardEvData) {
+                    var bugData = JSON.parse(getCardEvData);
                     if (bugData.status != ev.currentTarget.id) {
                         ev.currentTarget.classList.add("drag-card");
                     }
