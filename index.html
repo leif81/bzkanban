@@ -573,6 +573,7 @@
                         }
 
                         if (obj.error != null) {
+                            hideSpinner();
                             switch (obj.code) {
                                 case 32000:
                                     // auth token has expired
