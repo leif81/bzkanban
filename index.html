@@ -259,7 +259,7 @@
                 showSpinner();
                 httpGet("/rest/field/bug/status/values", function(response) {
                     clearBoard();
-                    statuses = response.values;
+                    var statuses = response.values;
                     for (var key in statuses) {
                         status = statuses[key];
                         addBoardColumn(status);
@@ -292,7 +292,7 @@
                 bzRestGetBugsUrl += "&assigned_to=" + bzAssignedTo;
 
                 httpGet(bzRestGetBugsUrl, function(response) {
-                    bugs = response.bugs;
+                    var bugs = response.bugs;
 
                     for (var key in bugs) {
                         bug = bugs[key];
@@ -370,7 +370,7 @@
 
             function loadName() {
                 httpGet("/rest/user/" + sessionStorage.userID + "?token=" + sessionStorage.userToken, function(response) {
-                    userFullName = response.users[0].real_name;
+                    var userFullName = response.users[0].real_name;
                     if (userFullName != null) {
                         document.getElementById("whoami").textContent = userFullName;
                     }
@@ -434,7 +434,7 @@
                 }
                 document.getElementById("board").appendChild(div);
 
-                title = document.createElement('div');
+                var title = document.createElement('div');
                 title.className = "board-column-title";
                 title.innerHTML = status;
                 document.getElementById(status).appendChild(title);
