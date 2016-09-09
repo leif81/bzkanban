@@ -137,6 +137,7 @@
             #loginForm {
                 display: none;
             }
+            .priority,
             .resolution {
                 height: 5%;
                 background: darkgray;
@@ -318,6 +319,7 @@
                     }
                     if (isLoggedIn()) {
                         loadResolutions();
+                        loadPriorities();
                     }
                     showColumnCounts();
                     hideSpinner();
@@ -415,6 +417,40 @@
 
                     // FIXME: this assumes the column name, but it may have been renamed by the bz instance.
                     document.getElementById("RESOLVED").appendChild(resolutions);
+                });
+            }
+
+            function loadPriorities() {
+                httpGet("/rest/field/bug/priority", function(response) {
+                    // FIXME: this assumes the column name, but it may have been renamed by the bz instance.
+                    var columns = ["CONFIRMED", "IN_PROGRESS"];
+
+                    for (var title = 0; title < columns.length; title++) {
+                        var arrayPriorities = response.fields;
+
+                        var priorities = document.createElement("div");
+                        priorities.className = "priorities";
+                        priorities.hidden = true;
+
+                        var labelbox = document.createElement("div");
+                        labelbox.className = "priority";
+                        labelbox.innerText += "Priority";
+                        labelbox.id = "title";
+                        priorities.appendChild(labelbox);
+
+                        for (var i = 0;  i < arrayPriorities[0].values.length; i++) {
+                            var priorityName = arrayPriorities[0].values[i].name;
+                            if (priorityName != "") {
+                                var box = document.createElement("div");
+                                box.className = "priority";
+                                box.innerText += priorityName;
+                                box.id = priorityName;
+                                priorities.appendChild(box);
+                            }
+                        }
+
+                        document.getElementById(columns[title]).appendChild(priorities);
+                    }
                 });
             }
 
@@ -679,16 +715,20 @@
                 }
             }
 
-            function writeBug(bugID, fromStatus, targetStatus, bugResolution) {
+            function writeBug(bugID, fromStatus, targetStatus, bugResolution, bugPriority) {
                 var urlAppend = "";
 
-                if (targetStatus == fromStatus) {
-                    // Changing to same status, do nothing
+                if ((targetStatus == fromStatus && targetStatus != "IN_PROGRESS") || (targetStatus == "IN_PROGRESS" && bugPriority == "")) {
+                    // Changing to same status, do nothing, or IN_PROGRESS without priority set
                     return;
                 }
 
                 if (bugResolution != "") {
                     urlAppend = "&resolution=" + bugResolution;
+                }
+
+                if (bugPriority != "") {
+                    urlAppend = "&priority=" + bugPriority;
                 }
 
                 var bugComment = ""; // TODO: Comment box popup
@@ -746,11 +786,21 @@
             }
 
             function dragCardStart(ev) {
-                showResolutions(document.getElementById("RESOLVED"));
+                columnTitle = ev.currentTarget.childNodes[0].childNodes[0].data;
+                if (columnTitle == "RESOLVED") {
+                    showResolutions(document.getElementById(columnTitle));
+                } else if (columnTitle == "IN_PROGRESS" || columnTitle == "CONFIRMED") {
+                    showPriorities(document.getElementById(columnTitle));
+                }
             }
 
             function dragCardEnd(ev) {
-                hideResolutions(document.getElementById("RESOLVED"));
+                columnTitle = ev.currentTarget.childNodes[0].childNodes[0].data;
+                if (columnTitle == "RESOLVED") {
+                    hideResolutions(document.getElementById(columnTitle));
+                } else if (columnTitle == "IN_PROGRESS" || columnTitle == "CONFIRMED") {
+                    hidePriorities(document.getElementById(columnTitle));
+                }
             }
 
             function dropCard(ev) {
@@ -768,11 +818,14 @@
 
                 var targetStatus = ev.currentTarget.id;
                 var targetResolution = "";
+                var targetPriority = "";
                 if (ev.target.className == "resolution") {
                     targetResolution = ev.target.id;
+                } else if (ev.target.className == "priority") {
+                    targetPriority = ev.target.id;
                 }
 
-                writeBug(bugData.id, bugData.status, targetStatus, targetResolution);
+                writeBug(bugData.id, bugData.status, targetStatus, targetResolution, targetPriority);
             }
 
             function showResolutions(elem) {
@@ -787,6 +840,22 @@
                 var resolutions = elem.getElementsByClassName("resolutions");
                 for (var i = 0; i < resolutions.length; i++) {
                     resolutions[i].hidden = true;
+                }
+                toggleCards(elem, false);
+            }
+
+            function showPriorities(elem) {
+                var priorities = elem.getElementsByClassName("priorities");
+                for (var i = 0; i < priorities.length; i++) {
+                    priorities[i].hidden = false;
+                }
+                toggleCards(elem, true);
+            }
+
+            function hidePriorities(elem) {
+                var priorities = elem.getElementsByClassName("priorities");
+                for (var i = 0; i < priorities.length; i++) {
+                    priorities[i].hidden = true;
                 }
                 toggleCards(elem, false);
             }
