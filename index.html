@@ -119,6 +119,9 @@
             #textSiteURL {
                 display: none;
             }
+            #textComments {
+                display: none;
+            }
             #queryForm {
                 display: inline-block;
             }
@@ -188,6 +191,9 @@
                     <span>
                         <input type="text" id="textSiteURL" name="site"></input>
                     </span>
+                    <span>
+                        <input type="text" id="textComments" name="comments"></input>
+                    </span>
                     <button type="submit" id="btnSubmit">Submit</button>
                 </fieldset>
             </form>
@@ -229,6 +235,7 @@
             var bzBoardLoadTime = "";
             var bzRestGetBugsUrl = "";
             var shouldCheckForUpdates = true;
+            var shouldLoadComments = true;
 
             window.onload = loadParams;
 
@@ -243,6 +250,14 @@
                 if (site != null) {
                     bzSiteUrl = site;
                     document.getElementById("textSiteURL").value = bzSiteUrl;
+                }
+
+                // Loading comments is expensive becase it's one extra request per bug.
+                // Causing some Bugzilla servers to respond with "too many requests" errors.
+                var comments = getURLParameter('comments');
+                if (comments != null) {
+                    shouldLoadComments = isTrue(comments);
+                    document.getElementById("textComments").value = shouldLoadComments;
                 }
 
                 if (isLoggedIn()) {
@@ -297,7 +312,9 @@
                     for (var key in bugs) {
                         bug = bugs[key];
                         addCard(bug);
-                        loadComments(bug);
+                        if (shouldLoadComments) {
+                            loadComments(bug);
+                        }
                     }
                     if (isLoggedIn()) {
                         loadResolutions();
@@ -779,6 +796,10 @@
                 for (var i = 0; i < cards.length; i++) {
                     cards[i].hidden = state;
                 }
+            }
+
+            function isTrue(string) {
+                return (string === 'true');
             }
 
             // Register event handlers
