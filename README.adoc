@@ -25,3 +25,12 @@ https://rawgit.com/leif81/bzkanban/master/index.html?product=Bugzilla&milestone=
 
  . Open the `index.html` in your web brower.
  . Pick a product and milestone and view the board!
+
+=== Advanced
+
+These are optional settings that can be manually added to the page URL to control the board.
+
+ * `site`
+ ** Override the internal Bugzilla instance URL to load from. e.g. `site=https://bugzilla.mozilla.org`
+ * `comments`
+ ** Disable comment count loading because it's a bit expensive. e.g. `comments=false`
