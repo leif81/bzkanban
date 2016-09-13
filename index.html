@@ -155,6 +155,9 @@
                 border: none;
                 display: table-row;
             }
+            .drop-target-hover {
+                background: gold;
+            }
             #notification {
                 display: none;
             }
@@ -415,7 +418,7 @@
                         var resolutionName = arrayResolutions[0].values[i].name;
                         if (resolutionName != "") {
                             var box = document.createElement("div");
-                            box.className = "resolution";
+                            box.className = "resolution drop-target";
                             box.innerText += resolutionName;
                             box.id = resolutionName;
                             resolutions.appendChild(box);
@@ -449,7 +452,7 @@
                             var priorityName = arrayPriorities[0].values[i].name;
                             if (priorityName != "") {
                                 var box = document.createElement("div");
-                                box.className = "priority";
+                                box.className = "priority drop-target";
                                 box.innerText += priorityName;
                                 box.id = priorityName;
                                 priorities.appendChild(box);
@@ -483,7 +486,7 @@
                             var severityName = arraySeverities[0].values[i].name;
                             if (severityName != "") {
                                 var box = document.createElement("div");
-                                box.className = "severity";
+                                box.className = "severity drop-target";
                                 box.innerText += severityName;
                                 box.id = severityName;
                                 severities.appendChild(box);
@@ -802,10 +805,18 @@
                         ev.currentTarget.classList.add("drag-card");
                     }
                 }
+
+                if (ev.target.classList.contains("drop-target")) {
+                    ev.target.classList.add("drop-target-hover");
+                }
             }
 
             function dragCardLeave(ev) {
                 ev.currentTarget.classList.remove("drag-card");
+
+                if (ev.target.classList.contains("drop-target")) {
+                    ev.target.classList.remove("drop-target-hover");
+                }
             }
 
             function dragCard(ev) {
