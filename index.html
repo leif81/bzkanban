@@ -754,11 +754,6 @@
             function writeBug(bugID, fromStatus, targetStatus, bugResolution, bugPriority, bugSeverity) {
                 var urlAppend = "";
 
-                if ((targetStatus == fromStatus && targetStatus != "IN_PROGRESS") || (targetStatus == "IN_PROGRESS" && bugPriority == "")) {
-                    // Changing to same status, do nothing, or IN_PROGRESS without priority set
-                    return;
-                }
-
                 if (bugResolution != "") {
                     urlAppend = "&resolution=" + bugResolution;
                 }
