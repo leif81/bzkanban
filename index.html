@@ -138,6 +138,7 @@
                 display: none;
             }
             .priority,
+            .severity,
             .resolution {
                 height: 5%;
                 background: darkgray;
@@ -320,6 +321,7 @@
                     if (isLoggedIn()) {
                         loadResolutions();
                         loadPriorities();
+                        loadSeverities();
                     }
                     showColumnCounts();
                     hideSpinner();
@@ -450,6 +452,40 @@
                         }
 
                         document.getElementById(columns[title]).appendChild(priorities);
+                    }
+                });
+            }
+
+            function loadSeverities() {
+                httpGet("/rest/field/bug/bug_severity", function(response) {
+                    // FIXME: this assumes the column name, but it may have been renamed by the bz instance.
+                    var columns = ["CONFIRMED", "IN_PROGRESS"];
+
+                    for (var title = 0; title < columns.length; title++) {
+                        var arraySeverities = response.fields;
+
+                        var severities = document.createElement("div");
+                        severities.className = "severities";
+                        severities.hidden = true;
+
+                        var labelbox = document.createElement("div");
+                        labelbox.className = "severity";
+                        labelbox.innerText += "Severity";
+                        labelbox.id = "title";
+                        severities.appendChild(labelbox);
+
+                        for (var i = 0;  i < arraySeverities[0].values.length; i++) {
+                            var severityName = arraySeverities[0].values[i].name;
+                            if (severityName != "") {
+                                var box = document.createElement("div");
+                                box.className = "severity";
+                                box.innerText += severityName;
+                                box.id = severityName;
+                                severities.appendChild(box);
+                            }
+                        }
+
+                        document.getElementById(columns[title]).appendChild(severities);
                     }
                 });
             }
@@ -715,7 +751,7 @@
                 }
             }
 
-            function writeBug(bugID, fromStatus, targetStatus, bugResolution, bugPriority) {
+            function writeBug(bugID, fromStatus, targetStatus, bugResolution, bugPriority, bugSeverity) {
                 var urlAppend = "";
 
                 if ((targetStatus == fromStatus && targetStatus != "IN_PROGRESS") || (targetStatus == "IN_PROGRESS" && bugPriority == "")) {
@@ -729,6 +765,10 @@
 
                 if (bugPriority != "") {
                     urlAppend = "&priority=" + bugPriority;
+                }
+
+                if (bugSeverity != "") {
+                    urlAppend = "&severity=" + bugSeverity;
                 }
 
                 var bugComment = ""; // TODO: Comment box popup
@@ -791,6 +831,7 @@
                     showResolutions(document.getElementById(columnTitle));
                 } else if (columnTitle == "IN_PROGRESS" || columnTitle == "CONFIRMED") {
                     showPriorities(document.getElementById(columnTitle));
+                    showSeverities(document.getElementById(columnTitle));
                 }
             }
 
@@ -800,6 +841,7 @@
                     hideResolutions(document.getElementById(columnTitle));
                 } else if (columnTitle == "IN_PROGRESS" || columnTitle == "CONFIRMED") {
                     hidePriorities(document.getElementById(columnTitle));
+                    hideSeverities(document.getElementById(columnTitle));
                 }
             }
 
@@ -819,13 +861,16 @@
                 var targetStatus = ev.currentTarget.id;
                 var targetResolution = "";
                 var targetPriority = "";
+                var targetSeverity = "";
                 if (ev.target.className == "resolution") {
                     targetResolution = ev.target.id;
                 } else if (ev.target.className == "priority") {
                     targetPriority = ev.target.id;
+                } else if (ev.target.className == "severity") {
+                    targetSeverity = ev.target.id;
                 }
 
-                writeBug(bugData.id, bugData.status, targetStatus, targetResolution, targetPriority);
+                writeBug(bugData.id, bugData.status, targetStatus, targetResolution, targetPriority, targetSeverity);
             }
 
             function showResolutions(elem) {
@@ -856,6 +901,22 @@
                 var priorities = elem.getElementsByClassName("priorities");
                 for (var i = 0; i < priorities.length; i++) {
                     priorities[i].hidden = true;
+                }
+                toggleCards(elem, false);
+            }
+
+            function showSeverities(elem) {
+                var severities = elem.getElementsByClassName("severities");
+                for (var i = 0; i < severities.length; i++) {
+                    severities[i].hidden = false;
+                }
+                toggleCards(elem, true);
+            }
+
+            function hideSeverities(elem) {
+                var severities = elem.getElementsByClassName("severities");
+                for (var i = 0; i < severities.length; i++) {
+                    severities[i].hidden = true;
                 }
                 toggleCards(elem, false);
             }
