@@ -871,11 +871,11 @@
                 var targetResolution = "";
                 var targetPriority = "";
                 var targetSeverity = "";
-                if (ev.target.classList[0] == "resolution") {
+                if (ev.target.classList.contains("resolution")) {
                     targetResolution = ev.target.id;
-                } else if (ev.target.classList[0] == "priority") {
+                } else if (ev.target.classList.contains("priority")) {
                     targetPriority = ev.target.id;
-                } else if (ev.target.classList[0] == "severity") {
+                } else if (ev.target.classList.contains("severity")) {
                     targetSeverity = ev.target.id;
                 }
 
