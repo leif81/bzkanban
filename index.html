@@ -838,9 +838,8 @@
 
             function dragCardStart(ev) {
                 columnTitle = ev.currentTarget.childNodes[0].childNodes[0].data;
-                if (columnTitle == "RESOLVED") {
-                    showResolutions(document.getElementById(columnTitle));
-                } else if (columnTitle == "IN_PROGRESS" || columnTitle == "CONFIRMED") {
+                if (!(columnTitle == "UNCONFIRMED" || columnTitle == "VERIFIED")) {
+                    showResolutions(document.getElementById("RESOLVED"));
                     showPriorities(document.getElementById(columnTitle));
                     showSeverities(document.getElementById(columnTitle));
                 }
@@ -848,9 +847,8 @@
 
             function dragCardEnd(ev) {
                 columnTitle = ev.currentTarget.childNodes[0].childNodes[0].data;
-                if (columnTitle == "RESOLVED") {
-                    hideResolutions(document.getElementById(columnTitle));
-                } else if (columnTitle == "IN_PROGRESS" || columnTitle == "CONFIRMED") {
+                if (!(columnTitle == "UNCONFIRMED" || columnTitle == "VERIFIED")) {
+                    hideResolutions(document.getElementById("RESOLVED"));
                     hidePriorities(document.getElementById(columnTitle));
                     hideSeverities(document.getElementById(columnTitle));
                 }
