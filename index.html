@@ -782,7 +782,10 @@
 
             function hideSpinner() {
                 var elem = document.getElementById("spinner");
-                elem.removeChild(elem.firstChild);
+                var icon = elem.firstChild;
+                if (icon != undefined) {
+                    elem.removeChild(icon);
+                }
             }
 
             function doAuth(user, password) {
