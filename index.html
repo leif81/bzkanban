@@ -55,7 +55,7 @@
                 padding: 1px;
                 margin-top: 15px;
             }
-            .card-meta #fullname {
+            .card-meta .fullname {
                 float: right;
             }
             .card-meta #icons {
@@ -199,7 +199,7 @@
                     </span>
                     <span>
                         <i class="fa fa-user"></i>
-                        <input id="textAssignee" name="assignee" placeholder="Assignee Email"></input>
+                        <select id="textAssignee" name="assignee" placeholder="Assignee Email" disabled></select>
                     </span>
                     <span>
                         <input type="text" id="textSiteURL" name="site"></input>
@@ -252,6 +252,7 @@
             var bzRestGetBugsUrl = "";
             var shouldCheckForUpdates = true;
             var shouldLoadComments = true;
+            var assignees = new Map();
 
             window.onload = loadParams;
 
@@ -344,6 +345,7 @@
                         loadSeverities();
                     }
                     showColumnCounts();
+                    loadAssigneesList();
                     hideSpinner();
                     scheduleCheckForUpdates();
                 });
@@ -389,6 +391,26 @@
                         loadBoard();
                     }
                 });
+            }
+
+            function loadAssigneesList() {
+                // HACK add phony user so that we can show all users
+                assignees.set( "", { real_name: "ALL", email: "" });
+
+                var sorted = Array.from(assignees.values()).sort(function(a, b) {
+                    return a.real_name.localeCompare(b.real_name);
+                });
+
+                var elem = document.getElementById("textAssignee");
+
+                sorted.forEach(function(assignee) {
+                    var option = document.createElement('option');
+                    option.value = assignee.email;
+                    option.text = assignee.real_name;
+                    elem.appendChild(option);
+                });
+
+                elem.removeAttribute("disabled");
             }
 
             function loadComments(bug) {
@@ -568,7 +590,7 @@
                 meta.setAttribute("id", "cardmeta");
 
                 var fullname = document.createElement('span');
-                fullname.setAttribute("id", "fullname");
+                fullname.className = "fullname";
                 fullname.innerHTML = bug.assigned_to_detail.real_name;
 
                 var icons = document.createElement('span');
@@ -606,6 +628,8 @@
                 }
 
                 document.getElementById(bug.status).appendChild(card);
+
+                assignees.set(bug.assigned_to_detail.email, bug.assigned_to_detail); // save for later
             }
 
             function createDeadlineElement(deadline) {
@@ -651,9 +675,44 @@
 
             function clearMilestonesList() {
                 var elem = document.getElementById("textMilestone");
-                while (elem.firstChild) {
-                    elem.removeChild(elem.firstChild);
-                }
+                removeChildren(elem);
+            }
+
+            function clearAssigneesList() {
+                assignees = new Map();
+                var elem = document.getElementById("textAssignee");
+                removeChildren(elem);
+                elem.setAttribute("disabled", "");
+            }
+
+            function filterByAssignee(name) {
+                var cards = document.querySelectorAll(".card");
+                cards.forEach(function(card) {
+                    var fullname = card.querySelector(".fullname").innerHTML;
+                    if (name == fullname || name == "ALL") {
+                        card.style.display = "block";
+                    } else {
+                        card.style.display = "none";
+                    }
+                });
+
+                // force reload
+                showColumnCounts();
+            }
+
+            function filterByAssignee(name) {
+                var cards = document.querySelectorAll(".card");
+                cards.forEach(function(card) {
+                    var fullname = card.querySelector(".fullname").innerHTML;
+                    if (name != fullname) {
+                        card.style.display = "none";
+                    } else {
+                        card.style.display = "block";
+                    }
+                });
+
+                // force reload
+                showColumnCounts();
             }
 
             function httpPut(url, dataObj, successCallback, errorCallback) {
@@ -761,14 +820,27 @@
             }
 
             function showColumnCounts() {
-                var cols = document.getElementsByClassName("board-column");
-                for (var i = 0; i < cols.length; i++) {
-                    var cardCount = document.createElement('span');
+                var cols = document.querySelectorAll(".board-column");
+                cols.forEach(function(col) {
+                    var cardCount = col.querySelector(".board-column-card-count");
+                    if (cardCount != undefined) {
+                        cardCount.remove();
+                    }
+                    cardCount = document.createElement('span');
                     cardCount.className = "board-column-card-count";
-                    cardCount.innerText += "(" + cols[i].getElementsByClassName("card").length + ")";
-                    var title = cols[i].firstChild;
+
+                    var cards = col.querySelectorAll(".card");
+                    var count = 0;
+                    cards.forEach(function(card) {
+                        // Account for filtered out cards
+                        if (card.style.display != "none") {
+                            count++;
+                        }
+                    });
+                    cardCount.innerText += "(" + count + ")";
+                    var title = col.firstChild;
                     title.appendChild(cardCount);
-                }
+                });
             }
 
             function writeBug(bugID, fromStatus, targetStatus, bugResolution, bugPriority, bugSeverity) {
@@ -974,11 +1046,28 @@
                 return (string === 'true');
             }
 
+            function removeChildren(elem) {
+                while (elem.firstChild) {
+                    elem.removeChild(elem.firstChild);
+                }
+            }
+
             // Register event handlers
             document.getElementById("textProduct").addEventListener("input", function() {
-                // Clear any previous milestone selection.
+                // Clear any previous selections.
                 bzProductMilestone = "";
                 loadMilestonesList();
+                clearAssigneesList();
+                });
+
+            document.getElementById("textMilestone").addEventListener("input", function() {
+                clearAssigneesList();
+                });
+
+            document.getElementById("textAssignee").addEventListener("input", function() {
+                var email = document.getElementById("textAssignee").value;
+                var name = assignees.get(email).real_name;
+                filterByAssignee(name);
                 });
 
             document.getElementById("btnCreate").addEventListener("click", function() {
