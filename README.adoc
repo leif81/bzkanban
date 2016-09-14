@@ -34,3 +34,5 @@ These are optional settings that can be manually added to the page URL to contro
  ** Override the internal Bugzilla instance URL to load from. e.g. `site=https://bugzilla.mozilla.org`
  * `comments`
  ** Disable comment count loading because it's a bit expensive. e.g. `comments=false`
+ * `autocomments`
+ ** Enable auto comments when making changes to bugs. e.g. `autocomment=true`
