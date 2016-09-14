@@ -700,21 +700,6 @@
                 showColumnCounts();
             }
 
-            function filterByAssignee(name) {
-                var cards = document.querySelectorAll(".card");
-                cards.forEach(function(card) {
-                    var fullname = card.querySelector(".fullname").innerHTML;
-                    if (name != fullname) {
-                        card.style.display = "none";
-                    } else {
-                        card.style.display = "block";
-                    }
-                });
-
-                // force reload
-                showColumnCounts();
-            }
-
             function httpPut(url, dataObj, successCallback, errorCallback) {
                 httpRequest("PUT", url, dataObj, successCallback, errorCallback);
             }
