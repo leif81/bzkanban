@@ -122,6 +122,9 @@
             #textComments {
                 display: none;
             }
+            #textAutoComment {
+                display: none;
+            }
             #queryForm {
                 display: inline-block;
             }
@@ -204,6 +207,9 @@
                     <span>
                         <input type="text" id="textComments" name="comments"></input>
                     </span>
+                    <span>
+                        <input type="text" id="textAutoComment" name="autocomment"></input>
+                    </span>
                     <button type="submit" id="btnSubmit">Submit</button>
                 </fieldset>
             </form>
@@ -268,6 +274,12 @@
                 if (comments != null) {
                     shouldLoadComments = isTrue(comments);
                     document.getElementById("textComments").value = shouldLoadComments;
+                }
+
+                var autocomment = getURLParameter('autocomment');
+                if (autocomment != null) {
+                    shouldAutoComment = isTrue(autocomment);
+                    document.getElementById("textAutoComment").value = shouldAutoComment;
                 }
 
                 if (isLoggedIn()) {
@@ -644,15 +656,15 @@
                 }
             }
 
-            function httpPut(url, successCallback, errorCallback) {
-                httpRequest("PUT", url, successCallback, errorCallback);
+            function httpPut(url, dataObj, successCallback, errorCallback) {
+                httpRequest("PUT", url, dataObj, successCallback, errorCallback);
             }
 
             function httpGet(url, successCallback, errorCallback) {
-                httpRequest("GET", url, successCallback, errorCallback);
+                httpRequest("GET", url, "", successCallback, errorCallback);
             }
 
-            function httpRequest(method, url, successCallback, errorCallback) {
+            function httpRequest(method, url, dataObj, successCallback, errorCallback) {
                 var xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState == XMLHttpRequest.DONE) {
@@ -691,7 +703,7 @@
                 }
                 xhr.open(method, bzSiteUrl + url);
                 xhr.setRequestHeader("Accept", "application/json");
-                xhr.send();
+                xhr.send(JSON.stringify(dataObj));
             }
 
             function getURLParameter(parameter) {
@@ -760,27 +772,48 @@
             }
 
             function writeBug(bugID, fromStatus, targetStatus, bugResolution, bugPriority, bugSeverity) {
-                var urlAppend = "";
+                var dataObj = {
+                    status: targetStatus,
+                    resolution : "",
+                    priority : "",
+                    severity : "",
+                    token : sessionStorage.userToken,
+                    comment : ""
+                }
 
                 if (bugResolution != "") {
-                    urlAppend = "&resolution=" + bugResolution;
+                    dataObj.resolution = bugResolution;
+                } else {
+                    delete dataObj.resolution;
                 }
 
                 if (bugPriority != "") {
-                    urlAppend = "&priority=" + bugPriority;
+                    dataObj.priority = bugPriority;
+                } else {
+                    delete dataObj.priority;
                 }
 
                 if (bugSeverity != "") {
-                    urlAppend = "&severity=" + bugSeverity;
+                    dataObj.severity = bugSeverity;
+                } else {
+                    delete dataObj.severity;
                 }
 
-                var bugComment = ""; // TODO: Comment box popup
-                if (bugComment != "") {
-                    urlAppend += "&comment=" + bugComment;
+                var bugComment = { body : "" };
+
+                // TODO: Comment box popup
+                if (shouldAutoComment) {
+                    bugComment.body = "Auto-comment from bzKanban";
+                }
+
+                if (bugComment.body != "") {
+                    dataObj.comment = bugComment;
+                } else {
+                    delete dataObj.comment;
                 }
 
                 // TODO: maybe check if bugID != number
-                httpPut("/rest/bug/" + bugID + "?status=" + targetStatus + urlAppend + "&token=" + sessionStorage.userToken, function() {
+                httpPut("/rest/bug/" + bugID, dataObj, function() {
                     loadBoard();
                 });
             }
