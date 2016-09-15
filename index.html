@@ -460,6 +460,12 @@
                     resolutions.className = "resolutions";
                     resolutions.hidden = true;
 
+                    var labelbox = document.createElement("div");
+                    labelbox.className = "resolution";
+                    labelbox.innerText += "Resolution";
+                    labelbox.id = "title";
+                    resolutions.appendChild(labelbox);
+
                     for (var i = 0;  i < arrayResolutions[0].values.length; i++) {
                         var resolutionName = arrayResolutions[0].values[i].name;
                         if (resolutionName != "") {
