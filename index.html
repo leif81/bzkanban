@@ -287,6 +287,11 @@
                     hideSignInButton();
                 }
 
+                // Disable input fields until response is complete.
+                // Having the user keep clicking the drop down isn't nice.
+                document.getElementById("textProduct").disabled = true;
+                document.getElementById("textMilestone").disabled = true;
+
                 loadProductsList();
 
                 document.getElementById("textAssignee").value = bzAssignedTo
@@ -353,6 +358,7 @@
 
             function loadProductsList() {
                 httpGet("/rest/product?type=enterable&include_fields=name", function(response) {
+                    document.getElementById("textProduct").disabled = false;
                     var products = response.products;
                     products.sort(function(a, b) {
                         return a.name.localeCompare(b.name);
@@ -376,6 +382,7 @@
                 bzProduct = document.getElementById("textProduct").value;
                 clearMilestonesList();
                 httpGet("/rest/product?names=" + bzProduct + "&include_fields=milestones", function(response) {
+                    document.getElementById("textMilestone").disabled = false;
                     var milestones = response.products[0].milestones;
                     for (var key in milestones) {
                         var milestone = milestones[key];
@@ -1041,6 +1048,8 @@
 
             // Register event handlers
             document.getElementById("textProduct").addEventListener("input", function() {
+                // Disable Milestones until it's refreshed
+                document.getElementById("textMilestone").disabled = true;
                 // Clear any previous selections.
                 bzProductMilestone = "";
                 loadMilestonesList();
