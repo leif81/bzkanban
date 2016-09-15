@@ -8,6 +8,9 @@
                 background-color: ghostwhite;
                 font-family: sans-serif;
                 margin: 0;
+                display: flex;
+                height: 100%;
+                flex-direction: column;
             }
             #board {
                 width: 100%;
@@ -29,6 +32,9 @@
                 flex: 1;
                 vertical-align: top;
                 min-width: 0;
+                overflow-y: auto;
+                overflow-x: hidden;
+                flex-wrap: wrap;
             }
             .board-column.drag-card {
                 outline-width: 2px;
@@ -170,6 +176,7 @@
                 display: none;
             }
             #nav {
+                flex: none;
                 display: flex;
                 flex-wrap: wrap;
                 padding: 5px;
