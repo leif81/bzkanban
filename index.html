@@ -264,8 +264,8 @@
             var shouldLoadComments = true;
             var shouldAutoComment = false;
             var assignees = new Map();
-            var lowestPriority;
-            var lowestSeverity;
+            var defaultPriority;
+            var defaultSeverity;
 
             window.onload = loadParams;
 
@@ -361,6 +361,8 @@
                         loadResolutions();
                         loadPriorities();
                         loadSeverities();
+                        loadDefaultPriority();
+                        loadDefaultSeverity();
                         showBacklog();
                     }
                     showColumnCounts();
@@ -519,7 +521,6 @@
                                 priorities.appendChild(box);
                             }
                         }
-                        lowestPriority = priorityName;
 
                         document.getElementById(columns[title]).appendChild(priorities);
                     }
@@ -557,7 +558,6 @@
 
                         document.getElementById(columns[title]).appendChild(severities);
                     }
-                    lowestSeverity = severityName;
                 });
             }
 
@@ -577,6 +577,18 @@
                         // Repeat.
                         scheduleCheckForUpdates();
                     }
+                });
+            }
+
+            function loadDefaultPriority() {
+                httpGet("/rest/parameters?token=" + sessionStorage.userToken, function(response) {
+                    defaultPriority = response.parameters.defaultpriority;
+                });
+            }
+
+            function loadDefaultSeverity() {
+                httpGet("/rest/parameters?token=" + sessionStorage.userToken, function(response) {
+                    defaultSeverity = response.parameters.severity;
                 });
             }
 
@@ -1093,8 +1105,8 @@
 
                 var targetStatus = "CONFIRMED";
                 var targetResolution = "";
-                var targetPriority = lowestPriority;
-                var targetSeverity = lowestSeverity;
+                var targetPriority = defaultPriority;
+                var targetSeverity = defaultSeverity;
 
                 httpGet("/rest/product/" + bzProduct + "?type=enterable&include_fields=default_milestone", function(response) {
                     writeBug(bugData.id, bugData.status, targetStatus, targetResolution, targetPriority, targetSeverity);
