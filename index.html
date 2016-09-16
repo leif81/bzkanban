@@ -121,6 +121,18 @@
                 border-style: solid;
                 border-color: white;
             }
+            #textBacklog {
+                width: 100px;
+                height: 40px;
+                border-style: solid;
+                border-color: white;
+                border-width: thin;
+                text-align: center;
+                align-self: center;
+                display: none;
+                font-size: small;
+                margin-left: 15px;
+            }
             #queryForm {
                 display: inline-block;
             }
@@ -210,6 +222,7 @@
                     <button type="submit" id="btnSubmit">Submit</button>
                 </fieldset>
             </form>
+            <div id="textBacklog" class="drop-target" ondragenter="return dragCardEnter(event)" ondrop="return dropBacklog(event)" ondragover="return dragCardOver(event)" ondragleave="return dragCardLeave(event)">Backlog</div>
             <form id="loginForm">
                 <fieldset>
                     <legend>Login</legend>
@@ -251,6 +264,9 @@
             var shouldLoadComments = true;
             var shouldAutoComment = false;
             var assignees = new Map();
+            var defaultPriority;
+            var defaultSeverity;
+            var defaultMilestone;
 
             window.onload = loadParams;
 
@@ -346,6 +362,8 @@
                         loadResolutions();
                         loadPriorities();
                         loadSeverities();
+                        loadDefaultPrioritySeverity();
+                        loadDefaultMilestone();
                     }
                     showColumnCounts();
                     loadAssigneesList();
@@ -560,6 +578,27 @@
                         scheduleCheckForUpdates();
                     }
                 });
+            }
+
+            function loadDefaultPrioritySeverity() {
+                httpGet("/rest/parameters?token=" + sessionStorage.userToken, function(response) {
+                    defaultPriority = response.parameters.defaultpriority;
+                    defaultSeverity = response.parameters.defaultseverity;
+                });
+            }
+
+            function loadDefaultMilestone() {
+                httpGet("/rest/product/" + bzProduct + "?type=enterable&include_fields=default_milestone", function(response) {
+                    defaultMilestone = response.products[0].default_milestone;
+                });
+            }
+
+            function showBacklog(state) {
+                if (state) {
+                    document.getElementById("textBacklog").style.display = "inline-block";
+                } else {
+                    document.getElementById("textBacklog").style.display = "none";
+                }
             }
 
             function addBoardColumn(status) {
@@ -842,14 +881,15 @@
                 });
             }
 
-            function writeBug(bugID, fromStatus, targetStatus, bugResolution, bugPriority, bugSeverity) {
+            function writeBug(bugID, fromStatus, targetStatus, bugResolution, bugPriority, bugSeverity, bugMilestone) {
                 var dataObj = {
                     status: targetStatus,
                     resolution : "",
                     priority : "",
                     severity : "",
                     token : sessionStorage.userToken,
-                    comment : ""
+                    comment : "",
+                    target_milestone : ""
                 }
 
                 if (bugResolution != "") {
@@ -862,6 +902,12 @@
                     dataObj.priority = bugPriority;
                 } else {
                     delete dataObj.priority;
+                }
+
+                if (bugMilestone != "") {
+                    dataObj.target_milestone = bugMilestone;
+                } else {
+                    delete dataObj.target_milestone;
                 }
 
                 if (bugSeverity != "") {
@@ -947,6 +993,7 @@
                     showPriorities(document.getElementById(columnTitle));
                     showSeverities(document.getElementById(columnTitle));
                 }
+                showBacklog(true);
             }
 
             function dragCardEnd(ev) {
@@ -956,6 +1003,7 @@
                     hidePriorities(document.getElementById(columnTitle));
                     hideSeverities(document.getElementById(columnTitle));
                 }
+                showBacklog(false);
             }
 
             function dropCard(ev) {
@@ -983,7 +1031,24 @@
                     targetSeverity = ev.target.id;
                 }
 
-                writeBug(bugData.id, bugData.status, targetStatus, targetResolution, targetPriority, targetSeverity);
+                writeBug(bugData.id, bugData.status, targetStatus, targetResolution, targetPriority, targetSeverity, "");
+            }
+
+            function dropBacklog(ev) {
+                if (ev.target.classList.contains("drop-target")) {
+                    ev.target.classList.remove("drop-target-hover");
+                }
+                ev.preventDefault();
+
+                var bugData = JSON.parse(ev.dataTransfer.getData("text"));
+
+                var targetStatus = "CONFIRMED";
+                var targetResolution = "";
+                var targetPriority = defaultPriority;
+                var targetSeverity = defaultSeverity;
+
+                writeBug(bugData.id, bugData.status, targetStatus, targetResolution, targetPriority, targetSeverity, defaultMilestone);
+
             }
 
             function showResolutions(elem) {
