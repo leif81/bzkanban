@@ -123,10 +123,12 @@
             }
             #textBacklog {
                 width: 100px;
+                height: 40px;
                 border-style: solid;
                 border-color: white;
                 border-width: thin;
                 text-align: center;
+                align-self: center;
                 display: none;
                 font-size: small;
                 margin-left: 15px;
@@ -218,11 +220,9 @@
                         <input type="text" id="textAutoComment" name="autocomment"></input>
                     </span>
                     <button type="submit" id="btnSubmit">Submit</button>
-                    <span>
-                        <div id="textBacklog" class="drop-target" ondragenter="return dragCardEnter(event)" ondrop="return dropBacklog(event)" ondragover="return dragCardOver(event)" ondragleave="return dragCardLeave(event)">Backlog</div>
-                    </span>
                 </fieldset>
             </form>
+            <div id="textBacklog" class="drop-target" ondragenter="return dragCardEnter(event)" ondrop="return dropBacklog(event)" ondragover="return dragCardOver(event)" ondragleave="return dragCardLeave(event)">Backlog</div>
             <form id="loginForm">
                 <fieldset>
                     <legend>Login</legend>
@@ -362,7 +362,6 @@
                         loadPriorities();
                         loadSeverities();
                         loadDefaultPrioritySeverity();
-                        showBacklog();
                     }
                     showColumnCounts();
                     loadAssigneesList();
@@ -586,8 +585,12 @@
                 });
             }
 
-            function showBacklog() {
-                document.getElementById("textBacklog").style.display = "inline-block";
+            function showBacklog(state) {
+                if (state) {
+                    document.getElementById("textBacklog").style.display = "inline-block";
+                } else {
+                    document.getElementById("textBacklog").style.display = "none";
+                }
             }
 
             function addBoardColumn(status) {
@@ -975,6 +978,7 @@
                     showPriorities(document.getElementById(columnTitle));
                     showSeverities(document.getElementById(columnTitle));
                 }
+                showBacklog(true);
             }
 
             function dragCardEnd(ev) {
@@ -984,6 +988,7 @@
                     hidePriorities(document.getElementById(columnTitle));
                     hideSeverities(document.getElementById(columnTitle));
                 }
+                showBacklog(false);
             }
 
             function dropCard(ev) {
