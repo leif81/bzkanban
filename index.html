@@ -219,7 +219,7 @@
                     </span>
                     <button type="submit" id="btnSubmit">Submit</button>
                     <span>
-                        <div id="textBacklog" class="drop-target" ondragenter="return dragBacklogEnter(event)" ondrop="return dragBacklogDrop(event)" ondragover="return dragBacklogOver(event)" ondragleave="return dragBacklogLeave(event)">Backlog</div>
+                        <div id="textBacklog" class="drop-target" ondragenter="return dragCardEnter(event)" ondrop="return dropBacklog(event)" ondragover="return dragCardOver(event)" ondragleave="return dragCardLeave(event)">Backlog</div>
                     </span>
                 </fieldset>
             </form>
@@ -1014,6 +1014,25 @@
                 writeBug(bugData.id, bugData.status, targetStatus, targetResolution, targetPriority, targetSeverity);
             }
 
+            function dropBacklog(ev) {
+                if (ev.target.classList.contains("drop-target")) {
+                    ev.target.classList.remove("drop-target-hover");
+                }
+                ev.preventDefault();
+
+                var bugData = JSON.parse(ev.dataTransfer.getData("text"));
+
+                var targetStatus = "CONFIRMED";
+                var targetResolution = "";
+                var targetPriority = defaultPriority;
+                var targetSeverity = defaultSeverity;
+
+                httpGet("/rest/product/" + bzProduct + "?type=enterable&include_fields=default_milestone", function(response) {
+                    writeBug(bugData.id, bugData.status, targetStatus, targetResolution, targetPriority, targetSeverity);
+                });
+
+            }
+
             function showResolutions(elem) {
                 var resolutions = elem.getElementsByClassName("resolutions");
                 for (var i = 0; i < resolutions.length; i++) {
@@ -1076,41 +1095,6 @@
             function removeChildren(elem) {
                 while (elem.firstChild) {
                     elem.removeChild(elem.firstChild);
-                }
-            }
-
-            function dragBacklogEnter(ev) {
-                ev.preventDefault();
-                return true;
-            }
-            function dragBacklogOver(ev) {
-                ev.preventDefault();
-                if (ev.target.classList.contains("drop-target")) {
-                    ev.target.classList.add("drop-target-hover");
-                }
-            }
-            function dragBacklogDrop(ev) {
-                if (ev.target.classList.contains("drop-target")) {
-                    ev.target.classList.remove("drop-target-hover");
-                }
-                ev.preventDefault();
-
-                var bugData = JSON.parse(ev.dataTransfer.getData("text"));
-
-                var targetStatus = "CONFIRMED";
-                var targetResolution = "";
-                var targetPriority = defaultPriority;
-                var targetSeverity = defaultSeverity;
-
-                httpGet("/rest/product/" + bzProduct + "?type=enterable&include_fields=default_milestone", function(response) {
-                    writeBug(bugData.id, bugData.status, targetStatus, targetResolution, targetPriority, targetSeverity);
-                });
-
-            }
-
-            function dragBacklogLeave(ev) {
-                if (ev.target.classList.contains("drop-target")) {
-                    ev.target.classList.remove("drop-target-hover");
                 }
             }
 
