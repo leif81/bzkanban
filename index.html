@@ -361,8 +361,7 @@
                         loadResolutions();
                         loadPriorities();
                         loadSeverities();
-                        loadDefaultPriority();
-                        loadDefaultSeverity();
+                        loadDefaultPrioritySeverity();
                         showBacklog();
                     }
                     showColumnCounts();
@@ -580,15 +579,10 @@
                 });
             }
 
-            function loadDefaultPriority() {
+            function loadDefaultPrioritySeverity() {
                 httpGet("/rest/parameters?token=" + sessionStorage.userToken, function(response) {
                     defaultPriority = response.parameters.defaultpriority;
-                });
-            }
-
-            function loadDefaultSeverity() {
-                httpGet("/rest/parameters?token=" + sessionStorage.userToken, function(response) {
-                    defaultSeverity = response.parameters.severity;
+                    defaultSeverity = response.parameters.defaultseverity;
                 });
             }
 
