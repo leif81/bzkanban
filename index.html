@@ -121,15 +121,6 @@
                 border-style: solid;
                 border-color: white;
             }
-            #textSiteURL {
-                display: none;
-            }
-            #textComments {
-                display: none;
-            }
-            #textAutoComment {
-                display: none;
-            }
             #queryForm {
                 display: inline-block;
             }
@@ -207,13 +198,13 @@
                         <i class="fa fa-user"></i>
                         <select id="textAssignee" name="assignee" placeholder="Assignee Email" disabled></select>
                     </span>
-                    <span>
+                    <span style="display:none;">
                         <input type="text" id="textSiteURL" name="site"></input>
                     </span>
-                    <span>
+                    <span style="display:none;">
                         <input type="text" id="textComments" name="comments"></input>
                     </span>
-                    <span>
+                    <span style="display:none;">
                         <input type="text" id="textAutoComment" name="autocomment"></input>
                     </span>
                     <button type="submit" id="btnSubmit">Submit</button>
