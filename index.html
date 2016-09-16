@@ -873,14 +873,15 @@
                 });
             }
 
-            function writeBug(bugID, fromStatus, targetStatus, bugResolution, bugPriority, bugSeverity) {
+            function writeBug(bugID, fromStatus, targetStatus, bugResolution, bugPriority, bugSeverity, bugMilestone) {
                 var dataObj = {
                     status: targetStatus,
                     resolution : "",
                     priority : "",
                     severity : "",
                     token : sessionStorage.userToken,
-                    comment : ""
+                    comment : "",
+                    target_milestone : ""
                 }
 
                 if (bugResolution != "") {
@@ -893,6 +894,12 @@
                     dataObj.priority = bugPriority;
                 } else {
                     delete dataObj.priority;
+                }
+
+                if (bugMilestone != "") {
+                    dataObj.target_milestone = bugMilestone;
+                } else {
+                    delete dataObj.target_milestone;
                 }
 
                 if (bugSeverity != "") {
@@ -1016,7 +1023,7 @@
                     targetSeverity = ev.target.id;
                 }
 
-                writeBug(bugData.id, bugData.status, targetStatus, targetResolution, targetPriority, targetSeverity);
+                writeBug(bugData.id, bugData.status, targetStatus, targetResolution, targetPriority, targetSeverity, "");
             }
 
             function dropBacklog(ev) {
@@ -1033,7 +1040,7 @@
                 var targetSeverity = defaultSeverity;
 
                 httpGet("/rest/product/" + bzProduct + "?type=enterable&include_fields=default_milestone", function(response) {
-                    writeBug(bugData.id, bugData.status, targetStatus, targetResolution, targetPriority, targetSeverity);
+                    writeBug(bugData.id, bugData.status, targetStatus, targetResolution, targetPriority, targetSeverity, response.products[0].default_milestone);
                 });
 
             }
