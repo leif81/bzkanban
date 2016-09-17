@@ -473,7 +473,7 @@
 
                     var labelbox = document.createElement("div");
                     labelbox.className = "resolution";
-                    labelbox.innerText += "Resolution";
+                    labelbox.innerText += arrayResolutions[0].display_name;
                     labelbox.id = "title";
                     resolutions.appendChild(labelbox);
 
@@ -507,7 +507,7 @@
 
                         var labelbox = document.createElement("div");
                         labelbox.className = "priority";
-                        labelbox.innerText += "Priority";
+                        labelbox.innerText += arrayPriorities[0].display_name;
                         labelbox.id = "title";
                         priorities.appendChild(labelbox);
 
@@ -541,7 +541,7 @@
 
                         var labelbox = document.createElement("div");
                         labelbox.className = "severity";
-                        labelbox.innerText += "Severity";
+                        labelbox.innerText += arraySeverities[0].display_name;
                         labelbox.id = "title";
                         severities.appendChild(labelbox);
 
