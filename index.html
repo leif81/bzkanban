@@ -331,6 +331,13 @@
                         });
                     }
                     loadBugs();
+                    if (isLoggedIn()) {
+                        loadResolutions();
+                        loadPriorities();
+                        loadSeverities();
+                        loadDefaultPrioritySeverity();
+                        loadDefaultMilestone();
+                    }
                 });
             }
 
@@ -354,13 +361,6 @@
                     for (var key in bugs) {
                         bug = bugs[key];
                         addCard(bug);
-                    }
-                    if (isLoggedIn()) {
-                        loadResolutions();
-                        loadPriorities();
-                        loadSeverities();
-                        loadDefaultPrioritySeverity();
-                        loadDefaultMilestone();
                     }
                     showColumnCounts();
                     loadAssigneesList();
