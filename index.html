@@ -455,7 +455,7 @@
             }
 
             function loadName() {
-                httpGet("/rest/user/" + sessionStorage.userID + "?token=" + sessionStorage.userToken, function(response) {
+                httpGet("/rest/user/" + localStorage.userID + "?token=" + localStorage.userToken, function(response) {
                     userFullName = response.users[0].real_name;
                     if (userFullName != null) {
                         document.getElementById("whoami").textContent = userFullName;
@@ -581,7 +581,7 @@
             }
 
             function loadDefaultPrioritySeverity() {
-                httpGet("/rest/parameters?token=" + sessionStorage.userToken, function(response) {
+                httpGet("/rest/parameters?token=" + localStorage.userToken, function(response) {
                     defaultPriority = response.parameters.defaultpriority;
                     defaultSeverity = response.parameters.defaultseverity;
                 });
@@ -780,8 +780,8 @@
                             switch (obj.code) {
                                 case 32000:
                                     // auth token has expired
-                                    sessionStorage.removeItem("userID");
-                                    sessionStorage.removeItem("userToken");
+                                    localStorage.removeItem("userID");
+                                    localStorage.removeItem("userToken");
                                     break;
                             }
 
@@ -827,8 +827,8 @@
                 showSpinner();
                 httpGet("/rest/login?login=" + user + "&password=" + password, function(response) {
                     hideSpinner();
-                    sessionStorage.userID = response.id;
-                    sessionStorage.userToken = response.token;
+                    localStorage.userID = response.id;
+                    localStorage.userToken = response.token;
                     loadName();
                     // Rebuild the board so dnd events are registered.
                     if (bzProduct != null || bzAssignedTo != null) {
@@ -839,7 +839,7 @@
             }
 
             function isLoggedIn() {
-                return sessionStorage.userToken != null;
+                return localStorage.userToken != null;
             }
 
             function showLoginForm() {
@@ -887,7 +887,7 @@
                     resolution : "",
                     priority : "",
                     severity : "",
-                    token : sessionStorage.userToken,
+                    token : localStorage.userToken,
                     comment : "",
                     target_milestone : ""
                 }
