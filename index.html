@@ -354,9 +354,6 @@
                     for (var key in bugs) {
                         bug = bugs[key];
                         addCard(bug);
-                        if (shouldLoadComments) {
-                            loadComments(bug);
-                        }
                     }
                     if (isLoggedIn()) {
                         loadResolutions();
@@ -675,6 +672,10 @@
                 if (isLoggedIn()) {
                     card.draggable = "true";
                     card.addEventListener('dragstart', dragCard);
+                }
+
+                if (shouldLoadComments) {
+                    loadComments(bug);
                 }
 
                 document.getElementById(bug.status).appendChild(card);
