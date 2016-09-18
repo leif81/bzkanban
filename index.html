@@ -5,7 +5,8 @@
 
         <style>
             body {
-                background-color: ghostwhite;
+                background-color: lightsteelblue;
+                background: linear-gradient(to bottom, rgba(207,231,250,1) 0%,rgba(99,147,193,1) 100%);
                 font-family: sans-serif;
                 margin: 0;
                 display: flex;
@@ -39,12 +40,12 @@
             .board-column.drag-card {
                 outline-width: 2px;
                 outline-style: dashed;
-                outline-color: lightgrey;
+                outline-color: grey;
             }
             .card {
                 background-color: white;
                 border-width: 1px;
-                border-color: lightgrey;
+                border-color: grey;
                 border-style: solid;
                 padding: 10px;
                 margin: 5px;
@@ -117,9 +118,7 @@
                 color: green;
             }
             fieldset {
-                border-width: 1;
-                border-style: solid;
-                border-color: white;
+                border-width: 0;
             }
             #textBacklog {
                 width: 100px;
@@ -135,6 +134,7 @@
             }
             #queryForm {
                 display: inline-block;
+                padding-top: 20px; /* To line up with login button */
             }
             #queryForm .fa {
                 vertical-align: middle;
@@ -177,10 +177,9 @@
                 display: flex;
                 flex-wrap: wrap;
                 padding: 5px;
-                background-color: lightsteelblue;
-                border-bottom-width: thick;
+                border-bottom-width: 1px;
                 border-bottom-style: solid;
-                border-bottom-color: lightgrey;
+                border-bottom-color: ghostwhite;
             }
             #nav span {
                 align-self: center;
@@ -197,7 +196,6 @@
         <div id="nav">
             <form id="queryForm" action="index.html" method="get">
                 <fieldset>
-                    <legend>Bz Kanban Board</legend>
                     <span>
                         <i class="fa fa-book"></i>
                         <select id="textProduct" name="product" placeholder="Product"></select>
