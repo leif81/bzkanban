@@ -55,8 +55,11 @@
             .card:hover {
                 box-shadow: 0px 0px 4px steelblue;
             }
+            .card-ref {
+                font-size: smaller;
+            }
             .card-summary {
-                margin-left: 5px
+                padding-top: 5px;
             }
             .card-meta {
                 font-size: smaller;
@@ -626,7 +629,7 @@
                 buglink.innerHTML = "#" + bug.id;
                 buglink.className = "card-ref";
 
-                var summary = document.createElement('span');
+                var summary = document.createElement('div');
                 summary.appendChild(document.createTextNode(bug.summary)); // so that we get HTML string escaping for free
                 summary.className = "card-summary";
 
