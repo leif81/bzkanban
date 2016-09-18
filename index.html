@@ -787,6 +787,7 @@
                                 case 32000:
                                     // auth token has expired
                                     localStorage.removeItem(bzSiteUrl);
+                                    showSignInButton();
                                     break;
                             }
 
@@ -856,6 +857,10 @@
             function hideLoginForm() {
                 var elem = document.getElementById("loginForm");
                 elem.style.display = "none";
+            }
+
+            function showSignInButton() {
+                document.getElementById("btnSignIn").style.display = "inline-block";
             }
 
             function hideSignInButton() {
