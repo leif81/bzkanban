@@ -269,6 +269,7 @@
             var defaultPriority;
             var defaultSeverity;
             var defaultMilestone;
+            var authObject;
 
             window.onload = loadParams;
 
@@ -284,6 +285,8 @@
                     bzSiteUrl = site;
                     document.getElementById("textSiteURL").value = bzSiteUrl;
                 }
+
+                authObject = localStorage.getItem(bzSiteUrl);
 
                 // Loading comments is expensive becase it's one extra request per bug.
                 // Causing some Bugzilla servers to respond with "too many requests" errors.
@@ -454,7 +457,7 @@
             }
 
             function loadName() {
-                httpGet("/rest/user/" + localStorage.userID + "?token=" + localStorage.userToken, function(response) {
+                httpGet("/rest/user/" + JSON.parse(authObject).userID + "?token=" + JSON.parse(authObject).userToken, function(response) {
                     userFullName = response.users[0].real_name;
                     if (userFullName != null) {
                         document.getElementById("whoami").textContent = userFullName;
@@ -580,7 +583,7 @@
             }
 
             function loadDefaultPrioritySeverity() {
-                httpGet("/rest/parameters?token=" + localStorage.userToken, function(response) {
+                httpGet("/rest/parameters?token=" + JSON.parse(authObject).userToken, function(response) {
                     defaultPriority = response.parameters.defaultpriority;
                     defaultSeverity = response.parameters.defaultseverity;
                 });
@@ -783,8 +786,7 @@
                             switch (obj.code) {
                                 case 32000:
                                     // auth token has expired
-                                    localStorage.removeItem("userID");
-                                    localStorage.removeItem("userToken");
+                                    localStorage.removeItem(bzSiteUrl);
                                     break;
                             }
 
@@ -830,8 +832,8 @@
                 showSpinner();
                 httpGet("/rest/login?login=" + user + "&password=" + password, function(response) {
                     hideSpinner();
-                    localStorage.userID = response.id;
-                    localStorage.userToken = response.token;
+                    authObject = { 'userID': response.id, 'userToken': response.token };
+                    localStorage.setItem(bzSiteUrl, JSON.stringify(authObject));
                     loadName();
                     // Rebuild the board so dnd events are registered.
                     if (bzProduct != null || bzAssignedTo != null) {
@@ -842,7 +844,7 @@
             }
 
             function isLoggedIn() {
-                return localStorage.userToken != null;
+                return JSON.parse(authObject) != null;
             }
 
             function showLoginForm() {
@@ -890,7 +892,7 @@
                     resolution : "",
                     priority : "",
                     severity : "",
-                    token : localStorage.userToken,
+                    token : JSON.parse(authObject).userToken,
                     comment : "",
                     target_milestone : ""
                 }
