@@ -772,7 +772,7 @@
             function filterByAssignee(name) {
                 var cards = document.querySelectorAll(".card");
                 cards.forEach(function(card) {
-                    var fullname = card.querySelector(".fullname").innerHTML;
+                    var fullname = card.querySelector(".fullname").innerText;
                     if (name == fullname || name == "ALL") {
                         card.style.display = "block";
                     } else {
