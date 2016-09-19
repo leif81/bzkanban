@@ -665,10 +665,11 @@
                 fullname.innerHTML = bug.assigned_to_detail.real_name;
 
                 var picture = document.createElement('img');
+                picture.setAttribute("id", "picture");
                 if (!(userPicture == "")) {
                     picture.src = getPictureSrc(bug.assigned_to_detail.email);
                 } else {
-                    picture.src = "icon-small-person.png";
+                    hidePicture(picture);
                 }
 
                 var icons = document.createElement('span');
@@ -1158,9 +1159,12 @@
                 var hashString = hash.toString(CryptoJS.enc.Base64);
 
                 if (!(hashString == "")) {
-                    return ('http://www.gravatar.com/avatar/' + hashString + '?s=16');
+                    return ('http://www.gravatar.com/avatar/' + hashString + '?s=16&d=blank');
                 }
-                return ('icon-small-person.png');
+            }
+
+            function hidePicture(pictureobject) {
+                pictureobject.style.display = "none";
             }
 
             // Register event handlers
