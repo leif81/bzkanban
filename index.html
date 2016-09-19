@@ -72,6 +72,12 @@
             .card-meta .fullname {
                 float: right;
             }
+            .card-meta .fullname img{
+                margin-left: 5px;
+                vertical-align: bottom;
+                height: 16px;
+                width: 16px;
+            }
             .card-meta #icons {
                 float: initial;
             }
@@ -222,6 +228,9 @@
                     <span style="display:none;">
                         <input type="text" id="textAutoComment" name="autocomment"></input>
                     </span>
+                    <span style="display:none;">
+                        <input type="text" id="textPicture" name="picture"></input>
+                    </span>
                     <button type="submit" id="btnSubmit">Submit</button>
                 </fieldset>
             </form>
@@ -252,6 +261,7 @@
         <div id="board">
         </div>
 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/md5.js"></script>
         <script type="text/javascript">
             var bzComponent = "";
             var bzPriority = "";
@@ -259,6 +269,7 @@
             var bzOrder = "priority,bug_severity,assigned_to";
             var bzSiteUrl = "http://bugzilla.msec.local";
             var userFullName = "";
+            var userPicture = "";
             var bzProduct = "";
             var bzProductMilestone = "";
             var bzBoardLoadTime = "";
@@ -301,6 +312,12 @@
                 if (autocomment != null) {
                     shouldAutoComment = isTrue(autocomment);
                     document.getElementById("textAutoComment").value = shouldAutoComment;
+                }
+
+                var picture = getURLParameter('picture');
+                if (picture != null) {
+                    userPicture = picture;
+                    document.getElementById("textPicture").value = picture;
                 }
 
                 if (isLoggedIn()) {
@@ -647,6 +664,13 @@
                 fullname.className = "fullname";
                 fullname.innerHTML = bug.assigned_to_detail.real_name;
 
+                var picture = document.createElement('img');
+                if (!(userPicture == "")) {
+                    picture.src = getPictureSrc(bug.assigned_to_detail.email);
+                } else {
+                    picture.src = "icon-small-person.png";
+                }
+
                 var icons = document.createElement('span');
                 icons.setAttribute("id", "icons");
 
@@ -675,6 +699,7 @@
                 icons.appendChild(comment);
                 icons.appendChild(deadline);
                 meta.appendChild(fullname);
+                fullname.appendChild(picture);
 
                 if (isLoggedIn()) {
                     card.draggable = "true";
@@ -1126,6 +1151,16 @@
                 while (elem.firstChild) {
                     elem.removeChild(elem.firstChild);
                 }
+            }
+
+            function getPictureSrc(email) {
+                var hash = CryptoJS.MD5(email);
+                var hashString = hash.toString(CryptoJS.enc.Base64);
+
+                if (!(hashString == "")) {
+                    return ('http://www.gravatar.com/avatar/' + hashString + '?s=16');
+                }
+                return ('icon-small-person.png');
             }
 
             // Register event handlers
