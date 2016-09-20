@@ -201,9 +201,6 @@
             #spinner {
                 padding: 5px;
             }
-            .goaway {
-                display: block:
-            }
         </style>
     </head>
     <body>
@@ -774,26 +771,14 @@
 
             function filterByAssignee(name) {
                 var cards = document.querySelectorAll(".card");
-                var sheet = document.styleSheets[1];
-                var rules = sheet.cssRules || sheet.rules;
-
-                for (i=0; i<rules.length; i++){
-                    if (rules[i].selectorText == ".goaway") {
-                        var index = i;
-                    }
-                }
-
-                // reset
-                rules[index].style.display = "block";
                 cards.forEach(function(card) {
                     var fullname = card.querySelector(".fullname").innerText;
                     if (name == fullname || name == "ALL") {
-                        card.classList.remove("goaway");
+                        card.style.display = "block";
                     } else {
-                        card.classList.add("goaway");
+                        card.style.display = "none";
                     }
                 });
-                rules[index].style.display = "none";
 
                 // force reload
                 showColumnCounts();
