@@ -667,7 +667,7 @@
 
                 var picture = document.createElement('img');
                 picture.setAttribute("id", "picture");
-                if (userGravatar == true) {
+                if (userGravatar) {
                     picture.src = getPictureSrc(bug.assigned_to_detail.email);
                 } else {
                     hidePicture(picture);
