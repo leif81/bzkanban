@@ -667,12 +667,12 @@
                 fullname.className = "fullname";
                 fullname.innerHTML = bug.assigned_to_detail.real_name;
 
-                var pictures = document.createElement('img');
-                pictures.setAttribute("id", "picture");
+                var picture = document.createElement('img');
+                picture.setAttribute("id", "picture");
                 if (userGravatar == true) {
-                    pictures.src = getPictureSrc(bug.assigned_to_detail.email);
+                    picture.src = getPictureSrc(bug.assigned_to_detail.email);
                 } else {
-                    hidePicture(pictures);
+                    hidePicture(picture);
                 }
 
                 var icons = document.createElement('span');
@@ -703,7 +703,7 @@
                 icons.appendChild(comment);
                 icons.appendChild(deadline);
                 assignee.appendChild(fullname);
-                assignee.appendChild(pictures);
+                assignee.appendChild(picture);
                 meta.appendChild(assignee);
 
                 if (isLoggedIn()) {
