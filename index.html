@@ -69,8 +69,12 @@
                 padding: 1px;
                 margin-top: 15px;
             }
-            .card-meta .fullname {
+            .card-meta .assignee {
                 float: right;
+            }
+            .card-meta .assignee img#picture{
+                margin-left: 5px;
+                vertical-align: bottom;
             }
             .card-meta #icons {
                 float: initial;
@@ -222,6 +226,9 @@
                     <span style="display:none;">
                         <input type="text" id="textAutoComment" name="autocomment"></input>
                     </span>
+                    <span style="display:none;">
+                        <input type="text" id="textGravatar" name="gravatar"></input>
+                    </span>
                     <button type="submit" id="btnSubmit">Submit</button>
                 </fieldset>
             </form>
@@ -252,6 +259,7 @@
         <div id="board">
         </div>
 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/md5.js"></script>
         <script type="text/javascript">
             var bzComponent = "";
             var bzPriority = "";
@@ -259,6 +267,7 @@
             var bzOrder = "priority,bug_severity,assigned_to";
             var bzSiteUrl = "http://bugzilla.msec.local";
             var userFullName = "";
+            var userGravatar = true;
             var bzProduct = "";
             var bzProductMilestone = "";
             var bzBoardLoadTime = "";
@@ -301,6 +310,12 @@
                 if (autocomment != null) {
                     shouldAutoComment = isTrue(autocomment);
                     document.getElementById("textAutoComment").value = shouldAutoComment;
+                }
+
+                var pictures = getURLParameter('gravatar');
+                if (pictures != null) {
+                    userGravatar = isTrue(pictures);
+                    document.getElementById("textGravatar").value = pictures;
                 }
 
                 if (isLoggedIn()) {
@@ -643,9 +658,20 @@
                 meta.className = "card-meta";
                 meta.setAttribute("id", "cardmeta");
 
+                var assignee = document.createElement('span');
+                assignee.className = "assignee";
+
                 var fullname = document.createElement('span');
                 fullname.className = "fullname";
                 fullname.innerHTML = bug.assigned_to_detail.real_name;
+
+                var picture = document.createElement('img');
+                picture.setAttribute("id", "picture");
+                if (userGravatar) {
+                    picture.src = getPictureSrc(bug.assigned_to_detail.email);
+                } else {
+                    hidePicture(picture);
+                }
 
                 var icons = document.createElement('span');
                 icons.setAttribute("id", "icons");
@@ -674,7 +700,9 @@
                 icons.appendChild(severity);
                 icons.appendChild(comment);
                 icons.appendChild(deadline);
-                meta.appendChild(fullname);
+                assignee.appendChild(fullname);
+                assignee.appendChild(picture);
+                meta.appendChild(assignee);
 
                 if (isLoggedIn()) {
                     card.draggable = "true";
@@ -1126,6 +1154,19 @@
                 while (elem.firstChild) {
                     elem.removeChild(elem.firstChild);
                 }
+            }
+
+            function getPictureSrc(email) {
+                var hash = CryptoJS.MD5(email);
+                var hashString = hash.toString(CryptoJS.enc.Base64);
+
+                if (!(hashString == "")) {
+                    return ('http://www.gravatar.com/avatar/' + hashString + '?s=20&d=blank');
+                }
+            }
+
+            function hidePicture(pictureobject) {
+                pictureobject.style.display = "none";
             }
 
             // Register event handlers
