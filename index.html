@@ -69,8 +69,10 @@
                 padding: 1px;
                 margin-top: 15px;
             }
-            .card-meta .fullname {
+            .card-meta .assignee {
                 float: right;
+            }
+            .card-meta .fullname {
             }
             .card-meta .fullname img{
                 margin-left: 5px;
@@ -660,6 +662,9 @@
                 meta.className = "card-meta";
                 meta.setAttribute("id", "cardmeta");
 
+                var assignee = document.createElement('span');
+                assignee.className = "assignee";
+
                 var fullname = document.createElement('span');
                 fullname.className = "fullname";
                 fullname.innerHTML = bug.assigned_to_detail.real_name;
@@ -699,8 +704,9 @@
                 icons.appendChild(severity);
                 icons.appendChild(comment);
                 icons.appendChild(deadline);
-                meta.appendChild(fullname);
-                fullname.appendChild(pictures);
+                assignee.appendChild(fullname);
+                assignee.appendChild(pictures);
+                meta.appendChild(assignee);
 
                 if (isLoggedIn()) {
                     card.draggable = "true";
@@ -772,7 +778,7 @@
             function filterByAssignee(name) {
                 var cards = document.querySelectorAll(".card");
                 cards.forEach(function(card) {
-                    var fullname = card.querySelector(".fullname").innerText;
+                    var fullname = card.querySelector(".fullname").innerHTML;
                     if (name == fullname || name == "ALL") {
                         card.style.display = "block";
                     } else {
