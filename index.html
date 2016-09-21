@@ -229,6 +229,9 @@
                     <span style="display:none;">
                         <input type="text" id="textGravatar" name="gravatar"></input>
                     </span>
+                    <span style="display:none;">
+                        <input type="text" id="textAutoRefresh" name="autorefresh"></input>
+                    </span>
                     <button type="submit" id="btnSubmit">Submit</button>
                 </fieldset>
             </form>
@@ -275,6 +278,7 @@
             var shouldCheckForUpdates = true;
             var shouldLoadComments = true;
             var shouldAutoComment = false;
+            var shouldAutoRefresh = false;
             var assignees = new Map();
             var defaultPriority;
             var defaultSeverity;
@@ -316,6 +320,12 @@
                 if (pictures != null) {
                     userGravatar = isTrue(pictures);
                     document.getElementById("textGravatar").value = pictures;
+                }
+
+                var autorefresh = getURLParameter('autorefresh');
+                if (autorefresh != null) {
+                    shouldAutoRefresh = isTrue(autorefresh);
+                    document.getElementById("textAutoRefresh").value = autorefresh;
                 }
 
                 if (isLoggedIn()) {
@@ -586,9 +596,13 @@
                 }
                 httpGet(bzRestGetBugsUrl + "&last_change_time=" + bzBoardLoadTime, function(response) {
                     if (response.bugs.length > 0) {
-                        var bell = document.getElementById("notification");
-                        bell.style.display = "inline";
-                        bell.title = response.bugs.length + " bug(s) have been updated externally. Hit refresh!";
+                        if (shouldAutoRefresh) {
+                            loadBoard();
+                        } else {
+                            var bell = document.getElementById("notification");
+                            bell.style.display = "inline";
+                            bell.title = response.bugs.length + " bug(s) have been updated externally. Hit refresh!";
+                        }
                     }
 
                     if (shouldCheckForUpdates) {
