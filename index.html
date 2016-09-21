@@ -1106,52 +1106,52 @@
 
             }
 
-            function showResolutions(elem, boolean) {
+            function showResolutions(elem) {
                 var resolutions = elem.getElementsByClassName("resolutions");
                 for (var i = 0; i < resolutions.length; i++) {
-                    resolutions[i].hidden = boolean;
+                    resolutions[i].hidden = false;
                 }
                 toggleCards(elem, true);
-            }
-
-            function showResolutions(elem) {
-                showResolutions(elem, true);
             }
 
             function hideResolutions(elem) {
-                showResolutions(elem, false);
-            }
-
-            function showPriorities(elem, boolean) {
-                var priorities = elem.getElementsByClassName("priorities");
-                for (var i = 0; i < priorities.length; i++) {
-                    priorities[i].hidden = boolean;
+                var resolutions = elem.getElementsByClassName("resolutions");
+                for (var i = 0; i < resolutions.length; i++) {
+                    resolutions[i].hidden = true;
                 }
-                toggleCards(elem, true);
+                toggleCards(elem, false);
             }
 
             function showPriorities(elem) {
-                showPriorities(elem, true);
-            }
-
-            function hidePriorities(elem) {
-                showPriorities(elem, false);
-            }
-
-            function showSeverities(elem, boolean) {
-                var severities = elem.getElementsByClassName("severities");
-                for (var i = 0; i < severities.length; i++) {
-                    severities[i].hidden = boolean;
+                var priorities = elem.getElementsByClassName("priorities");
+                for (var i = 0; i < priorities.length; i++) {
+                    priorities[i].hidden = false;
                 }
                 toggleCards(elem, true);
             }
 
+            function hidePriorities(elem) {
+                var priorities = elem.getElementsByClassName("priorities");
+                for (var i = 0; i < priorities.length; i++) {
+                    priorities[i].hidden = true;
+                }
+                toggleCards(elem, false);
+            }
+
             function showSeverities(elem) {
-                showSeverities(elem, true);
+                var severities = elem.getElementsByClassName("severities");
+                for (var i = 0; i < severities.length; i++) {
+                    severities[i].hidden = false;
+                }
+                toggleCards(elem, true);
             }
 
             function hideSeverities(elem) {
-                showSeverities(elem, false);
+                var severities = elem.getElementsByClassName("severities");
+                for (var i = 0; i < severities.length; i++) {
+                    severities[i].hidden = true;
+                }
+                toggleCards(elem, false);
             }
 
             function toggleCards(elem, state) {
