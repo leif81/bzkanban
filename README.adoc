@@ -36,5 +36,7 @@ These are optional settings that can be manually added to the page URL to contro
  ** Disable comment count loading because it's a bit expensive. e.g. `comments=false`
  * `autocomments`
  ** Enable auto comments when making changes to bugs. e.g. `autocomment=true`
+ * `autorefresh`
+ ** Enable auto refresh when changes are detected. e.g. `autorefresh=true`
  * `gravatar`
  ** Disable use of an external avatar site. e.g. `gravatar=false`
