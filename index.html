@@ -347,7 +347,7 @@
 
                 loadProductsList();
 
-                document.getElementById("textAssignee").value = bzAssignedTo
+                document.getElementById("textAssignee").value = bzAssignedTo;
             }
 
             function loadBoard() {
@@ -852,7 +852,7 @@
                             }
                         }
                     }
-                }
+                };
                 xhr.open(method, bzSiteUrl + url);
                 xhr.setRequestHeader("Accept", "application/json");
                 xhr.send(JSON.stringify(dataObj));
@@ -869,7 +869,7 @@
 
             function showSpinner() {
                 var i = document.createElement('i');
-                i.className = "fa fa-cog fa-spin fa-lg"
+                i.className = "fa fa-cog fa-spin fa-lg";
                 document.getElementById("spinner").appendChild(i);
             }
 
@@ -952,7 +952,7 @@
                     token : authObject.userToken,
                     comment : "",
                     target_milestone : ""
-                }
+                };
 
                 if (bugResolution !== "") {
                     dataObj.resolution = bugResolution;
