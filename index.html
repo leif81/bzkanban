@@ -302,7 +302,7 @@
                 // Allow the Bugzilla site URL to be overriden. Useful for testing.
                 // For most permanent deployments just change the hardcodecoded bzSiteUrl.
                 var site = getURLParameter('site');
-                if (site != null) {
+                if (site !== null) {
                     bzSiteUrl = site;
                     document.getElementById("textSiteURL").value = bzSiteUrl;
                 }
@@ -312,25 +312,25 @@
                 // Loading comments is expensive becase it's one extra request per bug.
                 // Causing some Bugzilla servers to respond with "too many requests" errors.
                 var comments = getURLParameter('comments');
-                if (comments != null) {
+                if (comments !== null) {
                     shouldLoadComments = isTrue(comments);
                     document.getElementById("textComments").value = shouldLoadComments;
                 }
 
                 var autocomment = getURLParameter('autocomment');
-                if (autocomment != null) {
+                if (autocomment !== null) {
                     shouldAutoComment = isTrue(autocomment);
                     document.getElementById("textAutoComment").value = shouldAutoComment;
                 }
 
                 var pictures = getURLParameter('gravatar');
-                if (pictures != null) {
+                if (pictures !== null) {
                     userGravatar = isTrue(pictures);
                     document.getElementById("textGravatar").value = pictures;
                 }
 
                 var autorefresh = getURLParameter('autorefresh');
-                if (autorefresh != null) {
+                if (autorefresh !== null) {
                     shouldAutoRefresh = isTrue(autorefresh);
                     document.getElementById("textAutoRefresh").value = autorefresh;
                 }
@@ -361,7 +361,7 @@
                     }
                     // Hide UNCONFIRMED column if product has disabled it.
                     // But, product name may not have been provided if querying only on email.
-                    if (bzProduct != null) {
+                    if (bzProduct !== null) {
                         httpGet("/rest/product/" + bzProduct + "?include_fields=has_unconfirmed", function(response) {
                             if (!(response.products[0].has_unconfirmed)) {
                                 document.getElementsByClassName("board-column").UNCONFIRMED.hidden = true;
@@ -424,7 +424,7 @@
                     }
                     // select it in list.
                     document.getElementById("textProduct").value = bzProduct;
-                    if (bzProduct != null) {
+                    if (bzProduct !== null) {
                         loadMilestonesList();
                     }
                 });
@@ -445,7 +445,7 @@
                     }
                     // select it in list.
                     document.getElementById("textMilestone").value = bzProductMilestone;
-                    if (bzProduct != "" && bzProductMilestone != "") {
+                    if (bzProduct !== "" && bzProductMilestone !== "") {
                         loadBoard();
                     }
                 });
@@ -492,7 +492,7 @@
             function loadName() {
                 httpGet("/rest/user/" + authObject.userID + "?token=" + authObject.userToken, function(response) {
                     userFullName = response.users[0].real_name;
-                    if (userFullName != null) {
+                    if (userFullName !== null) {
                         document.getElementById("whoami").textContent = userFullName;
                     }
                 });
@@ -514,7 +514,7 @@
 
                     for (var i = 0;  i < arrayResolutions[0].values.length; i++) {
                         var resolutionName = arrayResolutions[0].values[i].name;
-                        if (resolutionName != "") {
+                        if (resolutionName !== "") {
                             var box = document.createElement("div");
                             box.className = "resolution drop-target";
                             box.innerText += resolutionName;
@@ -548,7 +548,7 @@
 
                         for (var i = 0;  i < arrayPriorities[0].values.length; i++) {
                             var priorityName = arrayPriorities[0].values[i].name;
-                            if (priorityName != "") {
+                            if (priorityName !== "") {
                                 var box = document.createElement("div");
                                 box.className = "priority drop-target";
                                 box.innerText += priorityName;
@@ -582,7 +582,7 @@
 
                         for (var i = 0;  i < arraySeverities[0].values.length; i++) {
                             var severityName = arraySeverities[0].values[i].name;
-                            if (severityName != "") {
+                            if (severityName !== "") {
                                 var box = document.createElement("div");
                                 box.className = "severity drop-target";
                                 box.innerText += severityName;
@@ -597,7 +597,7 @@
             }
 
             function loadCheckForUpdates() {
-                if (bzBoardLoadTime == "") {
+                if (bzBoardLoadTime === "") {
                     shouldCheckForUpdates = false;
                     return;
                 }
@@ -743,7 +743,7 @@
                 var deadlineElement = document.createElement('span');
                 deadlineElement.setAttribute("id", "deadline");
 
-                if (deadline == undefined || deadline == null) {
+                if (deadline === undefined || deadline === null) {
                     deadlineElement.style.display = "none";
                     return deadlineElement;
                 }
@@ -821,7 +821,7 @@
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState == XMLHttpRequest.DONE) {
                         var response = xhr.responseText;
-                        if (response == "") {
+                        if (response === "") {
                             var msg = "No response from " + bzSiteUrl + " for request " + url;
                             console.warn(msg);
                             alert(msg);
@@ -833,7 +833,7 @@
                             return successCallback(obj);
                         }
 
-                        if (obj.error != null) {
+                        if (obj.error !== null) {
                             hideSpinner();
                             switch (obj.code) {
                                 case 32000:
@@ -845,7 +845,7 @@
 
                             console.error(obj.message);
 
-                            if (errorCallback != undefined) {
+                            if (errorCallback !== undefined) {
                                 errorCallback(obj);
                             } else {
                                 alert(obj.message);
@@ -876,7 +876,7 @@
             function hideSpinner() {
                 var elem = document.getElementById("spinner");
                 var icon = elem.firstChild;
-                if (icon != null) {
+                if (icon !== null) {
                     elem.removeChild(icon);
                 }
             }
@@ -889,7 +889,7 @@
                     localStorage.setItem(bzSiteUrl, JSON.stringify(authObject));
                     loadName();
                     // Rebuild the board so dnd events are registered.
-                    if (bzProduct != null || bzAssignedTo != null) {
+                    if (bzProduct !== null || bzAssignedTo !== null) {
                         loadBoard();
                     }
                     hideLoginForm();
@@ -897,7 +897,7 @@
             }
 
             function isLoggedIn() {
-                return authObject != null;
+                return authObject !== null;
             }
 
             function showLoginForm() {
@@ -923,7 +923,7 @@
                 var cols = document.querySelectorAll(".board-column");
                 cols.forEach(function(col) {
                     var cardCount = col.querySelector(".board-column-card-count");
-                    if (cardCount != null) {
+                    if (cardCount !== null) {
                         cardCount.remove();
                     }
                     cardCount = document.createElement('span');
@@ -954,25 +954,25 @@
                     target_milestone : ""
                 }
 
-                if (bugResolution != "") {
+                if (bugResolution !== "") {
                     dataObj.resolution = bugResolution;
                 } else {
                     delete dataObj.resolution;
                 }
 
-                if (bugPriority != "") {
+                if (bugPriority !== "") {
                     dataObj.priority = bugPriority;
                 } else {
                     delete dataObj.priority;
                 }
 
-                if (bugMilestone != "") {
+                if (bugMilestone !== "") {
                     dataObj.target_milestone = bugMilestone;
                 } else {
                     delete dataObj.target_milestone;
                 }
 
-                if (bugSeverity != "") {
+                if (bugSeverity !== "") {
                     dataObj.severity = bugSeverity;
                 } else {
                     delete dataObj.severity;
@@ -985,7 +985,7 @@
                     bugComment.body = "Auto-comment from bzKanban";
                 }
 
-                if (bugComment.body != "") {
+                if (bugComment.body !== "") {
                     dataObj.comment = bugComment;
                 } else {
                     delete dataObj.comment;
@@ -1182,7 +1182,7 @@
                 var hash = CryptoJS.MD5(email);
                 var hashString = hash.toString(CryptoJS.enc.Base64);
 
-                if (!(hashString == "")) {
+                if (!(hashString === "")) {
                     return ('http://www.gravatar.com/avatar/' + hashString + '?s=20&d=blank');
                 }
             }
