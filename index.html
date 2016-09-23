@@ -304,36 +304,38 @@
                 var site = getURLParameter('site');
                 if (site !== null) {
                     bzSiteUrl = site;
-                    document.getElementById("textSiteURL").value = bzSiteUrl;
                 }
-
-                authObject = JSON.parse(localStorage.getItem(bzSiteUrl));
 
                 // Loading comments is expensive becase it's one extra request per bug.
                 // Causing some Bugzilla servers to respond with "too many requests" errors.
                 var comments = getURLParameter('comments');
                 if (comments !== null) {
                     shouldLoadComments = isTrue(comments);
-                    document.getElementById("textComments").value = shouldLoadComments;
                 }
 
                 var autocomment = getURLParameter('autocomment');
                 if (autocomment !== null) {
                     shouldAutoComment = isTrue(autocomment);
-                    document.getElementById("textAutoComment").value = shouldAutoComment;
                 }
 
                 var pictures = getURLParameter('gravatar');
                 if (pictures !== null) {
                     userGravatar = isTrue(pictures);
-                    document.getElementById("textGravatar").value = pictures;
                 }
 
                 var autorefresh = getURLParameter('autorefresh');
                 if (autorefresh !== null) {
                     shouldAutoRefresh = isTrue(autorefresh);
-                    document.getElementById("textAutoRefresh").value = autorefresh;
                 }
+
+                document.getElementById("textSiteURL").value = bzSiteUrl;
+                document.getElementById("textComments").value = shouldLoadComments;
+                document.getElementById("textAutoComment").value = shouldAutoComment;
+                document.getElementById("textGravatar").value = userGravatar;
+                document.getElementById("textAutoRefresh").value = shouldAutoRefresh;
+                document.getElementById("textAssignee").value = bzAssignedTo;
+
+                authObject = JSON.parse(localStorage.getItem(bzSiteUrl));
 
                 if (isLoggedIn()) {
                     loadName();
@@ -346,8 +348,6 @@
                 document.getElementById("textMilestone").disabled = true;
 
                 loadProductsList();
-
-                document.getElementById("textAssignee").value = bzAssignedTo;
             }
 
             function loadBoard() {
