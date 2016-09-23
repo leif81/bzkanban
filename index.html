@@ -1115,40 +1115,40 @@
 
             function hideResolutions(elem) {
                 var resolutions = elem.querySelectorAll(".resolutions");
-                resolutions.forEach(function(res) {
-                    res.hidden = true;
+                resolutions.forEach(function(resolution) {
+                    resolution.hidden = true;
                 });
                 showCards(elem);
             }
 
             function showPriorities(elem, visible) {
-                var resolutions = elem.querySelectorAll(".priorities");
-                resolutions.forEach(function(res) {
-                    res.hidden = false;
+                var priorities = elem.querySelectorAll(".priorities");
+                priorities.forEach(function(priority) {
+                    priority.hidden = false;
                 });
                 hideCards(elem);
             }
 
             function hidePriorities(elem) {
-                var resolutions = elem.querySelectorAll(".priorities");
-                resolutions.forEach(function(res) {
-                    res.hidden = true;
+                var priorities = elem.querySelectorAll(".priorities");
+                priorities.forEach(function(priority) {
+                    priority.hidden = true;
                 });
                 showCards(elem);
             }
 
             function showSeverities(elem) {
-                var resolutions = elem.querySelectorAll(".severities");
-                resolutions.forEach(function(res) {
-                    res.hidden = false;
+                var severities = elem.querySelectorAll(".severities");
+                severities.forEach(function(severity) {
+                    severity.hidden = false;
                 });
                 hideCards(elem);
             }
 
             function hideSeverities(elem) {
-                var resolutions = elem.querySelectorAll(".severities");
-                resolutions.forEach(function(res) {
-                    res.hidden = true;
+                var severities = elem.querySelectorAll(".severities");
+                severities.forEach(function(severity) {
+                    severity.hidden = true;
                 });
                 showCards(elem);
             }
