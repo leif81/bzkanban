@@ -876,7 +876,7 @@
             function hideSpinner() {
                 var elem = document.getElementById("spinner");
                 var icon = elem.firstChild;
-                if (icon != undefined) {
+                if (icon != null) {
                     elem.removeChild(icon);
                 }
             }
@@ -923,7 +923,7 @@
                 var cols = document.querySelectorAll(".board-column");
                 cols.forEach(function(col) {
                     var cardCount = col.querySelector(".board-column-card-count");
-                    if (cardCount != undefined) {
+                    if (cardCount != null) {
                         cardCount.remove();
                     }
                     cardCount = document.createElement('span');
