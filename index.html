@@ -629,14 +629,6 @@
                 });
             }
 
-            function showBacklog(state) {
-                if (state) {
-                    document.getElementById("textBacklog").style.display = "inline-block";
-                } else {
-                    document.getElementById("textBacklog").style.display = "none";
-                }
-            }
-
             function addBoardColumn(status) {
                 var div = document.createElement('div');
                 div.className = "board-column";
@@ -1052,7 +1044,7 @@
                     showPriorities(document.getElementById(columnTitle));
                     showSeverities(document.getElementById(columnTitle));
                 }
-                showBacklog(true);
+                showBacklog();
             }
 
             function dragCardEnd(ev) {
@@ -1062,7 +1054,7 @@
                     hidePriorities(document.getElementById(columnTitle));
                     hideSeverities(document.getElementById(columnTitle));
                 }
-                showBacklog(false);
+                hideBacklog();
             }
 
             function dropCard(ev) {
@@ -1170,6 +1162,14 @@
                 cards.forEach(function(card) {
                     card.hidden = true;
                 });
+            }
+
+            function showBacklog() {
+                document.getElementById("textBacklog").style.display = "inline-block";
+            }
+
+            function hideBacklog() {
+                document.getElementById("textBacklog").style.display = "none";
             }
 
             function isTrue(string) {
