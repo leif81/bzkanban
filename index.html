@@ -14,16 +14,17 @@
                 flex-direction: column;
             }
             #board {
-                width: 100%;
                 display: flex;
                 padding-top: 20px;
             }
             .board-column-title {
                 text-align: center;
                 font-weight: bold;
-                align-items: center;
-                display: flex;
-                justify-content: center;
+                margin-bottom: 5px;
+            }
+            .board-column-container {
+                overflow-x: hidden;
+                align-self: stretch;
             }
             .board-column-card-count {
                 font-size: small;
@@ -32,11 +33,9 @@
             }
             .board-column {
                 flex: 1;
-                vertical-align: top;
-                min-width: 0;
-                overflow-y: auto;
-                overflow-x: hidden;
-                flex-wrap: wrap;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
             }
             .board-column.drag-card {
                 outline-width: 2px;
@@ -363,7 +362,7 @@
                     if (bzProduct !== null) {
                         httpGet("/rest/product/" + bzProduct + "?include_fields=has_unconfirmed", function(response) {
                             if (!(response.products[0].has_unconfirmed)) {
-                                document.getElementsByClassName("board-column").UNCONFIRMED.hidden = true;
+                                document.getElementsByClassName("board-column").UNCONFIRMED.style.display = "none";
                             }
                         });
                     }
@@ -648,6 +647,10 @@
                 title.innerHTML = status;
                 document.getElementById(status).appendChild(title);
 
+                var container = document.createElement('div');
+                container.className = "board-column-container";
+                document.getElementById(status).appendChild(container);
+
             }
 
             function addCard(bug) {
@@ -723,7 +726,7 @@
                     loadComments(bug);
                 }
 
-                document.getElementById(bug.status).appendChild(card);
+                document.getElementById(bug.status).childNodes[1].appendChild(card);
 
                 assignees.set(bug.assigned_to_detail.email, bug.assigned_to_detail); // save for later
             }
