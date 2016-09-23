@@ -1156,14 +1156,14 @@
             function showCards(elem) {
                 var cards = elem.querySelectorAll(".card");
                 cards.forEach(function(card) {
-                    card.hidden = false;
+                    card.style.display = "block";
                 });
             }
 
             function hideCards(elem) {
                 var cards = elem.querySelectorAll(".card");
                 cards.forEach(function(card) {
-                    card.hidden = true;
+                    card.style.display = "none";
                 });
             }
 
