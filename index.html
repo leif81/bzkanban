@@ -726,7 +726,7 @@
                     loadComments(bug);
                 }
 
-                document.getElementById(bug.status).childNodes[1].appendChild(card);
+                document.querySelector("#" + bug.status + " .board-column-container").appendChild(card);
 
                 assignees.set(bug.assigned_to_detail.email, bug.assigned_to_detail); // save for later
             }
