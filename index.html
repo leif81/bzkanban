@@ -355,10 +355,9 @@
                 httpGet("/rest/field/bug/status/values", function(response) {
                     clearBoard();
                     var statuses = response.values;
-                    for (var key in statuses) {
-                        status = statuses[key];
+                    statuses.forEach(function(status) {
                         addBoardColumn(status);
-                    }
+                    });
                     // Hide UNCONFIRMED column if product has disabled it.
                     // But, product name may not have been provided if querying only on email.
                     if (bzProduct !== null) {
@@ -396,10 +395,10 @@
                 httpGet(bzRestGetBugsUrl, function(response) {
                     var bugs = response.bugs;
 
-                    for (var key in bugs) {
-                        bug = bugs[key];
+                    bugs.forEach(function(bug) {
                         addCard(bug);
-                    }
+                    });
+
                     showColumnCounts();
                     loadAssigneesList();
                     hideSpinner();
@@ -415,13 +414,12 @@
                     products.sort(function(a, b) {
                         return a.name.localeCompare(b.name);
                     });
-                    for (var key in products) {
-                        var product = products[key];
+                    products.forEach(function(product) {
                         var option = document.createElement('option');
                         option.value = product.name;
                         option.text = product.name;
                         document.getElementById("textProduct").appendChild(option);
-                    }
+                    });
                     // select it in list.
                     document.getElementById("textProduct").value = bzProduct;
                     if (bzProduct !== null) {
@@ -436,13 +434,12 @@
                 httpGet("/rest/product?names=" + bzProduct + "&include_fields=milestones", function(response) {
                     document.getElementById("textMilestone").disabled = false;
                     var milestones = response.products[0].milestones;
-                    for (var key in milestones) {
-                        var milestone = milestones[key];
+                    milestones.forEach(function(milestone) {
                         var option = document.createElement('option');
                         option.value = milestone.name;
                         option.text = milestone.name;
                         document.getElementById("textMilestone").appendChild(option);
-                    }
+                    });
                     // select it in list.
                     document.getElementById("textMilestone").value = bzProductMilestone;
                     if (bzProduct !== "" && bzProductMilestone !== "") {
@@ -512,8 +509,8 @@
                     labelbox.id = "title";
                     resolutions.appendChild(labelbox);
 
-                    for (var i = 0;  i < arrayResolutions[0].values.length; i++) {
-                        var resolutionName = arrayResolutions[0].values[i].name;
+                    arrayResolutions[0].values.forEach(function(resolution) {
+                        var resolutionName = resolution.name;
                         if (resolutionName !== "") {
                             var box = document.createElement("div");
                             box.className = "resolution drop-target";
@@ -521,7 +518,7 @@
                             box.id = resolutionName;
                             resolutions.appendChild(box);
                         }
-                    }
+                    });
 
                     // FIXME: this assumes the column name, but it may have been renamed by the bz instance.
                     document.getElementById("RESOLVED").appendChild(resolutions);
@@ -533,7 +530,7 @@
                     // FIXME: this assumes the column name, but it may have been renamed by the bz instance.
                     var columns = ["CONFIRMED", "IN_PROGRESS"];
 
-                    for (var title = 0; title < columns.length; title++) {
+                    columns.forEach(function(column) {
                         var arrayPriorities = response.fields;
 
                         var priorities = document.createElement("div");
@@ -546,8 +543,8 @@
                         labelbox.id = "title";
                         priorities.appendChild(labelbox);
 
-                        for (var i = 0;  i < arrayPriorities[0].values.length; i++) {
-                            var priorityName = arrayPriorities[0].values[i].name;
+                        arrayPriorities[0].values.forEach(function(priority) {
+                            var priorityName = priority.name;
                             if (priorityName !== "") {
                                 var box = document.createElement("div");
                                 box.className = "priority drop-target";
@@ -555,10 +552,10 @@
                                 box.id = priorityName;
                                 priorities.appendChild(box);
                             }
-                        }
+                        });
 
-                        document.getElementById(columns[title]).appendChild(priorities);
-                    }
+                        document.getElementById(column).appendChild(priorities);
+                    });
                 });
             }
 
@@ -567,7 +564,7 @@
                     // FIXME: this assumes the column name, but it may have been renamed by the bz instance.
                     var columns = ["CONFIRMED", "IN_PROGRESS"];
 
-                    for (var title = 0; title < columns.length; title++) {
+                    columns.forEach(function(column) {
                         var arraySeverities = response.fields;
 
                         var severities = document.createElement("div");
@@ -580,8 +577,8 @@
                         labelbox.id = "title";
                         severities.appendChild(labelbox);
 
-                        for (var i = 0;  i < arraySeverities[0].values.length; i++) {
-                            var severityName = arraySeverities[0].values[i].name;
+                        arraySeverities[0].values.forEach(function(severity) {
+                            var severityName = severity.name;
                             if (severityName !== "") {
                                 var box = document.createElement("div");
                                 box.className = "severity drop-target";
@@ -589,10 +586,10 @@
                                 box.id = severityName;
                                 severities.appendChild(box);
                             }
-                        }
+                        });
 
-                        document.getElementById(columns[title]).appendChild(severities);
-                    }
+                        document.getElementById(column).appendChild(severities);
+                    });
                 });
             }
 
@@ -1036,12 +1033,12 @@
 
                 // Disable pointer-events for all other cards so that we
                 // can reliably detect when a card enters and leaves a column.
-                var cards = document.getElementsByClassName("card");
-                for (var i = 0; i < cards.length; i++) {
-                    if (cards[i].id != ev.currentTarget.id) {
-                        cards[i].style.pointerEvents = "none";
+                var cards = document.querySelectorAll(".card");
+                cards.forEach(function(card) {
+                    if (card.id != ev.currentTarget.id) {
+                        card.style.pointerEvents = "none";
                     }
-                }
+                });
 
                 var bugID = ev.currentTarget.dataset.bugId;
                 var bugData = {"id": bugID, "status": fromStatus};
@@ -1070,10 +1067,10 @@
 
             function dropCard(ev) {
                 // Re-enable pointer events for all cards.
-                var cards = document.getElementsByClassName("card");
-                for (var i = 0; i < cards.length; i++) {
-                    cards[i].style.pointerEvents = "auto";
-                }
+                var cards = document.querySelectorAll(".card");
+                cards.forEach(function(card) {
+                    card.style.pointerEvents = "auto";
+                });
 
                 ev.currentTarget.classList.remove("drag-card");
 
@@ -1114,58 +1111,65 @@
             }
 
             function showResolutions(elem) {
-                var resolutions = elem.getElementsByClassName("resolutions");
-                for (var i = 0; i < resolutions.length; i++) {
-                    resolutions[i].hidden = false;
-                }
-                toggleCards(elem, true);
+                var resolutions = elem.querySelectorAll(".resolutions");
+                resolutions.forEach(function(res) {
+                    res.hidden = false;
+                });
+                hideCards(elem);
             }
 
             function hideResolutions(elem) {
-                var resolutions = elem.getElementsByClassName("resolutions");
-                for (var i = 0; i < resolutions.length; i++) {
-                    resolutions[i].hidden = true;
-                }
-                toggleCards(elem, false);
+                var resolutions = elem.querySelectorAll(".resolutions");
+                resolutions.forEach(function(res) {
+                    res.hidden = true;
+                });
+                showCards(elem);
             }
 
-            function showPriorities(elem) {
-                var priorities = elem.getElementsByClassName("priorities");
-                for (var i = 0; i < priorities.length; i++) {
-                    priorities[i].hidden = false;
-                }
-                toggleCards(elem, true);
+            function showPriorities(elem, visible) {
+                var resolutions = elem.querySelectorAll(".priorities");
+                resolutions.forEach(function(res) {
+                    res.hidden = false;
+                });
+                hideCards(elem);
             }
 
             function hidePriorities(elem) {
-                var priorities = elem.getElementsByClassName("priorities");
-                for (var i = 0; i < priorities.length; i++) {
-                    priorities[i].hidden = true;
-                }
-                toggleCards(elem, false);
+                var resolutions = elem.querySelectorAll(".priorities");
+                resolutions.forEach(function(res) {
+                    res.hidden = true;
+                });
+                showCards(elem);
             }
 
             function showSeverities(elem) {
-                var severities = elem.getElementsByClassName("severities");
-                for (var i = 0; i < severities.length; i++) {
-                    severities[i].hidden = false;
-                }
-                toggleCards(elem, true);
+                var resolutions = elem.querySelectorAll(".severities");
+                resolutions.forEach(function(res) {
+                    res.hidden = false;
+                });
+                hideCards(elem);
             }
 
             function hideSeverities(elem) {
-                var severities = elem.getElementsByClassName("severities");
-                for (var i = 0; i < severities.length; i++) {
-                    severities[i].hidden = true;
-                }
-                toggleCards(elem, false);
+                var resolutions = elem.querySelectorAll(".severities");
+                resolutions.forEach(function(res) {
+                    res.hidden = true;
+                });
+                showCards(elem);
             }
 
-            function toggleCards(elem, state) {
-                var cards = elem.getElementsByClassName("card");
-                for (var i = 0; i < cards.length; i++) {
-                    cards[i].hidden = state;
-                }
+            function showCards(elem) {
+                var cards = elem.querySelectorAll(".card");
+                cards.forEach(function(card) {
+                    card.hidden = false;
+                });
+            }
+
+            function hideCards(elem) {
+                var cards = elem.querySelectorAll(".card");
+                cards.forEach(function(card) {
+                    card.hidden = true;
+                });
             }
 
             function isTrue(string) {
