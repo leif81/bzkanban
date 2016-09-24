@@ -199,6 +199,82 @@
             #spinner {
                 padding-right: 5px;
             }
+            .modal {
+                display: none;
+                position: fixed;
+                z-index: 1;
+                padding-top: 100px;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                overflow: auto;
+                background-color: rgb(0,0,0);
+                background-color: rgba(0,0,0,0.4);
+            }
+            .modal-content {
+                display: flex;
+                background-color: #fefefe;
+                margin: auto;
+                flex-direction: column;
+                align-items: flex-start;
+                width: 30%;
+                box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+                -webkit-animation-name: animatetop;
+                -webkit-animation-duration: 0.4s;
+                animation-name: animatetop;
+                animation-duration: 0.4s
+            }
+            @-webkit-keyframes animatetop {
+                from {top:-300px; opacity:0}
+                to {top:0; opacity:1}
+            }
+            @keyframes animatetop {
+                from {top:-300px; opacity:0}
+                to {top:0; opacity:1}
+            }
+            .modalClose {
+                color: white;
+                float: right;
+                font-size: 28px;
+                font-weight: bold;
+            }
+            .modalClose:hover,
+            .modalClose:focus {
+                color: #000;
+                text-decoration: none;
+                cursor: pointer;
+            }
+            .modal-header {
+                padding: 2px 16px;
+                background-color: rgb(99,147,193);
+                color: white;
+                align-self: stretch;
+            }
+            .modal-body {
+                display: flex;
+                padding: 2px 16px;
+                flex-direction: column;
+                align-self: stretch;
+            }
+            .modal-body input#textAddBugSummary {
+                width: 100%;
+            }
+            .modal-body button#btnModalSubmit {
+                width: 80px;
+                text-align: center;
+                align-self: flex-end;
+                margin-bottom: 10px;
+            }
+            .modal-body select {
+                width: 40%;
+            }
+            .modal-body label {
+                margin: 10px auto 0px 5px;
+            }
+            .modal-body ul {
+                margin: 0px;
+            }
         </style>
     </head>
     <body>
@@ -240,6 +316,32 @@
                 <button id="btnSignIn">Login</button>
                 <i id="notification" class="fa fa-bell"></i>
             </span>
+        </div>
+        <div id="modalAddBug" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="modalClose">x</span>
+                    <h2>Add New Bug</h2>
+                </div>
+                <div class="modal-body">
+                    <label>Summary of the issue</label>
+                    <input type="text" required id="textAddBugSummary" name="summary" value=""</input>
+                    <label>Pick a component</label>
+                    <select id="textComponent" name="component" placeholder="Component" value=""></select>
+                    <label>Pick a version</label>
+                    <select id="textVersion" name="version" placeholder="Version"></select>
+                    <label>Using milestone</label>
+                    <input type="text" id="textModalMilestone" name="milestone" value="" readonly></input>
+                    <label>Using Bugzilla defaults</label>
+                    <ul style="list-style-type:circle">
+                        <li>op_sys = <label id="labelOpSys"></label></li>
+                        <li>platform = <label id="labelPlatform"></label></li>
+                        <li>priority = <label id="labelPriority"></label></li>
+                        <li>severity = <label id="labelSeverity"></label></li>
+                    </ul>
+                    <button id="btnModalSubmit">Submit</button>
+                </div>
+            </div>
         </div>
         <div id="board">
         </div>
@@ -346,8 +448,10 @@
                         loadResolutions();
                         loadPriorities();
                         loadSeverities();
-                        loadDefaultPrioritySeverity();
+                        loadDefaultPrioritySeverityFields();
                         loadDefaultMilestone();
+                        loadComponentsList();
+                        loadVersionsList();
                     }
                 });
             }
@@ -561,6 +665,38 @@
                 });
             }
 
+            function loadComponentsList() {
+                httpGet("/rest/product/" + bzProduct + "?type=enterable&include_fields=components", function(response) {
+                    var components = response.products[0].components;
+                    components.sort(function(a, b) {
+                        return a.name.localeCompare(b.name);
+                    });
+                    components.forEach(function(component) {
+                        if (!(component.is_active)) { return }
+                        var opt = document.createElement('option');
+                        opt.innerText = component.name;
+                        opt.value = component.name;
+                        document.getElementById("textComponent").appendChild(opt);
+                    });
+                });
+            }
+
+            function loadVersionsList() {
+                httpGet("/rest/product/" + bzProduct + "?type=enterable&include_fields=versions", function(response) {
+                    var versions = response.products[0].versions;
+                    versions.sort(function(a, b) {
+                        return a.name.localeCompare(b.name);
+                    });
+                    versions.forEach(function(version) {
+                        if (!(version.is_active)) { return }
+                        var opt = document.createElement('option');
+                        opt.innerText = version.name;
+                        opt.value = version.name;
+                        document.getElementById("textVersion").appendChild(opt);
+                    });
+                });
+            }
+
             function loadCheckForUpdates() {
                 if (bzBoardLoadTime === "") {
                     shouldCheckForUpdates = false;
@@ -584,10 +720,52 @@
                 });
             }
 
-            function loadDefaultPrioritySeverity() {
+            function loadDefaultPrioritySeverityFields() {
                 httpGet("/rest/parameters?token=" + authObject.userToken, function(response) {
+                    defaultOpSys = response.parameters.defaultopsys;
+                    defaultPlatform = response.parameters.defaultplatform;
                     defaultPriority = response.parameters.defaultpriority;
                     defaultSeverity = response.parameters.defaultseverity;
+
+                    textOpSys = document.getElementById("labelOpSys");
+                    textPlatform = document.getElementById("labelPlatform");
+                    textPriority = document.getElementById("labelPriority");
+                    textSeverity = document.getElementById("labelSeverity");
+
+                    document.getElementById("textModalMilestone").value = bzProductMilestone;
+
+                    if (defaultOpSys !== null && defaultOpSys.length !== 0) {
+                        textOpSys.innerHTML = defaultOpSys;
+                        textOpSys.value = defaultOpSys;
+                    } else {
+                        textOpSys.innerHTML = "blank (but setting to ALL)";
+                        textOpSys.value = defaultOpSys;
+                        textOpSys.style.fontStyle = "italic";
+                    }
+                    if (defaultPlatform !== null && defaultPlatform.length !== 0) {
+                        textPlatform.innerHTML = defaultPlatform;
+                        textPlatform.value = defaultPlatform;
+                    } else {
+                        textPlatform.innerHTML = "blank (but setting to ALL)";
+                        textPlatform.value = defaultPlatform;
+                        textPlatform.style.fontStyle = "italic";
+                    }
+                    if (defaultPriority !== null && defaultPriority.length !== 0) {
+                        textPriority.innerHTML = defaultPriority;
+                        textPriority.value = defaultPriority;
+                    } else {
+                        textPriority.innerHTML = "blank";
+                        textPriority.value = defaultPriority;
+                        textPriority.style.fontStyle = "italic";
+                    }
+                    if (defaultSeverity !== null && defaultSeverity.length !== 0) {
+                        textSeverity.innerHTML = defaultSeverity;
+                        textSeverity.value = defaultSeverity;
+                    } else {
+                        textSeverity.innerHTML = "blank";
+                        textSeverity.value = defaultSeverity;
+                        textSeverity.style.fontStyle = "italic";
+                    }
                 });
             }
 
@@ -1227,11 +1405,6 @@
                 filterByAssignee(name);
                 });
 
-            document.getElementById("btnCreate").addEventListener("click", function() {
-                var product = document.getElementById("textProduct").value;
-                window.open(bzSiteUrl + "/enter_bug.cgi?product=" + product);
-                });
-
             document.getElementById("btnSignIn").addEventListener("click", function() {
                 showLoginForm();
                 });
@@ -1256,6 +1429,51 @@
                 if (event.keyCode == 13) {
                     document.getElementById("btnAuthSubmit").click();
                 }
+                });
+
+            // When the user clicks the New Bug button
+            document.getElementById("btnCreate").addEventListener("click", function() {
+                    if (isLoggedIn()) {
+                        // Open the modal
+                        document.getElementById('modalAddBug').style.display = "block";
+                    } else {
+                        // Open Bugzilla page
+                        var product = document.getElementById("textProduct").value;
+                        window.open(bzSiteUrl + "/enter_bug.cgi?product=" + product);
+                    }
+                });
+
+            // When the user clicks on <span> (x), close the modal
+            document.getElementsByClassName("modalClose")[0].onclick = function() {
+                document.getElementById('modalAddBug').style.display = "none";
+                };
+
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function(event) {
+                if (event.target == document.getElementById('modalAddBug')) {
+                    document.getElementById('modalAddBug').style.display = "none";
+                }
+                };
+
+            // When the user clicks the modal Submit button
+            document.getElementById("btnModalSubmit").addEventListener("click", function() {
+                    var dataObj = {
+                        product: bzProduct,
+                        component: document.getElementById("textComponent").value,
+                        summary: document.getElementById("textAddBugSummary").value,
+                        version: document.getElementById("textVersion").value,
+                        // Bugzilla web CGI kicks in if opsys and platform default is blank
+                        // doing code to detect through the browser.
+                        // TODO: Write js detection code if blank is detected
+                        op_sys: "ALL",
+                        platform: "ALL",
+                        target_milestone: bzProductMilestone
+                    };
+
+                    httpRequest("POST", "/rest/bug?token=" + authObject.userToken, dataObj, function() {
+                        document.getElementById('modalAddBug').style.display = "none";
+                        loadBoard();
+                    });
                 });
 
         </script>
