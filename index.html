@@ -531,9 +531,7 @@
                     columns.forEach(function(column) {
                         var arrayPriorities = response.fields;
 
-                        var priorities = document.createElement("div");
-                        priorities.className = "priorities";
-                        priorities.hidden = true;
+                        priorities = document.getElementById(column).getElementsByClassName("priorities")[0];
 
                         var labelbox = document.createElement("div");
                         labelbox.className = "priority";
@@ -551,8 +549,6 @@
                                 priorities.appendChild(box);
                             }
                         });
-
-                        document.getElementById(column).appendChild(priorities);
                     });
                 });
             }
@@ -565,9 +561,7 @@
                     columns.forEach(function(column) {
                         var arraySeverities = response.fields;
 
-                        var severities = document.createElement("div");
-                        severities.className = "severities";
-                        severities.hidden = true;
+                        severities = document.getElementById(column).getElementsByClassName("severities")[0];
 
                         var labelbox = document.createElement("div");
                         labelbox.className = "severity";
@@ -585,8 +579,6 @@
                                 severities.appendChild(box);
                             }
                         });
-
-                        document.getElementById(column).appendChild(severities);
                     });
                 });
             }
@@ -649,6 +641,16 @@
                 var container = document.createElement('div');
                 container.className = "board-column-container";
                 document.getElementById(status).appendChild(container);
+
+                var prioritycontainer = document.createElement('div');
+                prioritycontainer.className = "priorities";
+                prioritycontainer.hidden = true;
+                document.getElementById(status).appendChild(prioritycontainer);
+
+                var severitycontainer = document.createElement('div');
+                severitycontainer.className = "severities";
+                severitycontainer.hidden = true;
+                document.getElementById(status).appendChild(severitycontainer);
 
             }
 
