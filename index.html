@@ -131,7 +131,6 @@
             }
             #textBacklog {
                 width: 100px;
-                height: 40px;
                 border-style: solid;
                 border-color: white;
                 border-width: thin;
@@ -141,17 +140,13 @@
                 font-size: small;
                 margin-left: 15px;
             }
-            #queryForm {
-                display: inline-block;
-                padding-top: 20px; /* To line up with login button */
-            }
-            #queryForm .fa {
+            #query .fa {
                 vertical-align: middle;
             }
-            #queryForm select {
+            #query select {
                 width: 150px;
             }
-            #queryForm fieldset span {
+            #query span {
                 margin-right: 15px;
             }
             #loginForm {
@@ -190,7 +185,7 @@
                 flex: none;
                 display: flex;
                 flex-wrap: wrap;
-                padding: 5px;
+                padding: 20px;
                 border-bottom-width: 1px;
                 border-bottom-style: solid;
                 border-bottom-color: ghostwhite;
@@ -202,44 +197,26 @@
                 flex: 1;
             }
             #spinner {
-                padding: 5px;
+                padding-right: 5px;
             }
         </style>
     </head>
     <body>
         <div id="nav">
-            <form id="queryForm" action="index.html" method="get">
-                <fieldset>
-                    <span>
-                        <i class="fa fa-archive"></i>
-                        <select id="textProduct" name="product" placeholder="Product"></select>
-                    </span>
-                    <span>
-                        <i class="fa fa-flag"></i>
-                        <select id="textMilestone" name="milestone" placeholder="Milestone"></select>
-                    </span>
-                    <span>
-                        <i class="fa fa-user"></i>
-                        <select id="textAssignee" name="assignee" placeholder="Assignee Email" disabled></select>
-                    </span>
-                    <span style="display:none;">
-                        <input type="text" id="textSiteURL" name="site"></input>
-                    </span>
-                    <span style="display:none;">
-                        <input type="text" id="textComments" name="comments"></input>
-                    </span>
-                    <span style="display:none;">
-                        <input type="text" id="textAutoComment" name="autocomment"></input>
-                    </span>
-                    <span style="display:none;">
-                        <input type="text" id="textGravatar" name="gravatar"></input>
-                    </span>
-                    <span style="display:none;">
-                        <input type="text" id="textAutoRefresh" name="autorefresh"></input>
-                    </span>
-                    <button type="submit" id="btnSubmit">Submit</button>
-                </fieldset>
-            </form>
+            <span id="query">
+                <span>
+                    <i class="fa fa-archive"></i>
+                    <select id="textProduct" name="product" placeholder="Product"></select>
+                </span>
+                <span>
+                    <i class="fa fa-flag"></i>
+                    <select id="textMilestone" name="milestone" placeholder="Milestone"></select>
+                </span>
+                <span>
+                    <i class="fa fa-user"></i>
+                    <select id="textAssignee" name="assignee" placeholder="Assignee Email" disabled></select>
+                </span>
+            </span>
             <div id="textBacklog" class="drop-target" ondragenter="return dragCardEnter(event)" ondrop="return dropBacklog(event)" ondragover="return dragCardOver(event)" ondragleave="return dragCardLeave(event)">Backlog</div>
             <form id="loginForm">
                 <fieldset>
@@ -295,7 +272,11 @@
             function loadParams() {
                 bzProduct = getURLParameter('product');
                 bzProductMilestone = getURLParameter('milestone');
-                bzAssignedTo = getURLParameter('assignee');
+
+                var assignee = getURLParameter('assignee');
+                if (assignee !== null) {
+                    bzAssignedTo = assignee;
+                }
 
                 // Allow the Bugzilla site URL to be overriden. Useful for testing.
                 // For most permanent deployments just change the hardcodecoded bzSiteUrl.
@@ -325,13 +306,6 @@
                 if (autorefresh !== null) {
                     shouldAutoRefresh = isTrue(autorefresh);
                 }
-
-                document.getElementById("textSiteURL").value = bzSiteUrl;
-                document.getElementById("textComments").value = shouldLoadComments;
-                document.getElementById("textAutoComment").value = shouldAutoComment;
-                document.getElementById("textGravatar").value = userGravatar;
-                document.getElementById("textAutoRefresh").value = shouldAutoRefresh;
-                document.getElementById("textAssignee").value = bzAssignedTo;
 
                 authObject = JSON.parse(localStorage.getItem(bzSiteUrl));
 
@@ -377,9 +351,6 @@
             }
 
             function loadBugs() {
-                bzProduct = document.getElementById('textProduct').value;
-                bzProductMilestone = document.getElementById('textMilestone').value;
-                bzAssignedTo = document.getElementById('textAssignee').value;
                 bzBoardLoadTime = new Date().toISOString();
 
                 bzRestGetBugsUrl = "/rest/bug?product=" + bzProduct;
@@ -388,7 +359,6 @@
                 bzRestGetBugsUrl += "&target_milestone=" + bzProductMilestone;
                 bzRestGetBugsUrl += "&component=" + bzComponent;
                 bzRestGetBugsUrl += "&priority=" + bzPriority;
-                bzRestGetBugsUrl += "&assigned_to=" + bzAssignedTo;
 
                 httpGet(bzRestGetBugsUrl, function(response) {
                     var bugs = response.bugs;
@@ -399,6 +369,9 @@
 
                     showColumnCounts();
                     loadAssigneesList();
+                    if (bzAssignedTo != "") {
+                        filterByAssignee(getRealNameFromEmail(bzAssignedTo));
+                    }
                     hideSpinner();
                     scheduleCheckForUpdates();
                 });
@@ -462,6 +435,8 @@
                     option.text = assignee.real_name;
                     elem.appendChild(option);
                 });
+                // select it in list.
+                document.getElementById("textAssignee").value = bzAssignedTo;
 
                 elem.removeAttribute("disabled");
             }
@@ -799,6 +774,17 @@
 
                 // force reload
                 showColumnCounts();
+            }
+
+            function getRealNameFromEmail(email) {
+                var options = document.querySelectorAll("#textAssignee option");
+                var realName = null;
+                options.forEach(function(option) {
+                    if (option.value == email) {
+                        realName = option.innerHTML;
+                    }
+                });
+                return realName;
             }
 
             function httpPut(url, dataObj, successCallback, errorCallback) {
@@ -1199,23 +1185,53 @@
                 pictureobject.style.display = "none";
             }
 
+            function updateAddressBar() {
+                var currentURL = location.href;
+                var newURL = currentURL.split("?")[0]; // trim off params
+                newURL += "?product=" + bzProduct;
+                newURL += "&milestone=" + bzProductMilestone;
+                newURL += "&assignee=" + bzAssignedTo;
+                newURL += "&gravatar=" + userGravatar;
+                newURL += "&comments=" + shouldLoadComments;
+                newURL += "&autocomment=" + shouldAutoComment;
+                newURL += "&autorefresh=" + shouldAutoRefresh;
+                newURL += "&site=" + bzSiteUrl;
+
+                history.pushState({}, '', newURL);
+            }
+
             // Register event handlers
             document.getElementById("textProduct").addEventListener("input", function() {
+                bzProduct = document.getElementById('textProduct').value;
+
                 // Disable Milestones until it's refreshed
                 document.getElementById("textMilestone").disabled = true;
-                // Clear any previous selections.
+
+                // Clear affected state.
                 bzProductMilestone = "";
+                bzAssignedTo = "";
                 loadMilestonesList();
                 clearAssigneesList();
+                clearBoard();
+                updateAddressBar();
                 });
 
             document.getElementById("textMilestone").addEventListener("input", function() {
+                bzProductMilestone = document.getElementById('textMilestone').value;
+
+                // Clear affected state.
+                bzAssignedTo = "";
                 clearAssigneesList();
+
+                // Hot load the board without a form submit.
+                loadBoard();
+                updateAddressBar();
                 });
 
             document.getElementById("textAssignee").addEventListener("input", function() {
-                var email = document.getElementById("textAssignee").value;
-                var name = assignees.get(email).real_name;
+                bzAssignedTo = document.getElementById('textAssignee').value;
+                updateAddressBar();
+                var name = assignees.get(bzAssignedTo).real_name;
                 filterByAssignee(name);
                 });
 
