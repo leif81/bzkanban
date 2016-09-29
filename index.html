@@ -329,13 +329,15 @@
                     var statuses = response.values;
                     statuses.forEach(function(status) {
                         addBoardColumn(status);
+                        document.getElementsByClassName("board-column").UNCONFIRMED.style.display = "none";
                     });
-                    // Hide UNCONFIRMED column if product has disabled it.
-                    // But, product name may not have been provided if querying only on email.
                     if (bzProduct !== null) {
                         httpGet("/rest/product/" + bzProduct + "?include_fields=has_unconfirmed", function(response) {
-                            if (!(response.products[0].has_unconfirmed)) {
-                                document.getElementsByClassName("board-column").UNCONFIRMED.style.display = "none";
+                            // Unhide UNCONFIRMED column if product has enabled it.
+                            // But, product name may not have been provided if querying only on email.
+                            if (response.products[0].has_unconfirmed) {
+                                // Reset style to default CSS
+                                document.getElementsByClassName("board-column").UNCONFIRMED.style.display = "";
                             }
                         });
                     }
