@@ -22,7 +22,7 @@
                 font-weight: bold;
                 margin-bottom: 5px;
             }
-            .board-column-container {
+            .cards {
                 overflow-x: hidden;
                 align-self: stretch;
             }
@@ -638,9 +638,9 @@
                 title.innerHTML = status;
                 document.getElementById(status).appendChild(title);
 
-                var container = document.createElement('div');
-                container.className = "board-column-container";
-                document.getElementById(status).appendChild(container);
+                var cards = document.createElement('div');
+                cards.className = "cards";
+                document.getElementById(status).appendChild(cards);
 
                 var prioritycontainer = document.createElement('div');
                 prioritycontainer.className = "priorities";
@@ -727,7 +727,7 @@
                     loadComments(bug);
                 }
 
-                document.querySelector("#" + bug.status + " .board-column-container").appendChild(card);
+                document.querySelector("#" + bug.status + " .cards").appendChild(card);
 
                 assignees.set(bug.assigned_to_detail.email, bug.assigned_to_detail); // save for later
             }
