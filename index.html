@@ -324,6 +324,7 @@
 
             function loadBoard() {
                 showSpinner();
+                setDynamicBackground();
                 httpGet("/rest/field/bug/status/values", function(response) {
                     clearBoard();
                     var statuses = response.values;
@@ -1200,6 +1201,15 @@
                 newURL += "&site=" + bzSiteUrl;
 
                 history.pushState({}, '', newURL);
+            }
+
+            // http://stackoverflow.com/a/13785206/52176
+            function string2colour(string) {
+                return '#' + CryptoJS.MD5(string).toString().slice(0, 6);
+            }
+
+            function setDynamicBackground() {
+                document.querySelector("body").style.background = "linear-gradient(to bottom, "+ string2colour(bzProduct) + " 0%, " + string2colour(bzProductMilestone) + " 100%)";
             }
 
             // Register event handlers
