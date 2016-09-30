@@ -372,7 +372,8 @@
                     showColumnCounts();
                     loadAssigneesList();
                     if (bzAssignedTo != "") {
-                        filterByAssignee(getRealNameFromEmail(bzAssignedTo));
+                        var name = assignees.get(bzAssignedTo).real_name;
+                        filterByAssignee(name);
                     }
                     hideSpinner();
                     scheduleCheckForUpdates();
@@ -776,17 +777,6 @@
 
                 // force reload
                 showColumnCounts();
-            }
-
-            function getRealNameFromEmail(email) {
-                var options = document.querySelectorAll("#textAssignee option");
-                var realName = null;
-                options.forEach(function(option) {
-                    if (option.value == email) {
-                        realName = option.innerHTML;
-                    }
-                });
-                return realName;
             }
 
             function httpPut(url, dataObj, successCallback, errorCallback) {
