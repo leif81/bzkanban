@@ -152,6 +152,8 @@
             #loginForm {
                 display: none;
                 font-size: small;
+                margin-bottom: 0;
+                padding-left: 15px;
             }
             #whoami {
                 font-size: small;
@@ -296,20 +298,6 @@
                 </span>
             </span>
             <div id="textBacklog" class="drop-target" ondragenter="return dragCardEnter(event)" ondrop="return dropBacklog(event)" ondragover="return dragCardOver(event)" ondragleave="return dragCardLeave(event)">Backlog</div>
-            <form id="loginForm">
-                <fieldset>
-                    <legend>Login</legend>
-                    <span>
-                        <label for="textUserName">Username</label>
-                        <input type="text" required id="textUsername" name="username" value="">
-                    </span>
-                    <span>
-                        <label for="textPassword" >Password</label>
-                        <input type="password" required id="textPassword" name="password" value="">
-                    </span>
-                    <input type="button" id="btnAuthSubmit" value="Submit">
-                </fieldset>
-            </form>
             <span class="spring"></span>
             <span id="spinner"></span>
             <span id="actions">
@@ -318,6 +306,17 @@
                 <button id="btnSignIn">Login</button>
                 <i id="notification" class="fa fa-bell"></i>
             </span>
+            <form id="loginForm">
+                <span>
+                    <label for="textUserName">Username</label>
+                    <input type="text" required id="textUsername" name="username" value="">
+                </span>
+                <span>
+                    <label for="textPassword" >Password</label>
+                    <input type="password" required id="textPassword" name="password" value="">
+                </span>
+                <input type="button" id="btnAuthSubmit" value="Submit">
+            </form>
         </div>
         <div id="modalAddBug" class="modal">
             <div class="modal-content">
