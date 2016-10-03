@@ -1375,6 +1375,8 @@
             }
 
             // Register event handlers
+
+            // When the user changes the Product drop down
             document.getElementById("textProduct").addEventListener("input", function() {
                 bzProduct = document.getElementById('textProduct').value;
 
@@ -1390,6 +1392,7 @@
                 updateAddressBar();
                 });
 
+            // When the user changes the Milestone drop down
             document.getElementById("textMilestone").addEventListener("input", function() {
                 bzProductMilestone = document.getElementById('textMilestone').value;
 
@@ -1402,6 +1405,7 @@
                 updateAddressBar();
                 });
 
+            // When the user changes the Assignee drop down
             document.getElementById("textAssignee").addEventListener("input", function() {
                 bzAssignedTo = document.getElementById('textAssignee').value;
                 updateAddressBar();
@@ -1409,16 +1413,19 @@
                 filterByAssignee(name);
                 });
 
+            // When the user presses the Login button
             document.getElementById("btnSignIn").addEventListener("click", function() {
                 showLoginForm();
                 });
 
+            // When the user presses the login Submit button
             document.getElementById("btnAuthSubmit").addEventListener("click", function() {
                 var user = document.getElementById("textUsername").value;
                 var password = document.getElementById("textPassword").value;
                 doAuth(user, password);
                 });
 
+            // Background checking for updates to visible cards
             document.addEventListener("visibilitychange", function() {
                 if (document.hidden) {
                     shouldCheckForUpdates = false;
@@ -1428,6 +1435,7 @@
                 }
                 });
 
+            // When the user presses enter, in the Login password form
             document.getElementById("textPassword").addEventListener("keyup", function(event) {
                 event.preventDefault();
                 if (event.keyCode == 13) {
