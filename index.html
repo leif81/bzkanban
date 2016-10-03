@@ -1485,6 +1485,15 @@
 
                     httpRequest("POST", "/rest/bug?token=" + authObject.userToken, dataObj, function() {
                         document.getElementById('modalAddBug').style.display = "none";
+                        var componentList = document.getElementById("textComponent");
+                        var versionList = document.getElementById("textVersion");
+
+                        while (componentList.firstChild) {
+                            componentList.removeChild(componentList.firstChild);
+                        }
+                        while (versionList.firstChild) {
+                            versionList.removeChild(versionList.firstChild);
+                        }
                         loadBoard();
                     });
                 });
