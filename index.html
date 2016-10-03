@@ -279,6 +279,9 @@
             .modal-body ul {
                 margin: 0px;
             }
+            #newbugDefaults {
+                display: none;
+            }
         </style>
     </head>
     <body>
@@ -331,13 +334,15 @@
                     <select id="textComponent" name="component" placeholder="Component" value=""></select>
                     <label>Version</label>
                     <select id="textVersion" name="version" placeholder="Version"></select>
-                    <label>Using Bugzilla defaults</label>
-                    <ul id="listDefaults" style="list-style-type:circle">
-                        <li>op_sys = <label id="labelOpSys"></label></li>
-                        <li>platform = <label id="labelPlatform"></label></li>
-                        <li>priority = <label id="labelPriority"></label></li>
-                        <li>severity = <label id="labelSeverity"></label></li>
-                    </ul>
+                    <div id="newbugDefaults">
+                        <label>Using Bugzilla defaults</label>
+                        <ul style="list-style-type:circle">
+                            <li>op_sys = <label id="labelOpSys"></label></li>
+                            <li>platform = <label id="labelPlatform"></label></li>
+                            <li>priority = <label id="labelPriority"></label></li>
+                            <li>severity = <label id="labelSeverity"></label></li>
+                        </ul>
+                    </div>
                     <button id="btnModalSubmit">Submit</button>
                 </div>
             </div>
@@ -765,11 +770,6 @@
                         textSeverity.value = defaultSeverity;
                         textSeverity.style.fontStyle = "italic";
                     }
-
-                    // Hiding extra info, display as required
-                    document.getElementById("listDefaults").children[1].style.display = "none"
-                    document.getElementById("listDefaults").children[2].style.display = "none"
-                    document.getElementById("listDefaults").children[3].style.display = "none"
                 });
             }
 
