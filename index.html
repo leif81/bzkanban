@@ -1048,7 +1048,7 @@
                     localStorage.setItem(bzSiteUrl, JSON.stringify(authObject));
                     loadName();
                     // Rebuild the board so dnd events are registered.
-                    if (bzProduct !== null || bzAssignedTo !== null) {
+                    if (bzProduct !== null || bzAssignedTo !== "") {
                         loadBoard();
                     }
                     hideLoginForm();
