@@ -1380,6 +1380,14 @@
                 history.pushState({}, '', newURL);
             }
 
+            function showNewBugModal() {
+                document.getElementById('modalAddBug').style.display = "block";
+            }
+
+            function hideNewBugModal() {
+                document.getElementById('modalAddBug').style.display = "none";
+            }
+
             // Register event handlers
 
             // When the user changes the Product drop down
@@ -1452,8 +1460,7 @@
             // When the user clicks the New Bug button
             document.getElementById("btnCreate").addEventListener("click", function() {
                     if (isLoggedIn()) {
-                        // Open the modal
-                        document.getElementById('modalAddBug').style.display = "block";
+                        showNewBugModal();
                     } else {
                         // Open Bugzilla page
                         var product = document.getElementById("textProduct").value;
@@ -1463,7 +1470,7 @@
 
             // When the user clicks on <span> (x), close the modal
             document.getElementsByClassName("modalClose")[0].onclick = function() {
-                document.getElementById('modalAddBug').style.display = "none";
+                hideNewBugModal();
                 };
 
             // When the user clicks anywhere outside of the modal, close it
@@ -1490,7 +1497,7 @@
                     };
 
                     httpRequest("POST", "/rest/bug?token=" + authObject.userToken, dataObj, function() {
-                        document.getElementById('modalAddBug').style.display = "none";
+                        hideNewBugModal();
                         var componentList = document.getElementById("textComponent");
                         var versionList = document.getElementById("textVersion");
 
