@@ -1382,6 +1382,19 @@
                 document.getElementById('modalAddBug').style.display = "none";
             }
 
+            function clearModal() {
+
+                var componentList = document.getElementById("textComponent");
+                var versionList = document.getElementById("textVersion");
+
+                while (componentList.firstChild) {
+                    componentList.removeChild(componentList.firstChild);
+                }
+                while (versionList.firstChild) {
+                    versionList.removeChild(versionList.firstChild);
+                }
+            }
+
             // Register event handlers
 
             // When the user changes the Product drop down
@@ -1494,15 +1507,8 @@
 
                     httpRequest("POST", "/rest/bug?token=" + authObject.userToken, dataObj, function() {
                         hideNewBugModal();
-                        var componentList = document.getElementById("textComponent");
-                        var versionList = document.getElementById("textVersion");
 
-                        while (componentList.firstChild) {
-                            componentList.removeChild(componentList.firstChild);
-                        }
-                        while (versionList.firstChild) {
-                            versionList.removeChild(versionList.firstChild);
-                        }
+                        clearModal();
                         loadBoard();
                     });
                 });
