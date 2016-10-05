@@ -1475,9 +1475,11 @@
 
             // When the user clicks anywhere outside of the modal, close it
             window.onclick = function(event) {
-                if (event.target == document.getElementById('modalAddBug')) {
-                    document.getElementById('modalAddBug').style.display = "none";
-                }
+                document.querySelectorAll('.modal').forEach(function(el) {
+                    if (event.target == el) {
+                        el.style.display = "none";
+                    }
+                });
                 };
 
             // When the user clicks the modal Submit button
