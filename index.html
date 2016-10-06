@@ -1144,6 +1144,8 @@
                     delete dataObj.comment;
                 }
 
+                showSpinner();
+
                 // TODO: maybe check if bugID != number
                 httpPut("/rest/bug/" + bugID, dataObj, function() {
                     loadBoard();
