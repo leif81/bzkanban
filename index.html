@@ -204,6 +204,7 @@
             }
             #spinner {
                 padding-right: 5px;
+                display: none;
             }
             .modal {
                 display: none;
@@ -296,7 +297,9 @@
             </span>
             <div id="textBacklog" class="drop-target" ondragenter="return dragCardEnter(event)" ondrop="return dropBacklog(event)" ondragover="return dragCardOver(event)" ondragleave="return dragCardLeave(event)">Backlog</div>
             <span class="spring"></span>
-            <span id="spinner"></span>
+            <span id="spinner">
+                <i class="fa fa-cog fa-spin"></i>
+            </span>
             <span id="actions">
                 <button id="btnCreate">New Bug</button>
                 <span id="whoami"></span>
@@ -1021,17 +1024,13 @@
             }
 
             function showSpinner() {
-                var i = document.createElement('i');
-                i.className = "fa fa-cog fa-spin fa-lg";
-                document.getElementById("spinner").appendChild(i);
+                var spinner = document.querySelector('#spinner');
+                spinner.style.display = 'block';
             }
 
             function hideSpinner() {
-                var elem = document.getElementById("spinner");
-                var icon = elem.firstChild;
-                if (icon !== null) {
-                    elem.removeChild(icon);
-                }
+                var spinner = document.querySelector('#spinner');
+                spinner.style.display = 'none';
             }
 
             function doAuth(user, password) {
