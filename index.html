@@ -364,6 +364,7 @@
             var userGravatar = true;
             var bzProduct = "";
             var bzProductMilestone = "";
+            var bzProductHasUnconfirmed = false;
             var bzBoardLoadTime = "";
             var bzRestGetBugsUrl = "";
             var shouldCheckForUpdates = true;
@@ -437,6 +438,8 @@
                 if (bzProduct !== "" && bzProductMilestone !== "") {
                     loadBoard();
                 }
+
+                loadProductInfo();
             }
 
             function loadBoard() {
@@ -446,17 +449,9 @@
                     var statuses = response.values;
                     statuses.forEach(function(status) {
                         addBoardColumn(status);
-                        document.getElementsByClassName("board-column").UNCONFIRMED.style.display = "none";
                     });
-                    if (bzProduct !== null) {
-                        httpGet("/rest/product/" + bzProduct + "?include_fields=has_unconfirmed", function(response) {
-                            // Unhide UNCONFIRMED column if product has enabled it.
-                            // But, product name may not have been provided if querying only on email.
-                            if (response.products[0].has_unconfirmed) {
-                                // Reset style to default CSS
-                                document.getElementsByClassName("board-column").UNCONFIRMED.style.display = "";
-                            }
-                        });
+                    if (!bzProductHasUnconfirmed) {
+                        document.getElementsByClassName("board-column").UNCONFIRMED.style.display = "none";
                     }
                     loadBugs();
                     if (isLoggedIn()) {
@@ -554,6 +549,14 @@
                 document.getElementById("textAssignee").value = bzAssignedTo;
 
                 elem.removeAttribute("disabled");
+            }
+
+            function loadProductInfo() {
+                if (bzProduct !== null) {
+                    httpGet("/rest/product/" + bzProduct + "?include_fields=has_unconfirmed", function(response) {
+                        bzProductHasUnconfirmed = response.products[0].has_unconfirmed;
+                    });
+                }
             }
 
             function loadComments(bug) {
@@ -1412,6 +1415,7 @@
                 bzProductMilestone = "";
                 bzAssignedTo = "";
                 loadMilestonesList();
+                loadProductInfo();
                 clearAssigneesList();
                 clearBoard();
                 updateAddressBar();
