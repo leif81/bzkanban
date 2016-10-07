@@ -429,6 +429,14 @@
                 document.getElementById("textMilestone").disabled = true;
 
                 loadProductsList();
+
+                if (bzProduct !== null) {
+                    loadMilestonesList();
+                }
+
+                if (bzProduct !== "" && bzProductMilestone !== "") {
+                    loadBoard();
+                }
             }
 
             function loadBoard() {
@@ -507,14 +515,10 @@
                     });
                     // select it in list.
                     document.getElementById("textProduct").value = bzProduct;
-                    if (bzProduct !== null) {
-                        loadMilestonesList();
-                    }
                 });
             }
 
             function loadMilestonesList() {
-                bzProduct = document.getElementById("textProduct").value;
                 clearMilestonesList();
                 httpGet("/rest/product?names=" + bzProduct + "&include_fields=milestones", function(response) {
                     document.getElementById("textMilestone").disabled = false;
@@ -527,9 +531,6 @@
                     });
                     // select it in list.
                     document.getElementById("textMilestone").value = bzProductMilestone;
-                    if (bzProduct !== "" && bzProductMilestone !== "") {
-                        loadBoard();
-                    }
                 });
             }
 
