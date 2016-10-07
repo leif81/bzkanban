@@ -419,6 +419,11 @@
 
                 authObject = JSON.parse(localStorage.getItem(bzSiteUrl));
 
+                if (isLoggedIn()) {
+                    loadName();
+                    hideSignInButton();
+                }
+
                 // Disable input fields until response is complete.
                 // Having the user keep clicking the drop down isn't nice.
                 document.getElementById("textProduct").disabled = true;
