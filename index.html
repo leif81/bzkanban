@@ -419,17 +419,14 @@
 
                 authObject = JSON.parse(localStorage.getItem(bzSiteUrl));
 
-                if (isLoggedIn()) {
-                    loadName();
-                    hideSignInButton();
-                }
-
                 // Disable input fields until response is complete.
                 // Having the user keep clicking the drop down isn't nice.
                 document.getElementById("textProduct").disabled = true;
                 document.getElementById("textMilestone").disabled = true;
 
                 loadProductsList();
+                loadProductInfo();
+                loadColumns();
 
                 if (bzProduct !== null) {
                     loadMilestonesList();
@@ -439,31 +436,21 @@
                     loadBoard();
                 }
 
-                loadProductInfo();
             }
 
             function loadBoard() {
                 showSpinner();
-                httpGet("/rest/field/bug/status/values", function(response) {
-                    clearBoard();
-                    var statuses = response.values;
-                    statuses.forEach(function(status) {
-                        addBoardColumn(status);
-                    });
-                    if (!bzProductHasUnconfirmed) {
-                        document.getElementsByClassName("board-column").UNCONFIRMED.style.display = "none";
-                    }
-                    loadBugs();
-                    if (isLoggedIn()) {
-                        loadResolutions();
-                        loadPriorities();
-                        loadSeverities();
-                        loadDefaultPrioritySeverityFields();
-                        loadDefaultMilestone();
-                        loadComponentsList();
-                        loadVersionsList();
-                    }
-                });
+                clearCards();
+                loadBugs();
+                if (isLoggedIn()) {
+                    loadResolutions();
+                    loadPriorities();
+                    loadSeverities();
+                    loadDefaultPrioritySeverityFields();
+                    loadDefaultMilestone();
+                    loadComponentsList();
+                    loadVersionsList();
+                }
             }
 
             function loadBugs() {
@@ -555,8 +542,19 @@
                 if (bzProduct !== null) {
                     httpGet("/rest/product/" + bzProduct + "?include_fields=has_unconfirmed", function(response) {
                         bzProductHasUnconfirmed = response.products[0].has_unconfirmed;
+                        updateUnconfirmedColumnVisibilty();
                     });
                 }
+            }
+
+            function loadColumns() {
+                httpGet("/rest/field/bug/status/values", function(response) {
+                    var statuses = response.values;
+                    statuses.forEach(function(status) {
+                        addBoardColumn(status);
+                    });
+                    updateUnconfirmedColumnVisibilty();
+                });
             }
 
             function loadComments(bug) {
@@ -936,9 +934,13 @@
             }
 
 
-            function clearBoard() {
-                clearAssigneesList();
-                document.getElementById("board").innerHTML = "";
+            function clearCards() {
+                document.querySelectorAll(".cards").forEach(function(el) {
+                    el.innerHTML = "";
+                });
+                document.querySelectorAll(".board-column-card-count").forEach(function(el) {
+                    el.innerHTML = "";
+                });
             }
 
             function clearMilestonesList() {
@@ -966,6 +968,17 @@
 
                 // force reload
                 showColumnCounts();
+            }
+
+            function updateUnconfirmedColumnVisibilty() {
+                var col = document.querySelector(".board-column#UNCONFIRMED");
+                if (col !== null) {
+                    if (bzProductHasUnconfirmed) {
+                        col.style.display = "block";
+                    } else {
+                        col.style.display = "none";
+                    }
+                }
             }
 
             function httpPut(url, dataObj, successCallback, errorCallback) {
@@ -1417,7 +1430,7 @@
                 loadMilestonesList();
                 loadProductInfo();
                 clearAssigneesList();
-                clearBoard();
+                clearCards();
                 updateAddressBar();
                 });
 
