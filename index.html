@@ -447,15 +447,6 @@
                 showSpinner();
                 clearCards();
                 loadBugs();
-                if (isLoggedIn()) {
-                    loadResolutions();
-                    loadPriorities();
-                    loadSeverities();
-                    loadDefaultPrioritySeverityFields();
-                    loadDefaultMilestone();
-                    loadComponentsList();
-                    loadVersionsList();
-                }
             }
 
             function loadBugs() {
@@ -550,6 +541,13 @@
                         updateUnconfirmedColumnVisibilty();
                     });
                 }
+
+                // used for populating New Bug modal
+                if (isLoggedIn()) {
+                    loadDefaultMilestone();
+                    loadComponentsList();
+                    loadVersionsList();
+                }
             }
 
             function loadColumns() {
@@ -559,6 +557,13 @@
                         addBoardColumn(status);
                     });
                     updateUnconfirmedColumnVisibilty();
+
+                    if (isLoggedIn()) {
+                        loadResolutions();
+                        loadPriorities();
+                        loadSeverities();
+                        loadDefaultPrioritySeverityFields();
+                    }
                 });
             }
 
@@ -745,8 +750,6 @@
                     textPlatform = document.getElementById("labelPlatform");
                     textPriority = document.getElementById("labelPriority");
                     textSeverity = document.getElementById("labelSeverity");
-
-                    document.getElementById("textModalHeader").innerText = "Add new bug to milestone " + bzProductMilestone;
 
                     if (defaultOpSys !== null && defaultOpSys.length !== 0) {
                         textOpSys.innerHTML = defaultOpSys;
@@ -1398,6 +1401,7 @@
             }
 
             function showNewBugModal() {
+                document.getElementById("textModalHeader").innerText = "Add new bug to milestone " + bzProductMilestone;
                 document.getElementById('modalAddBug').style.display = "block";
             }
 
