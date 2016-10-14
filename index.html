@@ -362,21 +362,21 @@
             var bzPriority = "";
             var bzAssignedTo = "";
             var bzOrder = "priority,bug_severity,assigned_to";
-            var userFullName = "";
-            var userGravatar = true;
+            var bzUserFullName = "";
+            var bzShowGravatar = true;
             var bzProductHasUnconfirmed = false;
             var bzBoardLoadTime = "";
             var bzRestGetBugsUrl = "";
             var bzAllowUserLogin = true;
-            var shouldCheckForUpdates = true;
-            var shouldLoadComments = false;
-            var shouldAutoComment = false;
-            var shouldAutoRefresh = false;
-            var assignees = new Map();
-            var defaultPriority;
-            var defaultSeverity;
-            var defaultMilestone;
-            var authObject;
+            var bzCheckForUpdates = true;
+            var bzLoadComments = false;
+            var bzAutoComment = false;
+            var bzAutoRefresh = false;
+            var bzAssignees = new Map();
+            var bzDefaultPriority;
+            var bzDefaultSeverity;
+            var bzDefaultMilestone;
+            var bzAuthObject;
 
             window.onload = loadParams;
 
@@ -400,26 +400,26 @@
                 // Causing some Bugzilla servers to respond with "too many requests" errors.
                 var comments = getURLParameter('comments');
                 if (comments !== null) {
-                    shouldLoadComments = isTrue(comments);
+                    bzLoadComments = isTrue(comments);
                 }
 
                 var autocomment = getURLParameter('autocomment');
                 if (autocomment !== null) {
-                    shouldAutoComment = isTrue(autocomment);
+                    bzAutoComment = isTrue(autocomment);
                 }
 
                 var pictures = getURLParameter('gravatar');
                 if (pictures !== null) {
-                    userGravatar = isTrue(pictures);
+                    bzShowGravatar = isTrue(pictures);
                 }
 
                 var autorefresh = getURLParameter('autorefresh');
                 if (autorefresh !== null) {
-                    shouldAutoRefresh = isTrue(autorefresh);
+                    bzAutoRefresh = isTrue(autorefresh);
                 }
 
                 if (bzAllowUserLogin) {
-                    authObject = JSON.parse(localStorage.getItem(bzSiteUrl));
+                    bzAuthObject = JSON.parse(localStorage.getItem(bzSiteUrl));
 
                     if (isLoggedIn()) {
                         loadName();
@@ -475,7 +475,7 @@
                     showColumnCounts();
                     loadAssigneesList();
                     if (bzAssignedTo != "") {
-                        var name = assignees.get(bzAssignedTo).real_name;
+                        var name = bzAssignees.get(bzAssignedTo).real_name;
                         filterByAssignee(name);
                     }
                     hideSpinner();
@@ -520,9 +520,9 @@
 
             function loadAssigneesList() {
                 // HACK add phony user so that we can show all users
-                assignees.set( "", { real_name: "ALL", email: "" });
+                bzAssignees.set( "", { real_name: "ALL", email: "" });
 
-                var sorted = Array.from(assignees.values()).sort(function(a, b) {
+                var sorted = Array.from(bzAssignees.values()).sort(function(a, b) {
                     return a.real_name.localeCompare(b.real_name);
                 });
 
@@ -592,10 +592,10 @@
             }
 
             function loadName() {
-                httpGet("/rest/user/" + authObject.userID + "?token=" + authObject.userToken, function(response) {
-                    userFullName = response.users[0].real_name;
-                    if (userFullName !== null) {
-                        document.getElementById("whoami").textContent = userFullName;
+                httpGet("/rest/user/" + bzAuthObject.userID + "?token=" + bzAuthObject.userToken, function(response) {
+                    bzUserFullName = response.users[0].real_name;
+                    if (bzUserFullName !== null) {
+                        document.getElementById("whoami").textContent = bzUserFullName;
                     }
                 });
             }
@@ -724,12 +724,12 @@
 
             function loadCheckForUpdates() {
                 if (bzBoardLoadTime === "") {
-                    shouldCheckForUpdates = false;
+                    bzCheckForUpdates = false;
                     return;
                 }
                 httpGet(bzRestGetBugsUrl + "&last_change_time=" + bzBoardLoadTime, function(response) {
                     if (response.bugs.length > 0) {
-                        if (shouldAutoRefresh) {
+                        if (bzAutoRefresh) {
                             loadBoard();
                         } else {
                             var bell = document.getElementById("notification");
@@ -738,7 +738,7 @@
                         }
                     }
 
-                    if (shouldCheckForUpdates) {
+                    if (bzCheckForUpdates) {
                         // Repeat.
                         scheduleCheckForUpdates();
                     }
@@ -746,11 +746,11 @@
             }
 
             function loadDefaultPrioritySeverityFields() {
-                httpGet("/rest/parameters?token=" + authObject.userToken, function(response) {
+                httpGet("/rest/parameters?token=" + bzAuthObject.userToken, function(response) {
                     defaultOpSys = response.parameters.defaultopsys;
                     defaultPlatform = response.parameters.defaultplatform;
-                    defaultPriority = response.parameters.defaultpriority;
-                    defaultSeverity = response.parameters.defaultseverity;
+                    bzDefaultPriority = response.parameters.defaultpriority;
+                    bzDefaultSeverity = response.parameters.defaultseverity;
 
                     textOpSys = document.getElementById("labelOpSys");
                     textPlatform = document.getElementById("labelPlatform");
@@ -773,20 +773,20 @@
                         textPlatform.value = defaultPlatform;
                         textPlatform.style.fontStyle = "italic";
                     }
-                    if (defaultPriority !== null && defaultPriority.length !== 0) {
-                        textPriority.innerHTML = defaultPriority;
-                        textPriority.value = defaultPriority;
+                    if (bzDefaultPriority !== null && bzDefaultPriority.length !== 0) {
+                        textPriority.innerHTML = bzDefaultPriority;
+                        textPriority.value = bzDefaultPriority;
                     } else {
                         textPriority.innerHTML = "blank";
-                        textPriority.value = defaultPriority;
+                        textPriority.value = bzDefaultPriority;
                         textPriority.style.fontStyle = "italic";
                     }
-                    if (defaultSeverity !== null && defaultSeverity.length !== 0) {
-                        textSeverity.innerHTML = defaultSeverity;
-                        textSeverity.value = defaultSeverity;
+                    if (bzDefaultSeverity !== null && bzDefaultSeverity.length !== 0) {
+                        textSeverity.innerHTML = bzDefaultSeverity;
+                        textSeverity.value = bzDefaultSeverity;
                     } else {
                         textSeverity.innerHTML = "blank";
-                        textSeverity.value = defaultSeverity;
+                        textSeverity.value = bzDefaultSeverity;
                         textSeverity.style.fontStyle = "italic";
                     }
                 });
@@ -794,7 +794,7 @@
 
             function loadDefaultMilestone() {
                 httpGet("/rest/product/" + bzProduct + "?type=enterable&include_fields=default_milestone", function(response) {
-                    defaultMilestone = response.products[0].default_milestone;
+                    bzDefaultMilestone = response.products[0].default_milestone;
                 });
             }
 
@@ -860,7 +860,7 @@
 
                 var picture = document.createElement('img');
                 picture.setAttribute("id", "picture");
-                if (userGravatar) {
+                if (bzShowGravatar) {
                     picture.src = getPictureSrc(bug.assigned_to_detail.email);
                 } else {
                     hidePicture(picture);
@@ -902,13 +902,13 @@
                     card.addEventListener('dragstart', dragCard);
                 }
 
-                if (shouldLoadComments) {
+                if (bzLoadComments) {
                     loadComments(bug);
                 }
 
                 document.querySelector("#" + bug.status + " .cards").appendChild(card);
 
-                assignees.set(bug.assigned_to_detail.email, bug.assigned_to_detail); // save for later
+                bzAssignees.set(bug.assigned_to_detail.email, bug.assigned_to_detail); // save for later
             }
 
             function createDeadlineElement(deadline) {
@@ -963,7 +963,7 @@
             }
 
             function clearAssigneesList() {
-                assignees = new Map();
+                bzAssignees = new Map();
                 var elem = document.getElementById("textAssignee");
                 removeChildren(elem);
                 elem.setAttribute("disabled", "");
@@ -1068,8 +1068,8 @@
                 showSpinner();
                 httpGet("/rest/login?login=" + user + "&password=" + password, function(response) {
                     hideSpinner();
-                    authObject = { 'userID': response.id, 'userToken': response.token };
-                    localStorage.setItem(bzSiteUrl, JSON.stringify(authObject));
+                    bzAuthObject = { 'userID': response.id, 'userToken': response.token };
+                    localStorage.setItem(bzSiteUrl, JSON.stringify(bzAuthObject));
                     loadName();
                     // Rebuild the board so dnd events are registered.
                     if (bzProduct !== null || bzAssignedTo !== "") {
@@ -1080,7 +1080,7 @@
             }
 
             function isLoggedIn() {
-                return authObject !== null;
+                return bzAuthObject !== null;
             }
 
             function showLoginForm() {
@@ -1132,7 +1132,7 @@
                     resolution : "",
                     priority : "",
                     severity : "",
-                    token : authObject.userToken,
+                    token : bzAuthObject.userToken,
                     comment : "",
                     target_milestone : ""
                 };
@@ -1164,7 +1164,7 @@
                 var bugComment = { body : "" };
 
                 // TODO: Comment box popup
-                if (shouldAutoComment) {
+                if (bzAutoComment) {
                     bugComment.body = "Auto-comment from bzKanban";
                 }
 
@@ -1291,10 +1291,10 @@
 
                 var targetStatus = "CONFIRMED";
                 var targetResolution = "";
-                var targetPriority = defaultPriority;
+                var targetPriority = bzDefaultPriority;
                 var targetSeverity = "";
 
-                writeBug(bugData.id, bugData.status, targetStatus, targetResolution, targetPriority, targetSeverity, defaultMilestone);
+                writeBug(bugData.id, bugData.status, targetStatus, targetResolution, targetPriority, targetSeverity, bzDefaultMilestone);
 
             }
 
@@ -1397,10 +1397,10 @@
                 newURL += "?product=" + bzProduct;
                 newURL += "&milestone=" + bzProductMilestone;
                 newURL += "&assignee=" + bzAssignedTo;
-                newURL += "&gravatar=" + userGravatar;
-                newURL += "&comments=" + shouldLoadComments;
-                newURL += "&autocomment=" + shouldAutoComment;
-                newURL += "&autorefresh=" + shouldAutoRefresh;
+                newURL += "&gravatar=" + bzShowGravatar;
+                newURL += "&comments=" + bzLoadComments;
+                newURL += "&autocomment=" + bzAutoComment;
+                newURL += "&autorefresh=" + bzAutoRefresh;
                 newURL += "&site=" + bzSiteUrl;
 
                 history.pushState({}, '', newURL);
@@ -1466,7 +1466,7 @@
             document.getElementById("textAssignee").addEventListener("input", function() {
                 bzAssignedTo = document.getElementById('textAssignee').value;
                 updateAddressBar();
-                var name = assignees.get(bzAssignedTo).real_name;
+                var name = bzAssignees.get(bzAssignedTo).real_name;
                 filterByAssignee(name);
                 });
 
@@ -1485,9 +1485,9 @@
             // Background checking for updates to visible cards
             document.addEventListener("visibilitychange", function() {
                 if (document.hidden) {
-                    shouldCheckForUpdates = false;
+                    bzCheckForUpdates = false;
                 } else {
-                    shouldCheckForUpdates = true;
+                    bzCheckForUpdates = true;
                     loadCheckForUpdates();
                 }
                 });
@@ -1541,7 +1541,7 @@
                         target_milestone: bzProductMilestone
                     };
 
-                    httpRequest("POST", "/rest/bug?token=" + authObject.userToken, dataObj, function() {
+                    httpRequest("POST", "/rest/bug?token=" + bzAuthObject.userToken, dataObj, function() {
                         hideNewBugModal();
 
                         clearModal();
