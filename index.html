@@ -1072,9 +1072,7 @@
                     localStorage.setItem(bzSiteUrl, JSON.stringify(bzAuthObject));
                     loadName();
                     // Rebuild the board so dnd events are registered.
-                    if (bzProduct !== null || bzAssignedTo !== "") {
-                        loadBoard();
-                    }
+                    loadBoard();
                     hideLoginForm();
                 });
             }
