@@ -367,6 +367,7 @@
             var bzProductHasUnconfirmed = false;
             var bzBoardLoadTime = "";
             var bzRestGetBugsUrl = "";
+            var bzAllowUserLogin = true;
             var shouldCheckForUpdates = true;
             var shouldLoadComments = false;
             var shouldAutoComment = false;
@@ -417,12 +418,17 @@
                     shouldAutoRefresh = isTrue(autorefresh);
                 }
 
-                authObject = JSON.parse(localStorage.getItem(bzSiteUrl));
+                if (bzAllowUserLogin) {
+                    authObject = JSON.parse(localStorage.getItem(bzSiteUrl));
 
-                if (isLoggedIn()) {
-                    loadName();
+                    if (isLoggedIn()) {
+                        loadName();
+                        hideSignInButton();
+                    }
+                } else {
                     hideSignInButton();
                 }
+
 
                 // Disable input fields until response is complete.
                 // Having the user keep clicking the drop down isn't nice.
