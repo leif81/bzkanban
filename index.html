@@ -274,6 +274,9 @@
             .modal-body ul {
                 margin: 0px;
             }
+            .modal-body button {
+                margin-top: 5px;
+            }
             #newbugDefaults {
                 display: none;
             }
@@ -369,6 +372,7 @@
             var bzRestGetBugsUrl = "";
             var bzAllowUserLogin = true;
             var bzCheckForUpdates = true;
+            var bzAddCommentOnChange = true;
             var bzLoadComments = false;
             var bzAutoComment = false;
             var bzAutoRefresh = false;
@@ -1126,14 +1130,14 @@
                 });
             }
 
-            function writeBug(bugID, fromStatus, targetStatus, bugResolution, bugPriority, bugSeverity, bugMilestone) {
+            function writeBug(bugID, fromStatus, targetStatus, bugResolution, bugPriority, bugSeverity, bugMilestone, bugComment) {
                 var dataObj = {
                     status: targetStatus,
                     resolution : "",
                     priority : "",
                     severity : "",
                     token : bzAuthObject.userToken,
-                    comment : "",
+                    comment : { body: "" },
                     target_milestone : ""
                 };
 
@@ -1161,15 +1165,10 @@
                     delete dataObj.severity;
                 }
 
-                var bugComment = { body : "" };
-
-                // TODO: Comment box popup
-                if (bzAutoComment) {
-                    bugComment.body = "Auto-comment from bzKanban";
-                }
-
-                if (bugComment.body !== "") {
-                    dataObj.comment = bugComment;
+                if (bugComment !== "") {
+                    dataObj.comment.body = bugComment;
+                } else if (bzAutoComment) {
+                    dataObj.comment.body = "Auto-comment from bzKanban";
                 } else {
                     delete dataObj.comment;
                 }
@@ -1270,6 +1269,8 @@
                 var targetResolution = "";
                 var targetPriority = "";
                 var targetSeverity = "";
+                var targetComment = "";
+
                 if (ev.target.classList.contains("resolution")) {
                     targetResolution = ev.target.id;
                 } else if (ev.target.classList.contains("priority")) {
@@ -1278,7 +1279,15 @@
                     targetSeverity = ev.target.id;
                 }
 
-                writeBug(bugData.id, bugData.status, targetStatus, targetResolution, targetPriority, targetSeverity, "");
+                if (bzAddCommentOnChange) {
+                    showCommentModal(bugData.id, function(comment) {
+                        targetComment = comment;
+                        writeBug(bugData.id, bugData.status, targetStatus, targetResolution, targetPriority, targetSeverity, "", targetComment);
+                    });
+                } else {
+                    writeBug(bugData.id, bugData.status, targetStatus, targetResolution, targetPriority, targetSeverity, "", targetComment);
+                }
+
             }
 
             function dropBacklog(ev) {
@@ -1293,8 +1302,16 @@
                 var targetResolution = "";
                 var targetPriority = bzDefaultPriority;
                 var targetSeverity = "";
+                var targetComment = "";
 
-                writeBug(bugData.id, bugData.status, targetStatus, targetResolution, targetPriority, targetSeverity, bzDefaultMilestone);
+                if (bzAddCommentOnChange) {
+                    showCommentModal(bugData.id, function(comment) {
+                        targetComment = comment;
+                        writeBug(bugData.id, bugData.status, targetStatus, targetResolution, targetPriority, targetSeverity, bzDefaultMilestone, targetComment);
+                    });
+                } else {
+                        writeBug(bugData.id, bugData.status, targetStatus, targetResolution, targetPriority, targetSeverity, bzDefaultMilestone, targetComment);
+                }
 
             }
 
@@ -1428,6 +1445,64 @@
                 while (versionList.firstChild) {
                     versionList.removeChild(versionList.firstChild);
                 }
+            }
+
+            function showCommentModal(bugId, responseCallback) {
+                var commentModal = document.createElement("div");
+                commentModal.id = "modalComment";
+                commentModal.className = "modal";
+
+                var commentModalContent = document.createElement("div");
+                commentModalContent.className = "modal-content";
+
+                var bugTitle = document.querySelector(".card[data-bug-id='" + bugId + "'] > .card-summary").innerText;
+
+                var commentModalHeader = document.createElement("div");
+                commentModalHeader.className = "modal-header";
+                commentModalHeader.innerText = "Bug " + bugId + ': ' + bugTitle;
+
+                var close = document.createElement("i");
+                close.className = "fa fa-close modalClose";
+                close.onclick = function() {
+                    hideCommentModal();
+                };
+
+                commentModalHeader.appendChild(close);
+
+                var commentModalBody = document.createElement("div");
+                commentModalBody.className = "modal-body";
+
+                var commentBoxLabel = document.createElement("label");
+                commentBoxLabel.innerText = "Additional Comments";
+
+                var commentBox = document.createElement("textarea");
+                commentBox.id = "commentBoxText"
+
+                commentBoxLabel.appendChild(commentBox);
+
+                var submit = document.createElement("button");
+                submit.innerText = "Submit";
+                submit.id = "submitComment";
+                submit.onclick = function() {
+                    var comment = document.querySelector("#commentBoxText").value;
+                    responseCallback(comment);
+                    hideCommentModal();
+                }
+
+                commentModalBody.appendChild(commentBoxLabel);
+                commentModalBody.appendChild(submit);
+
+                commentModalContent.appendChild(commentModalHeader);
+                commentModalContent.appendChild(commentModalBody);
+                commentModal.appendChild(commentModalContent);
+
+                document.querySelector("body").appendChild(commentModal);
+
+                commentModal.style.display = "block";
+            }
+
+            function hideCommentModal() {
+                document.querySelector('#modalComment').remove();
             }
 
             // Register event handlers
