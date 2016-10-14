@@ -691,6 +691,7 @@
             }
 
             function loadComponentsList() {
+                clearComponentsList();
                 httpGet("/rest/product/" + bzProduct + "?type=enterable&include_fields=components", function(response) {
                     var components = response.products[0].components;
                     components.sort(function(a, b) {
@@ -707,6 +708,7 @@
             }
 
             function loadVersionsList() {
+                clearVersionsList();
                 httpGet("/rest/product/" + bzProduct + "?type=enterable&include_fields=versions", function(response) {
                     var versions = response.products[0].versions;
                     versions.sort(function(a, b) {
@@ -1416,13 +1418,19 @@
             function clearModal() {
                 document.getElementById("textAddBugSummary").value = "";
                 document.getElementById("textAddBugDescription").value = "";
+            }
 
+            function clearComponentsList() {
                 var componentList = document.getElementById("textComponent");
-                var versionList = document.getElementById("textVersion");
 
                 while (componentList.firstChild) {
                     componentList.removeChild(componentList.firstChild);
                 }
+            }
+
+            function clearVersionsList() {
+                var versionList = document.getElementById("textVersion");
+
                 while (versionList.firstChild) {
                     versionList.removeChild(versionList.firstChild);
                 }
