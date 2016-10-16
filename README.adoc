@@ -28,15 +28,15 @@ https://rawgit.com/leif81/bzkanban/master/index.html?product=Bugzilla&milestone=
 
 === Advanced
 
-These are optional settings that can be manually added to the page URL to control the board.
+These are some settings that can be manually controlled via the page URL.
 
  * `site`
- ** Override the internal Bugzilla instance URL to load from. e.g. `site=https://bugzilla.mozilla.org`
+ ** The Bugzilla instance to load data from. Overrides the internal setting. e.g. `site=https://bugzilla.mozilla.org`
  * `comments`
- ** Show comment counts on cards. WARNING: it's expensive, one more request per card. e.g. `comments=true`
+ ** Show comment counts on cards. WARNING: it's expensive, one more request per card. e.g. `comments=true/false`
  * `autocomments`
- ** Enable auto comments when making changes to bugs. e.g. `autocomment=true`
+ ** Add a comment when making changes to bugs. e.g. `autocomment=true/false`
  * `autorefresh`
- ** Enable auto refresh when changes are detected. e.g. `autorefresh=true`
+ ** Reload the board when external changes to bugs are detected. e.g. `autorefresh=true/false`
  * `gravatar`
- ** Disable use of an external avatar site. e.g. `gravatar=false`
+ ** Show user gravatar images. e.g. `gravatar=true/false`
