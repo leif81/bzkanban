@@ -1,0 +1,277 @@
+body {
+    background-color: lightsteelblue;
+    background: linear-gradient(to bottom, rgba(207,231,250,1) 0%,rgba(99,147,193,1) 100%);
+    font-family: sans-serif;
+    margin: 0;
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+}
+#board {
+    display: flex;
+    padding-top: 20px;
+}
+.board-column-title {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+.cards {
+    overflow-x: hidden;
+    align-self: stretch;
+}
+.board-column-card-count {
+    font-size: small;
+    color: grey;
+    margin-left: 10px;
+}
+.board-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.board-column.drag-card {
+    outline-width: 2px;
+    outline-style: dashed;
+    outline-color: grey;
+}
+.card {
+    background-color: white;
+    border-width: 1px;
+    border-color: grey;
+    border-style: solid;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 3px;
+    font-size: small;
+}
+.card:hover {
+    background-color: ghostwhite;
+    border-color: black;
+}
+.card-ref {
+    font-size: smaller;
+}
+.card-summary {
+    padding-top: 5px;
+    word-break: break-word;
+}
+.card-meta {
+    font-size: smaller;
+    color: grey;
+    padding: 1px;
+    margin-top: 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+.card-meta .assignee {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+.card-meta .assignee img#picture {
+    margin-left: 5px;
+}
+.card-meta #icons {
+}
+.card-meta #deadline {
+    margin-right: 5px;
+}
+.card-meta #comment {
+    margin-right: 5px;
+}
+.card-meta #severity,
+.card-meta #priority {
+    border-radius: 3px;
+    border-width: 1px;
+    border-style: solid;
+    margin-right: 5px;
+    padding: 1px;
+}
+.card-meta #severity[data-severity='blocker'],
+.card-meta #severity[data-severity='critical'],
+.card-meta #severity[data-severity='major'] {
+    color: red;
+}
+.card-meta #severity[data-severity='normal'],
+.card-meta #severity[data-severity='minor'],
+.card-meta #severity[data-severity='trivial'] {
+    color: gray;
+}
+.card-meta #severity[data-severity='enhancement'] {
+    color: green;
+}
+.card-meta #priority[data-priority='P1'],
+.card-meta #priority[data-priority='Highest'] {
+    color: red;
+}
+.card-meta #priority[data-priority='P2'],
+.card-meta #priority[data-priority='High'] {
+    color: orange;
+}
+.card-meta #priority[data-priority='P3'],
+.card-meta #priority[data-priority='Normal'],
+.card-meta #priority[data-priority='normal'],
+.card-meta #priority[data-priority='---'] {
+    color: green;
+}
+fieldset {
+    border-width: 0;
+}
+#textBacklog {
+    width: 100px;
+    border-style: solid;
+    border-color: white;
+    border-width: thin;
+    text-align: center;
+    align-self: center;
+    display: none;
+    font-size: small;
+    margin-left: 15px;
+}
+#query .fa {
+    vertical-align: middle;
+}
+#query select {
+    width: 150px;
+}
+#query span {
+    margin-right: 15px;
+}
+#loginForm {
+    display: none;
+    font-size: small;
+    margin-bottom: 0;
+    padding-left: 15px;
+}
+#whoami {
+    font-size: small;
+}
+.priorities,
+.severities,
+.resolutions {
+    align-self: stretch;
+}
+.priority,
+.severity,
+.resolution {
+    background: darkgray;
+    color: black;
+    text-align: -webkit-center;
+    border: thin solid black;
+    margin-top: 10px;
+    padding: 10px;
+    margin: 5px;
+    font-size: small;
+}
+#title {
+    background: none;
+    font-weight: bold;
+    border: none;
+    display: inline;
+}
+.drop-target-hover {
+    background: gold;
+}
+#notification {
+    display: none;
+}
+#nav {
+    flex: none;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20px;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: ghostwhite;
+}
+#nav span {
+    align-self: center;
+}
+#nav .spring {
+    flex: 1;
+}
+#spinner {
+    padding-right: 5px;
+    display: none;
+}
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+}
+.modal-content {
+    display: flex;
+    background-color: #fefefe;
+    margin: auto;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 600px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    animation-name: animatetop;
+    animation-duration: 0.4s
+}
+@keyframes animatetop {
+    from {top:-300px; opacity:0}
+    to {top:0; opacity:1}
+}
+.modalClose {
+    float: right;
+}
+.modalClose:hover,
+.modalClose:focus {
+    color: black;
+    cursor: pointer;
+}
+.modal-header {
+    padding: 15px;
+    background-color: rgb(99,147,193);
+    color: white;
+    align-self: stretch;
+    font-size: x-large;
+}
+.modal-body {
+    display: flex;
+    padding: 15px;
+    flex-direction: column;
+    align-self: stretch;
+}
+.modal-body input {
+    width: 100%;
+}
+.modal-body button {
+    align-self: flex-end;
+}
+.modal-body textarea {
+    width: 100%;
+    height: 100px;
+}
+.modal-body select {
+    width: 40%;
+}
+.modal-body label {
+    margin-top: 10px;
+}
+.modal-body ul {
+    margin: 0px;
+}
+.modal-body button {
+    margin-top: 5px;
+}
+#newbugDefaults {
+    display: none;
+}
