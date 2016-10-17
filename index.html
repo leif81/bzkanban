@@ -1278,8 +1278,9 @@
                     targetSeverity = ev.target.id;
                 }
 
+                ev.target.classList.remove("drop-target-hover");
+
                 if (bzAddCommentOnChange) {
-                    ev.target.classList.remove("drop-target-hover");
                     showCommentModal(bugData.id, function(comment) {
                         targetComment = comment;
                         writeBug(bugData.id, bugData.status, targetStatus, targetResolution, targetPriority, targetSeverity, "", targetComment);
