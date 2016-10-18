@@ -1078,18 +1078,12 @@ function clearModal() {
 
 function clearComponentsList() {
     var componentList = document.getElementById("textComponent");
-
-    while (componentList.firstChild) {
-        componentList.removeChild(componentList.firstChild);
-    }
+    removeChildren(componentList);
 }
 
 function clearVersionsList() {
     var versionList = document.getElementById("textVersion");
-
-    while (versionList.firstChild) {
-        versionList.removeChild(versionList.firstChild);
-    }
+    removeChildren(versionList);
 }
 
 function showCommentModal(bugId, responseCallback) {
