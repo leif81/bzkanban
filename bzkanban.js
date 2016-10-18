@@ -1220,8 +1220,7 @@ document.getElementById("btnCreate").addEventListener("click", function() {
             showNewBugModal();
         } else {
             // Open Bugzilla page
-            var product = document.getElementById("textProduct").value;
-            window.open(bzSiteUrl + "/enter_bug.cgi?product=" + product);
+            window.open(bzSiteUrl + "/enter_bug.cgi?product=" + bzProduct);
         }
     });
 
