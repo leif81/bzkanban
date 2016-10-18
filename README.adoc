@@ -19,7 +19,7 @@ https://rawgit.com/leif81/bzkanban/master/index.html?product=Bugzilla&milestone=
 == Installation
 
  . Clone this git repo.
- . Configure which Bugzilla instance to connect to by modifying the hardcoded `bzSiteUrl` value in the `index.html` code.
+ . Configure which Bugzilla instance to connect to by modifying the hardcoded `bzSiteUrl` value in the `bzkanban.js` code.
 
 == Usage
 
