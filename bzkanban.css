@@ -121,9 +121,6 @@ body {
 .card-meta #priority[data-priority='---'] {
     color: green;
 }
-fieldset {
-    border-width: 0;
-}
 #textBacklog {
     width: 100px;
     border-style: solid;
