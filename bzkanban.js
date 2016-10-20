@@ -62,6 +62,9 @@ function loadParams() {
         bzAutoRefresh = isTrue(autorefresh);
     }
 
+    initNav();
+    initBoard();
+
     if (bzAllowUserLogin) {
         bzAuthObject = JSON.parse(localStorage.getItem(bzSiteUrl));
 
@@ -72,12 +75,6 @@ function loadParams() {
     } else {
         hideSignInButton();
     }
-
-
-    // Disable input fields until response is complete.
-    // Having the user keep clicking the drop down isn't nice.
-    document.getElementById("textProduct").disabled = true;
-    document.getElementById("textMilestone").disabled = true;
 
     loadProductsList();
     loadProductInfo();
@@ -90,8 +87,233 @@ function loadParams() {
     if (bzProduct !== null && bzProductMilestone !== null) {
         loadBoard();
     }
-
 }
+
+function initNav() {
+    var nav = document.createElement("div");
+    nav.id = "nav";
+    document.querySelector("body").appendChild(nav);
+
+    initQueryFields();
+    initBacklogTarget();
+
+    var spring = document.createElement("span");
+    spring.className = "spring";
+    nav.appendChild(spring);
+
+    initSpinner();
+    initActions();
+    initLoginForm();
+}
+
+function initBoard() {
+    var board = document.createElement("div");
+    board.id = "board";
+    document.querySelector("body").appendChild(board);
+}
+
+function initQueryFields() {
+    var query = document.createElement("span");
+    query.id = "query";
+
+    var product = document.createElement("span");
+
+    var productIcon = document.createElement("i");
+    productIcon.className = "fa fa-archive";
+
+    var productList = document.createElement("select");
+    productList.id = "textProduct";
+    productList.name = "product";
+    productList.disabled = "true"; // until content is loaded
+
+    // When the user changes the Product drop down
+    productList.addEventListener("input", function() {
+        bzProduct = document.getElementById('textProduct').value;
+
+        // Disable Milestones until it's refreshed
+        document.getElementById("textMilestone").disabled = true;
+
+        // Clear affected state.
+        bzProductMilestone = "";
+        bzAssignedTo = "";
+        loadMilestonesList();
+        loadProductInfo();
+        clearAssigneesList();
+        clearCards();
+        updateAddressBar();
+    });
+
+    var milestone = document.createElement("span");
+
+    var milestoneIcon = document.createElement("i");
+    milestoneIcon.className = "fa fa-flag";
+
+    var milestoneList = document.createElement("select");
+    milestoneList.id = "textMilestone";
+    milestoneList.name = "milestone";
+    milestoneList.disabled = "true"; // until content is loaded
+
+    // When the user changes the Milestone drop down
+    milestoneList.addEventListener("input", function() {
+        bzProductMilestone = document.getElementById('textMilestone').value;
+
+        // Clear affected state.
+        bzAssignedTo = "";
+        clearAssigneesList();
+
+        // Hot load the board without a form submit.
+        loadBoard();
+        updateAddressBar();
+    });
+
+    var assignee = document.createElement("span");
+
+    var assigneeIcon = document.createElement("i");
+    assigneeIcon.className = "fa fa-user";
+
+    var assigneeList = document.createElement("select");
+    assigneeList.id = "textAssignee";
+    assigneeList.name = "assignee";
+    assigneeList.disabled = "true"; // until content is loaded
+
+    // When the user changes the Assignee drop down
+    assigneeList.addEventListener("input", function() {
+        bzAssignedTo = document.getElementById('textAssignee').value;
+        updateAddressBar();
+        var name = bzAssignees.get(bzAssignedTo).real_name;
+        filterByAssignee(name);
+    });
+
+    product.appendChild(productIcon);
+    product.appendChild(productList);
+    milestone.appendChild(milestoneIcon);
+    milestone.appendChild(milestoneList);
+    assignee.appendChild(assigneeIcon);
+    assignee.appendChild(assigneeList);
+
+    query.appendChild(product);
+    query.appendChild(milestone);
+    query.appendChild(assignee);
+
+    document.querySelector("#nav").appendChild(query);
+}
+
+function initBacklogTarget() {
+    var backlog = document.createElement("div");
+    backlog.id = "textBacklog";
+    backlog.className = "drop-target";
+    backlog.innerText = "Backlog";
+    backlog.addEventListener('drag', dragCardStart);
+    backlog.addEventListener('dragend', dragCardEnd);
+    backlog.addEventListener('dragover', dragCardOver);
+    backlog.addEventListener('drop', dropBacklog);
+    backlog.addEventListener('dragenter', dragCardEnter);
+    backlog.addEventListener('dragleave', dragCardLeave);
+
+    document.querySelector("#nav").appendChild(backlog);
+}
+
+function initSpinner() {
+    var spinner = document.createElement("span");
+    spinner.id = "spinner";
+
+    var icon = document.createElement("i");
+    icon.className = "fa fa-cog fa-spin";
+
+    spinner.appendChild(icon);
+
+    document.querySelector("#nav").appendChild(spinner);
+}
+
+function initActions() {
+    var actions = document.createElement("span");
+    actions.id = "actions";
+
+    var newbug = document.createElement("button");
+    newbug.id = "bntCreate";
+    newbug.innerText = "New Bug";
+    newbug.addEventListener("click", function() {
+        if (isLoggedIn()) {
+            showNewBugModal();
+        } else {
+            // Open Bugzilla page
+            window.open(bzSiteUrl + "/enter_bug.cgi?product=" + bzProduct);
+        }
+    });
+
+    var whoami = document.createElement("span");
+    whoami.id = "whoami";
+
+    var login = document.createElement("button");
+    login.id = "btnSignIn";
+    login.innerText = "Login";
+    login.addEventListener("click", function() {
+        showLoginForm();
+    });
+
+    var bell = document.createElement("i");
+    bell.id = "notification";
+    bell.className = "fa fa-bell";
+
+    actions.appendChild(newbug);
+    actions.appendChild(whoami);
+    actions.appendChild(login);
+    actions.appendChild(bell);
+
+    document.querySelector("#nav").appendChild(actions);
+}
+
+function initLoginForm() {
+    var loginForm = document.createElement("form");
+    loginForm.id = "loginForm";
+
+    var usernameLabel = document.createElement("label");
+    usernameLabel.innerText = "Username";
+
+    var username = document.createElement("input");
+    username.id="textUsername";
+    username.type = "text";
+    username.required = true;
+
+    usernameLabel.appendChild(username);
+
+    var passwordLabel = document.createElement("label");
+    passwordLabel.innerText = "Password";
+
+    var password = document.createElement("input");
+    password.id="textPassword";
+    password.type = "password";
+    password.required = true;
+
+    // When the user presses enter, in the Login password form
+    password.addEventListener("keyup", function(event) {
+        event.preventDefault();
+        if (event.keyCode == 13) {
+            document.getElementById("btnAuthSubmit").click();
+        }
+    });
+
+    passwordLabel.appendChild(password);
+
+    var submit = document.createElement("input");
+    submit.id = "btnAuthSubmit";
+    submit.value = "Submit";
+    submit.type = "button";
+
+    // When the user presses the login Submit button
+    submit.addEventListener("click", function() {
+        var user = document.getElementById("textUsername").value;
+        var password = document.getElementById("textPassword").value;
+        doAuth(user, password);
+    });
+
+    loginForm.appendChild(usernameLabel);
+    loginForm.appendChild(passwordLabel);
+    loginForm.appendChild(submit);
+
+    document.querySelector("#nav").appendChild(loginForm);
+}
+
 
 function loadBoard() {
     showSpinner();
@@ -1146,56 +1368,6 @@ function hideCommentModal() {
 
 // Register event handlers
 
-// When the user changes the Product drop down
-document.getElementById("textProduct").addEventListener("input", function() {
-    bzProduct = document.getElementById('textProduct').value;
-
-    // Disable Milestones until it's refreshed
-    document.getElementById("textMilestone").disabled = true;
-
-    // Clear affected state.
-    bzProductMilestone = "";
-    bzAssignedTo = "";
-    loadMilestonesList();
-    loadProductInfo();
-    clearAssigneesList();
-    clearCards();
-    updateAddressBar();
-    });
-
-// When the user changes the Milestone drop down
-document.getElementById("textMilestone").addEventListener("input", function() {
-    bzProductMilestone = document.getElementById('textMilestone').value;
-
-    // Clear affected state.
-    bzAssignedTo = "";
-    clearAssigneesList();
-
-    // Hot load the board without a form submit.
-    loadBoard();
-    updateAddressBar();
-    });
-
-// When the user changes the Assignee drop down
-document.getElementById("textAssignee").addEventListener("input", function() {
-    bzAssignedTo = document.getElementById('textAssignee').value;
-    updateAddressBar();
-    var name = bzAssignees.get(bzAssignedTo).real_name;
-    filterByAssignee(name);
-    });
-
-// When the user presses the Login button
-document.getElementById("btnSignIn").addEventListener("click", function() {
-    showLoginForm();
-    });
-
-// When the user presses the login Submit button
-document.getElementById("btnAuthSubmit").addEventListener("click", function() {
-    var user = document.getElementById("textUsername").value;
-    var password = document.getElementById("textPassword").value;
-    doAuth(user, password);
-    });
-
 // Background checking for updates to visible cards
 document.addEventListener("visibilitychange", function() {
     if (document.hidden) {
@@ -1206,23 +1378,6 @@ document.addEventListener("visibilitychange", function() {
     }
     });
 
-// When the user presses enter, in the Login password form
-document.getElementById("textPassword").addEventListener("keyup", function(event) {
-    event.preventDefault();
-    if (event.keyCode == 13) {
-        document.getElementById("btnAuthSubmit").click();
-    }
-    });
-
-// When the user clicks the New Bug button
-document.getElementById("btnCreate").addEventListener("click", function() {
-        if (isLoggedIn()) {
-            showNewBugModal();
-        } else {
-            // Open Bugzilla page
-            window.open(bzSiteUrl + "/enter_bug.cgi?product=" + bzProduct);
-        }
-    });
 
 // When the user clicks on <span> (x), close the modal
 document.getElementsByClassName("modalClose")[0].onclick = function() {

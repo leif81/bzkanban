@@ -5,44 +5,6 @@
         <link rel="stylesheet" href="bzkanban.css">
     </head>
     <body>
-        <div id="nav">
-            <span id="query">
-                <span>
-                    <i class="fa fa-archive"></i>
-                    <select id="textProduct" name="product" placeholder="Product"></select>
-                </span>
-                <span>
-                    <i class="fa fa-flag"></i>
-                    <select id="textMilestone" name="milestone" placeholder="Milestone"></select>
-                </span>
-                <span>
-                    <i class="fa fa-user"></i>
-                    <select id="textAssignee" name="assignee" placeholder="Assignee Email" disabled></select>
-                </span>
-            </span>
-            <div id="textBacklog" class="drop-target" ondragenter="return dragCardEnter(event)" ondrop="return dropBacklog(event)" ondragover="return dragCardOver(event)" ondragleave="return dragCardLeave(event)">Backlog</div>
-            <span class="spring"></span>
-            <span id="spinner">
-                <i class="fa fa-cog fa-spin"></i>
-            </span>
-            <span id="actions">
-                <button id="btnCreate">New Bug</button>
-                <span id="whoami"></span>
-                <button id="btnSignIn">Login</button>
-                <i id="notification" class="fa fa-bell"></i>
-            </span>
-            <form id="loginForm">
-                <span>
-                    <label for="textUserName">Username</label>
-                    <input type="text" required id="textUsername" name="username" value="">
-                </span>
-                <span>
-                    <label for="textPassword" >Password</label>
-                    <input type="password" required id="textPassword" name="password" value="">
-                </span>
-                <input type="button" id="btnAuthSubmit" value="Submit">
-            </form>
-        </div>
         <div id="modalAddBug" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
@@ -74,8 +36,6 @@
                     <button id="btnModalSubmit">Submit</button>
                 </div>
             </div>
-        </div>
-        <div id="board">
         </div>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/md5.js"></script>
