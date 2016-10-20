@@ -134,6 +134,7 @@ body {
 }
 #query .fa {
     vertical-align: middle;
+    margin-right: 5px;
 }
 #query select {
     width: 150px;
@@ -271,4 +272,14 @@ body {
 }
 #newbugDefaults {
     display: none;
+}
+label input {
+    margin-left: 3px;
+}
+label {
+    margin-right: 3px;
+}
+#actions button,
+#actions span {
+    margin-left: 5px;
 }
