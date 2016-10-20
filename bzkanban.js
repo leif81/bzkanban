@@ -23,6 +23,7 @@ var bzDefaultPriority;
 var bzDefaultSeverity;
 var bzDefaultMilestone;
 var bzAuthObject;
+var bzDomElement = "#bzkanban";
 
 window.onload = loadParams;
 
@@ -94,7 +95,7 @@ function loadParams() {
 function initNav() {
     var nav = document.createElement("div");
     nav.id = "nav";
-    document.querySelector("body").appendChild(nav);
+    document.querySelector(bzDomElement).appendChild(nav);
 
     initQueryFields();
     initBacklogTarget();
@@ -111,7 +112,7 @@ function initNav() {
 function initBoard() {
     var board = document.createElement("div");
     board.id = "board";
-    document.querySelector("body").appendChild(board);
+    document.querySelector(bzDomElement).appendChild(board);
 }
 
 function initQueryFields() {
@@ -1347,7 +1348,7 @@ function showNewBugModal() {
         versions.appendChild(opt);
     });
 
-    document.querySelector("body").appendChild(modal);
+    document.querySelector(bzDomElement).appendChild(modal);
 
     modal.style.display = "block";
 }
@@ -1405,7 +1406,7 @@ function showCommentModal(bugId, responseCallback) {
     commentModalContent.appendChild(commentModalBody);
     commentModal.appendChild(commentModalContent);
 
-    document.querySelector("body").appendChild(commentModal);
+    document.querySelector(bzDomElement).appendChild(commentModal);
 
     commentModal.style.display = "block";
 }
