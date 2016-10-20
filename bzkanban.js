@@ -17,6 +17,8 @@ var bzLoadComments = false;
 var bzAutoComment = false;
 var bzAutoRefresh = false;
 var bzAssignees = new Map();
+var bzProductComponents;
+var bzProductVersions;
 var bzDefaultPriority;
 var bzDefaultSeverity;
 var bzDefaultMilestone;
@@ -556,35 +558,33 @@ function loadSeverities() {
 }
 
 function loadComponentsList() {
-    clearComponentsList();
+    bzProductComponents = new Set();
     httpGet("/rest/product/" + bzProduct + "?type=enterable&include_fields=components", function(response) {
         var components = response.products[0].components;
         components.sort(function(a, b) {
             return a.name.localeCompare(b.name);
         });
         components.forEach(function(component) {
-            if (!(component.is_active)) { return }
-            var opt = document.createElement('option');
-            opt.innerText = component.name;
-            opt.value = component.name;
-            document.getElementById("textComponent").appendChild(opt);
+            if (!component.is_active) {
+                return;
+            }
+            bzProductComponents.add(component.name);
         });
     });
 }
 
 function loadVersionsList() {
-    clearVersionsList();
+    bzProductVersions = new Set();
     httpGet("/rest/product/" + bzProduct + "?type=enterable&include_fields=versions", function(response) {
         var versions = response.products[0].versions;
         versions.sort(function(a, b) {
             return a.name.localeCompare(b.name);
         });
         versions.forEach(function(version) {
-            if (!(version.is_active)) { return }
-            var opt = document.createElement('option');
-            opt.innerText = version.name;
-            opt.value = version.name;
-            document.getElementById("textVersion").appendChild(opt);
+            if (!version.is_active) {
+                return;
+            }
+            bzProductVersions.add(version.name);
         });
     });
 }
@@ -614,48 +614,8 @@ function loadCheckForUpdates() {
 
 function loadDefaultPrioritySeverityFields() {
     httpGet("/rest/parameters?token=" + bzAuthObject.userToken, function(response) {
-        defaultOpSys = response.parameters.defaultopsys;
-        defaultPlatform = response.parameters.defaultplatform;
         bzDefaultPriority = response.parameters.defaultpriority;
         bzDefaultSeverity = response.parameters.defaultseverity;
-
-        textOpSys = document.getElementById("labelOpSys");
-        textPlatform = document.getElementById("labelPlatform");
-        textPriority = document.getElementById("labelPriority");
-        textSeverity = document.getElementById("labelSeverity");
-
-        if (defaultOpSys !== null && defaultOpSys.length !== 0) {
-            textOpSys.innerHTML = defaultOpSys;
-            textOpSys.value = defaultOpSys;
-        } else {
-            textOpSys.innerHTML = "blank (but setting to ALL)";
-            textOpSys.value = defaultOpSys;
-            textOpSys.style.fontStyle = "italic";
-        }
-        if (defaultPlatform !== null && defaultPlatform.length !== 0) {
-            textPlatform.innerHTML = defaultPlatform;
-            textPlatform.value = defaultPlatform;
-        } else {
-            textPlatform.innerHTML = "blank (but setting to ALL)";
-            textPlatform.value = defaultPlatform;
-            textPlatform.style.fontStyle = "italic";
-        }
-        if (bzDefaultPriority !== null && bzDefaultPriority.length !== 0) {
-            textPriority.innerHTML = bzDefaultPriority;
-            textPriority.value = bzDefaultPriority;
-        } else {
-            textPriority.innerHTML = "blank";
-            textPriority.value = bzDefaultPriority;
-            textPriority.style.fontStyle = "italic";
-        }
-        if (bzDefaultSeverity !== null && bzDefaultSeverity.length !== 0) {
-            textSeverity.innerHTML = bzDefaultSeverity;
-            textSeverity.value = bzDefaultSeverity;
-        } else {
-            textSeverity.innerHTML = "blank";
-            textSeverity.value = bzDefaultSeverity;
-            textSeverity.style.fontStyle = "italic";
-        }
     });
 }
 
@@ -1285,27 +1245,115 @@ function updateAddressBar() {
 }
 
 function showNewBugModal() {
-    document.getElementById("textModalHeader").innerText = "Add new bug to milestone " + bzProductMilestone;
-    document.getElementById('modalAddBug').style.display = "block";
+    var modal = document.createElement("div");
+    modal.id = "modalNewBug";
+    modal.className = "modal";
+
+    var content = document.createElement("div");
+    content.className = "modal-content";
+
+    var header = document.createElement("div");
+    header.className = "modal-header";
+    header.innerText = "Add new bug to milestone " + bzProductMilestone;
+
+    var close = document.createElement("i");
+    close.className = "fa fa-close modalClose";
+    close.onclick = function() {
+        hideNewBugModal();
+    };
+
+    header.appendChild(close);
+
+    var body = document.createElement("div");
+    body.className = "modal-body";
+
+    var summaryLabel = document.createElement("label");
+    summaryLabel.innerText = "Summary";
+    var summary = document.createElement("input");
+    summary.id = "textAddBugSummary";
+    summary.name = "summary";
+    summary.type = "text";
+    summaryLabel.appendChild(summary);
+
+    var descriptionLabel = document.createElement("label");
+    descriptionLabel.innerText = "Description";
+    var description = document.createElement("textarea");
+    description.id = "textAddBugDescription";
+    description.name = "description";
+    descriptionLabel.appendChild(description);
+
+    var componentLabel = document.createElement("label");
+    componentLabel.innerText = "Component";
+    var components = document.createElement("select");
+    components.id = "textComponent";
+    components.name = "component";
+    componentLabel.appendChild(components);
+
+    var versionLabel = document.createElement("label");
+    versionLabel.innerText = "Version";
+    var versions = document.createElement("select");
+    versions.id = "textVersion";
+    versions.name = "version";
+    versionLabel.appendChild(versions);
+
+    var submit = document.createElement("button");
+    submit.innerText = "Submit";
+    submit.id = "submitNewBug";
+    submit.onclick = function() {
+        var dataObj = {
+            product: bzProduct,
+            component: document.getElementById("textComponent").value,
+            summary: document.getElementById("textAddBugSummary").value,
+            description: document.getElementById("textAddBugDescription").value,
+            version: document.getElementById("textVersion").value,
+            // Bugzilla web CGI kicks in if opsys and platform default is blank
+            // doing code to detect through the browser.
+            // TODO: Write js detection code if blank is detected
+            op_sys: "ALL",
+            platform: "ALL",
+            target_milestone: bzProductMilestone
+        };
+
+        showSpinner();
+
+        httpRequest("POST", "/rest/bug?token=" + bzAuthObject.userToken, dataObj, function() {
+            loadBoard();
+        });
+
+        hideNewBugModal();
+    };
+
+    body.appendChild(summaryLabel);
+    body.appendChild(descriptionLabel);
+    body.appendChild(componentLabel);
+    body.appendChild(versionLabel);
+    body.appendChild(submit);
+
+    content.appendChild(header);
+    content.appendChild(body);
+    modal.appendChild(content);
+
+    bzProductComponents.forEach(function(component) {
+        var opt = document.createElement('option');
+        opt.innerText = component;
+        opt.value = component;
+        components.appendChild(opt);
+    });
+
+    bzProductVersions.forEach(function(version) {
+        var opt = document.createElement('option');
+        opt.innerText = version;
+        opt.value = version;
+        versions.appendChild(opt);
+    });
+
+    document.querySelector("body").appendChild(modal);
+
+    modal.style.display = "block";
 }
 
 function hideNewBugModal() {
-    document.getElementById('modalAddBug').style.display = "none";
-}
-
-function clearModal() {
-    document.getElementById("textAddBugSummary").value = "";
-    document.getElementById("textAddBugDescription").value = "";
-}
-
-function clearComponentsList() {
-    var componentList = document.getElementById("textComponent");
-    removeChildren(componentList);
-}
-
-function clearVersionsList() {
-    var versionList = document.getElementById("textVersion");
-    removeChildren(versionList);
+    document.querySelector('#modalNewBug').remove();
 }
 
 function showCommentModal(bugId, responseCallback) {
@@ -1379,11 +1427,6 @@ document.addEventListener("visibilitychange", function() {
     });
 
 
-// When the user clicks on <span> (x), close the modal
-document.getElementsByClassName("modalClose")[0].onclick = function() {
-    hideNewBugModal();
-    };
-
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function(event) {
     document.querySelectorAll('.modal').forEach(function(el) {
@@ -1391,28 +1434,4 @@ window.onclick = function(event) {
             el.style.display = "none";
         }
     });
-    };
-
-// When the user clicks the modal Submit button
-document.getElementById("btnModalSubmit").addEventListener("click", function() {
-        var dataObj = {
-            product: bzProduct,
-            component: document.getElementById("textComponent").value,
-            summary: document.getElementById("textAddBugSummary").value,
-            description: document.getElementById("textAddBugDescription").value,
-            version: document.getElementById("textVersion").value,
-            // Bugzilla web CGI kicks in if opsys and platform default is blank
-            // doing code to detect through the browser.
-            // TODO: Write js detection code if blank is detected
-            op_sys: "ALL",
-            platform: "ALL",
-            target_milestone: bzProductMilestone
-        };
-
-        httpRequest("POST", "/rest/bug?token=" + bzAuthObject.userToken, dataObj, function() {
-            hideNewBugModal();
-
-            clearModal();
-            loadBoard();
-        });
-    });
+};
