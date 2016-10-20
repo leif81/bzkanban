@@ -273,7 +273,8 @@ body {
 #newbugDefaults {
     display: none;
 }
-label input {
+label input,
+label select {
     margin-left: 3px;
 }
 label {
