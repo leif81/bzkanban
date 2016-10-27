@@ -25,7 +25,13 @@ var bzDefaultMilestone;
 var bzAuthObject;
 var bzDomElement = "#bzkanban";
 
-window.onload = loadParams;
+window.onload = initBzkanban;
+
+function initBzkanban() {
+    loadParams();
+    initNav();
+    initBoard();
+}
 
 function loadParams() {
     bzProduct = getURLParameter('product');
@@ -66,9 +72,6 @@ function loadParams() {
     }
 
     bzAuthObject = JSON.parse(localStorage.getItem(bzSiteUrl));
-
-    initNav();
-    initBoard();
 }
 
 function initNav() {
