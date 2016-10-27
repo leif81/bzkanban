@@ -65,31 +65,10 @@ function loadParams() {
         bzAutoRefresh = isTrue(autorefresh);
     }
 
+    bzAuthObject = JSON.parse(localStorage.getItem(bzSiteUrl));
+
     initNav();
     initBoard();
-
-    if (bzAllowUserLogin) {
-        bzAuthObject = JSON.parse(localStorage.getItem(bzSiteUrl));
-
-        if (isLoggedIn()) {
-            loadName();
-            hideSignInButton();
-        }
-    } else {
-        hideSignInButton();
-    }
-
-    loadProductsList();
-    loadProductInfo();
-    loadColumns();
-
-    if (bzProduct !== null) {
-        loadMilestonesList();
-    }
-
-    if (bzProduct !== null && bzProductMilestone !== null) {
-        loadBoard();
-    }
 }
 
 function initNav() {
@@ -107,12 +86,34 @@ function initNav() {
     initSpinner();
     initActions();
     initLoginForm();
+
+    if (bzAllowUserLogin) {
+        if (isLoggedIn()) {
+            loadName();
+            hideSignInButton();
+        }
+    } else {
+        hideSignInButton();
+    }
+
+    loadProductsList();
+
+    if (bzProduct !== null) {
+        loadMilestonesList();
+    }
 }
 
 function initBoard() {
     var board = document.createElement("div");
     board.id = "board";
     document.querySelector(bzDomElement).appendChild(board);
+
+    loadProductInfo();
+    loadColumns();
+
+    if (bzProduct !== null && bzProductMilestone !== null) {
+        loadBoard();
+    }
 }
 
 function initQueryFields() {
