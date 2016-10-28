@@ -113,10 +113,6 @@ function initBoard() {
 
     loadProductInfo();
     loadColumns();
-
-    if (bzProduct !== null && bzProductMilestone !== null) {
-        loadBoard();
-    }
 }
 
 function initQueryFields() {
@@ -435,6 +431,10 @@ function loadColumns() {
             addBoardColumn(status);
         });
         updateUnconfirmedColumnVisibilty();
+
+        if (bzProduct !== null && bzProductMilestone !== null) {
+            loadBoard();
+        }
 
         if (isLoggedIn()) {
             loadResolutions();
