@@ -900,15 +900,14 @@ function hideSpinner() {
 
 function doAuth(user, password) {
     showSpinner();
+    hideLoginForm();
     httpGet("/rest/login?login=" + user + "&password=" + password, function(response) {
-        hideSpinner();
         bzAuthObject = { 'userID': response.id, 'userToken': response.token };
         localStorage.setItem(bzSiteUrl, JSON.stringify(bzAuthObject));
         loadName();
         // Rebuild the board so dnd events are registered.
         removeBoard();
         initBoard();
-        hideLoginForm();
     });
 }
 
