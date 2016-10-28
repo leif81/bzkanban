@@ -778,6 +778,9 @@ function createDeadlineElement(deadline) {
     return deadlineElement;
 }
 
+function removeBoard() {
+    document.querySelector("#board").remove();
+}
 
 function clearCards() {
     document.querySelectorAll(".cards").forEach(function(el) {
@@ -903,7 +906,8 @@ function doAuth(user, password) {
         localStorage.setItem(bzSiteUrl, JSON.stringify(bzAuthObject));
         loadName();
         // Rebuild the board so dnd events are registered.
-        loadBoard();
+        removeBoard();
+        initBoard();
         hideLoginForm();
     });
 }
