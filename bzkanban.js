@@ -1044,7 +1044,7 @@ function dragCardLeave(ev) {
 }
 
 function dragCard(ev) {
-    var fromStatus = ev.target.parentElement.id;
+    var fromStatus = ev.target.parentElement.parentElement.id;
 
     // Disable pointer-events for all other cards so that we
     // can reliably detect when a card enters and leaves a column.
