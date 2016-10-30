@@ -12,14 +12,14 @@ body {
 #board {
     display: flex;
     flex: 1;
-    align-items: flex-start;
     padding-top: 20px;
-    overflow-y: scroll;
 }
 .board-column-title {
-    text-align: center;
     font-weight: bold;
-    margin: 5px;
+    padding: 10px 5px 5px 5px;
+    padding-top: 10px;
+    border-radius: 3px 3px 0 0;
+    background: #E2E4E6;
 }
 .cards {
     overflow-x: hidden;
@@ -34,16 +34,21 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    background: #E2E4E6;
     margin: 4px;
     padding-top: 10px;
-    border-radius: 3px;
 }
 .board-column.drag-card {
     outline-width: 2px;
     outline-style: dashed;
     outline-color: grey;
+}
+.board-column-content {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    overflow-y: auto;
+    border-radius: 0 0 3px 3px;
+    background: #E2E4E6;
 }
 .card {
     background-color: white;

@@ -648,19 +648,23 @@ function addBoardColumn(status) {
     title.innerHTML = status;
     div.appendChild(title);
 
+    var content = document.createElement('div');
+    content.className = "board-column-content";
+    div.appendChild(content);
+
     var cards = document.createElement('div');
     cards.className = "cards";
-    div.appendChild(cards);
+    content.appendChild(cards);
 
     var prioritycontainer = document.createElement('div');
     prioritycontainer.className = "priorities";
     prioritycontainer.hidden = true;
-    div.appendChild(prioritycontainer);
+    content.appendChild(prioritycontainer);
 
     var severitycontainer = document.createElement('div');
     severitycontainer.className = "severities";
     severitycontainer.hidden = true;
-    div.appendChild(severitycontainer);
+    content.appendChild(severitycontainer);
 
     document.getElementById("board").appendChild(div);
 }
