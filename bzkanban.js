@@ -1055,7 +1055,8 @@ function dragCard(ev) {
         }
     });
 
-    var bugID = ev.currentTarget.dataset.bugId;
+    var card = ev.currentTarget;
+    var bugID = card.dataset.bugId;
     var bugData = {"id": bugID, "status": fromStatus};
     ev.dataTransfer.setData("text", JSON.stringify(bugData));
 }
@@ -1087,7 +1088,8 @@ function dropCard(ev) {
         card.style.pointerEvents = "auto";
     });
 
-    ev.currentTarget.classList.remove("drag-card");
+    var col = ev.currentTarget;
+    col.classList.remove("drag-card");
 
     ev.preventDefault();
 
