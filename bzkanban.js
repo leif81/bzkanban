@@ -642,26 +642,27 @@ function addBoardColumn(status) {
         div.addEventListener('dragenter', dragCardEnter);
         div.addEventListener('dragleave', dragCardLeave);
     }
-    document.getElementById("board").appendChild(div);
 
     var title = document.createElement('div');
     title.className = "board-column-title";
     title.innerHTML = status;
-    document.getElementById(status).appendChild(title);
+    div.appendChild(title);
 
     var cards = document.createElement('div');
     cards.className = "cards";
-    document.getElementById(status).appendChild(cards);
+    div.appendChild(cards);
 
     var prioritycontainer = document.createElement('div');
     prioritycontainer.className = "priorities";
     prioritycontainer.hidden = true;
-    document.getElementById(status).appendChild(prioritycontainer);
+    div.appendChild(prioritycontainer);
 
     var severitycontainer = document.createElement('div');
     severitycontainer.className = "severities";
     severitycontainer.hidden = true;
-    document.getElementById(status).appendChild(severitycontainer);
+    div.appendChild(severitycontainer);
+
+    document.getElementById("board").appendChild(div);
 }
 
 function addCard(bug) {
