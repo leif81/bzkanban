@@ -498,7 +498,7 @@ function loadResolutions() {
         });
 
         // FIXME: this assumes the column name, but it may have been renamed by the bz instance.
-        document.getElementById("RESOLVED").appendChild(resolutions);
+        document.querySelector(".board-column#RESOLVED .board-column-content").appendChild(resolutions);
     });
 }
 
