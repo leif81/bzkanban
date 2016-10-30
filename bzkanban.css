@@ -12,12 +12,13 @@ body {
 #board {
     display: flex;
     flex: 1;
+    align-items: flex-start;
     padding-top: 20px;
 }
 .board-column-title {
     text-align: center;
     font-weight: bold;
-    margin-bottom: 5px;
+    margin: 5px;
 }
 .cards {
     overflow-x: hidden;
@@ -32,7 +33,11 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
+    background: #E2E4E6;
+    margin: 4px;
+    padding-top: 10px;
+    border-radius: 3px;
 }
 .board-column.drag-card {
     outline-width: 2px;
@@ -45,7 +50,7 @@ body {
     padding: 10px;
     margin: 5px;
     font-size: small;
-    box-shadow: 0px 1px 0px grey;
+    box-shadow: 0px 1px 0px lightgrey;
 }
 .card:hover {
     background-color: ghostwhite;
