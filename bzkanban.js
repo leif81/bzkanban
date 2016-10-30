@@ -1022,12 +1022,8 @@ function dragCardOver(ev) {
 function dragCardEnter(ev) {
     ev.preventDefault();
 
-    var getCardEvData = ev.dataTransfer.getData("text");
-    if (getCardEvData) {
-        var bugData = JSON.parse(getCardEvData);
-        if (bugData.status != ev.currentTarget.id) {
-            ev.currentTarget.classList.add("drag-card");
-        }
+    if (ev.target.classList.contains("board-column")) {
+        ev.currentTarget.classList.add("drag-card");
     }
 
     if (ev.target.classList.contains("drop-target")) {
@@ -1036,7 +1032,9 @@ function dragCardEnter(ev) {
 }
 
 function dragCardLeave(ev) {
-    ev.currentTarget.classList.remove("drag-card");
+    if (ev.target.classList.contains("board-column")) {
+        ev.currentTarget.classList.remove("drag-card");
+    }
 
     if (ev.target.classList.contains("drop-target")) {
         ev.target.classList.remove("drop-target-hover");
@@ -1050,7 +1048,7 @@ function dragCard(ev) {
     // can reliably detect when a card enters and leaves a column.
     var cards = document.querySelectorAll(".card");
     cards.forEach(function(card) {
-        if (card.id != ev.currentTarget.id) {
+        if (card.dataset.bugId != ev.currentTarget.dataset.bugId) {
             card.style.pointerEvents = "none";
         }
     });
