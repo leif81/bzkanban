@@ -11,6 +11,7 @@ body {
 }
 #board {
     display: flex;
+    flex: 1;
     padding-top: 20px;
 }
 .board-column-title {
