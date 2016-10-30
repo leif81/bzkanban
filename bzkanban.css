@@ -215,7 +215,7 @@ body {
 }
 .modal-content {
     display: flex;
-    background-color: #fefefe;
+    background-color: white;
     margin: auto;
     flex-direction: column;
     align-items: flex-start;
@@ -233,13 +233,11 @@ body {
 }
 .modalClose:hover,
 .modalClose:focus {
-    color: black;
+    color: grey;
     cursor: pointer;
 }
 .modal-header {
     padding: 15px;
-    background-color: rgb(99,147,193);
-    color: white;
     align-self: stretch;
     font-size: x-large;
 }
@@ -249,7 +247,8 @@ body {
     flex-direction: column;
     align-self: stretch;
 }
-.modal-body input {
+.modal-body input,
+.modal-body select {
     width: 100%;
 }
 .modal-body button {
@@ -258,9 +257,6 @@ body {
 .modal-body textarea {
     width: 100%;
     height: 100px;
-}
-.modal-body select {
-    width: 40%;
 }
 .modal-body label {
     margin-top: 10px;
@@ -273,10 +269,6 @@ body {
 }
 #newbugDefaults {
     display: none;
-}
-label input,
-label select {
-    margin-left: 3px;
 }
 label {
     margin-right: 3px;
