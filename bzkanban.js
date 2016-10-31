@@ -1071,6 +1071,12 @@ function dragCardStart(ev) {
 }
 
 function dragCardEnd(ev) {
+    // Re-enable pointer events for all cards.
+    var cards = document.querySelectorAll(".card");
+    cards.forEach(function(card) {
+        card.style.pointerEvents = "auto";
+    });
+
     columnTitle = ev.currentTarget.childNodes[0].childNodes[0].data;
     if (!(columnTitle == "UNCONFIRMED" || columnTitle == "VERIFIED")) {
         hideResolutions(document.getElementById("RESOLVED"));
@@ -1081,12 +1087,6 @@ function dragCardEnd(ev) {
 }
 
 function dropCard(ev) {
-    // Re-enable pointer events for all cards.
-    var cards = document.querySelectorAll(".card");
-    cards.forEach(function(card) {
-        card.style.pointerEvents = "auto";
-    });
-
     var col = ev.currentTarget;
     col.classList.remove("drag-card");
 
