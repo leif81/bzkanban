@@ -12,7 +12,6 @@ body {
 #board {
     display: flex;
     flex: 1;
-    padding-top: 20px;
 }
 .board-column-title {
     font-weight: bold;
@@ -196,9 +195,6 @@ body {
     display: flex;
     flex-wrap: wrap;
     padding: 20px;
-    border-bottom-width: 1px;
-    border-bottom-style: solid;
-    border-bottom-color: ghostwhite;
 }
 #nav span {
     align-self: center;
