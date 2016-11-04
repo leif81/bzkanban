@@ -12,12 +12,13 @@ body {
 #board {
     display: flex;
     flex: 1;
-    padding-top: 20px;
 }
 .board-column-title {
-    text-align: center;
     font-weight: bold;
-    margin-bottom: 5px;
+    padding: 10px 5px 5px 5px;
+    padding-top: 10px;
+    border-radius: 3px 3px 0 0;
+    background: #E2E4E6;
 }
 .cards {
     overflow-x: hidden;
@@ -32,12 +33,20 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    margin: 4px;
 }
 .board-column.drag-card {
     outline-width: 2px;
     outline-style: dashed;
     outline-color: grey;
+}
+.board-column-content {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    overflow-y: auto;
+    border-radius: 0 0 3px 3px;
+    background: #E2E4E6;
 }
 .card {
     background-color: white;
@@ -45,7 +54,7 @@ body {
     padding: 10px;
     margin: 5px;
     font-size: small;
-    box-shadow: 0px 1px 0px grey;
+    box-shadow: 0px 1px 0px lightgrey;
 }
 .card:hover {
     background-color: ghostwhite;
@@ -186,9 +195,6 @@ body {
     display: flex;
     flex-wrap: wrap;
     padding: 20px;
-    border-bottom-width: 1px;
-    border-bottom-style: solid;
-    border-bottom-color: ghostwhite;
 }
 #nav span {
     align-self: center;

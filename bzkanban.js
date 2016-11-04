@@ -498,7 +498,7 @@ function loadResolutions() {
         });
 
         // FIXME: this assumes the column name, but it may have been renamed by the bz instance.
-        document.getElementById("RESOLVED").appendChild(resolutions);
+        document.querySelector(".board-column#RESOLVED .board-column-content").appendChild(resolutions);
     });
 }
 
@@ -648,19 +648,23 @@ function addBoardColumn(status) {
     title.innerHTML = status;
     div.appendChild(title);
 
+    var content = document.createElement('div');
+    content.className = "board-column-content";
+    div.appendChild(content);
+
     var cards = document.createElement('div');
     cards.className = "cards";
-    div.appendChild(cards);
+    content.appendChild(cards);
 
     var prioritycontainer = document.createElement('div');
     prioritycontainer.className = "priorities";
     prioritycontainer.hidden = true;
-    div.appendChild(prioritycontainer);
+    content.appendChild(prioritycontainer);
 
     var severitycontainer = document.createElement('div');
     severitycontainer.className = "severities";
     severitycontainer.hidden = true;
-    div.appendChild(severitycontainer);
+    content.appendChild(severitycontainer);
 
     document.getElementById("board").appendChild(div);
 }
