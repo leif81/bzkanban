@@ -414,13 +414,13 @@ function loadProductInfo() {
             bzProductHasUnconfirmed = response.products[0].has_unconfirmed;
             updateUnconfirmedColumnVisibilty();
         });
-    }
 
-    // used for populating New Bug modal
-    if (isLoggedIn()) {
-        loadDefaultMilestone();
-        loadComponentsList();
-        loadVersionsList();
+        // used for populating New Bug modal
+        if (isLoggedIn()) {
+            loadDefaultMilestone();
+            loadComponentsList();
+            loadVersionsList();
+        }
     }
 }
 
