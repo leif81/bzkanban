@@ -1379,7 +1379,7 @@ function showCommentModal(bugId, responseCallback) {
 
     var commentModalHeader = document.createElement("div");
     commentModalHeader.className = "modal-header";
-    commentModalHeader.innerText = "Bug " + bugId + ': ' + bugTitle;
+    commentModalHeader.innerText = "#" + bugId + " " + bugTitle;
 
     var close = document.createElement("i");
     close.className = "fa fa-close modalClose";
