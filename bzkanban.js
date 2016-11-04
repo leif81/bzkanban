@@ -10,7 +10,7 @@ var bzShowGravatar = true;
 var bzProductHasUnconfirmed = false;
 var bzBoardLoadTime = "";
 var bzRestGetBugsUrl = "";
-var bzAllowUserLogin = true;
+var bzAllowEditBugs = true;
 var bzCheckForUpdates = true;
 var bzAddCommentOnChange = true;
 var bzLoadComments = false;
@@ -80,7 +80,9 @@ function initNav() {
     document.querySelector(bzDomElement).appendChild(nav);
 
     initQueryFields();
-    initBacklogTarget();
+    if (bzAllowEditBugs) {
+        initBacklogTarget();
+    }
 
     var spring = document.createElement("span");
     spring.className = "spring";
@@ -90,12 +92,8 @@ function initNav() {
     initActions();
     initLoginForm();
 
-    if (bzAllowUserLogin) {
-        if (isLoggedIn()) {
-            loadName();
-            hideSignInButton();
-        }
-    } else {
+    if (isLoggedIn()) {
+        loadName();
         hideSignInButton();
     }
 
@@ -634,7 +632,7 @@ function addBoardColumn(status) {
     var div = document.createElement('div');
     div.className = "board-column";
     div.id = status;
-    if (isLoggedIn()) {
+    if (isLoggedIn() && bzAllowEditBugs) {
         div.addEventListener('drag', dragCardStart);
         div.addEventListener('dragend', dragCardEnd);
         div.addEventListener('dragover', dragCardOver);
@@ -733,7 +731,7 @@ function addCard(bug) {
     assignee.appendChild(picture);
     meta.appendChild(assignee);
 
-    if (isLoggedIn()) {
+    if (isLoggedIn() && bzAllowEditBugs) {
         card.draggable = "true";
         card.addEventListener('dragstart', dragCard);
     }
