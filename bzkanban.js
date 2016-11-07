@@ -911,6 +911,10 @@ function doAuth(user, password) {
         // Rebuild the board so dnd events are registered.
         removeBoard();
         initBoard();
+    }, function(error) {
+        // Login failed.
+        showSignInButton();
+        alert(error.message);
     });
 }
 
