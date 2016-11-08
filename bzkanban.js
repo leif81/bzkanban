@@ -1,21 +1,25 @@
+// Configuration options.
 var bzSiteUrl = "http://bugzilla.msec.local";
+var bzOrder = "priority,bug_severity,assigned_to";
+var bzAllowEditBugs = true;
+var bzShowGravatar = true;
+var bzAddCommentOnChange = true;
+var bzLoadComments = false;
+var bzAutoComment = false;
+var bzCheckForUpdates = true;
+var bzAutoRefresh = false;
+var bzDomElement = "#bzkanban";
+
+// "Private" global variables. Do not touch.
 var bzProduct = "";
 var bzProductMilestone = "";
 var bzComponent = "";
 var bzPriority = "";
 var bzAssignedTo = "";
-var bzOrder = "priority,bug_severity,assigned_to";
 var bzUserFullName = "";
-var bzShowGravatar = true;
 var bzProductHasUnconfirmed = false;
 var bzBoardLoadTime = "";
 var bzRestGetBugsUrl = "";
-var bzAllowEditBugs = true;
-var bzCheckForUpdates = true;
-var bzAddCommentOnChange = true;
-var bzLoadComments = false;
-var bzAutoComment = false;
-var bzAutoRefresh = false;
 var bzAssignees = new Map();
 var bzProductComponents;
 var bzProductVersions;
@@ -23,7 +27,6 @@ var bzDefaultPriority;
 var bzDefaultSeverity;
 var bzDefaultMilestone;
 var bzAuthObject;
-var bzDomElement = "#bzkanban";
 
 window.onload = initBzkanban;
 
