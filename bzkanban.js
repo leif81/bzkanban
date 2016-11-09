@@ -145,6 +145,7 @@ function initQueryFields() {
         clearAssigneesList();
         clearCards();
         updateAddressBar();
+        hideNewBugButton();
     });
 
     var milestone = document.createElement("span");
@@ -164,6 +165,7 @@ function initQueryFields() {
         // Clear affected state.
         bzAssignedTo = "";
         clearAssigneesList();
+        showNewBugButton();
 
         // Hot load the board without a form submit.
         loadBoard();
@@ -234,8 +236,9 @@ function initActions() {
     actions.id = "actions";
 
     var newbug = document.createElement("button");
-    newbug.id = "bntCreate";
+    newbug.id = "btnCreate";
     newbug.innerText = "New Bug";
+    newbug.style.display = "none";
     newbug.addEventListener("click", function() {
         if (isLoggedIn()) {
             showNewBugModal();
@@ -435,6 +438,7 @@ function loadColumns() {
 
         if (bzProduct !== null && bzProductMilestone !== null) {
             loadBoard();
+            showNewBugButton();
         }
 
         if (isLoggedIn()) {
@@ -902,6 +906,16 @@ function showSpinner() {
 function hideSpinner() {
     var spinner = document.querySelector('#spinner');
     spinner.style.display = 'none';
+}
+
+function showNewBugButton() {
+    var btn = document.querySelector('#btnCreate')
+    btn.style.display = 'initial';
+}
+
+function hideNewBugButton() {
+    var btn = document.querySelector('#btnCreate')
+    btn.style.display = 'none';
 }
 
 function doAuth(user, password) {
