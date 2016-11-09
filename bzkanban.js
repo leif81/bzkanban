@@ -469,7 +469,7 @@ function loadComments(bug) {
 }
 
 function loadName() {
-    httpGet("/rest/user/" + bzAuthObject.userID + "?token=" + bzAuthObject.userToken, function(response) {
+    httpGet("/rest/user/" + bzAuthObject.userID, function(response) {
         bzUserFullName = response.users[0].real_name;
         if (bzUserFullName !== null) {
             document.getElementById("whoami").textContent = bzUserFullName;
@@ -623,7 +623,7 @@ function loadCheckForUpdates() {
 }
 
 function loadDefaultPrioritySeverityFields() {
-    httpGet("/rest/parameters?token=" + bzAuthObject.userToken, function(response) {
+    httpGet("/rest/parameters", function(response) {
         bzDefaultPriority = response.parameters.defaultpriority;
         bzDefaultSeverity = response.parameters.defaultseverity;
     });
@@ -884,6 +884,19 @@ function httpRequest(method, url, dataObj, successCallback, errorCallback) {
             }
         }
     };
+
+    // Append login token to every request.
+    // Becase some Bugzilla instances require auth for even viewing bugs, etc.
+    if (bzAuthObject !== null ) {
+        if (url.indexOf('?') == -1) {
+            url += "?";
+        } else {
+            url += "&";
+        }
+
+        url += "token=" + bzAuthObject.userToken
+    }
+
     xhr.open(method, bzSiteUrl + url);
     xhr.setRequestHeader("Accept", "application/json");
     xhr.send(JSON.stringify(dataObj));
@@ -1348,7 +1361,7 @@ function showNewBugModal() {
 
         showSpinner();
 
-        httpRequest("POST", "/rest/bug?token=" + bzAuthObject.userToken, dataObj, function() {
+        httpRequest("POST", "/rest/bug", dataObj, function() {
             loadBoard();
         });
 
