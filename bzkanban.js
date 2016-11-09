@@ -241,7 +241,7 @@ function initActions() {
             showNewBugModal();
         } else {
             // Open Bugzilla page
-            window.open(bzSiteUrl + "/enter_bug.cgi?product=" + bzProduct);
+            window.open(bzSiteUrl + "/enter_bug.cgi?product=" + bzProduct + "&target_milestone=" + bzProductMilestone);
         }
     });
 
