@@ -273,9 +273,6 @@ body {
 .modal-body button {
     margin-top: 5px;
 }
-#newbugDefaults {
-    display: none;
-}
 label {
     margin-right: 3px;
 }
