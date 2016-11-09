@@ -1366,8 +1366,6 @@ function showNewBugModal() {
     });
 
     document.querySelector(bzDomElement).appendChild(modal);
-
-    modal.style.display = "block";
 }
 
 function hideNewBugModal() {
@@ -1424,8 +1422,6 @@ function showCommentModal(bugId, responseCallback) {
     commentModal.appendChild(commentModalContent);
 
     document.querySelector(bzDomElement).appendChild(commentModal);
-
-    commentModal.style.display = "block";
 }
 
 function hideCommentModal() {
