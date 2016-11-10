@@ -23,6 +23,9 @@ var bzRestGetBugsUrl = "";
 var bzAssignees = new Map();
 var bzProductComponents;
 var bzProductVersions;
+var bzProductResolutions;
+var bzProductPriorities;
+var bzProductSeverities;
 var bzDefaultPriority;
 var bzDefaultSeverity;
 var bzDefaultMilestone;
@@ -332,7 +335,7 @@ function loadBugs() {
     bzBoardLoadTime = new Date().toISOString();
 
     bzRestGetBugsUrl = "/rest/bug?product=" + bzProduct;
-    bzRestGetBugsUrl += "&include_fields=summary,status,id,severity,priority,assigned_to,last_updated,deadline";
+    bzRestGetBugsUrl += "&include_fields=summary,status,resolution,id,severity,priority,assigned_to,last_updated,deadline";
     bzRestGetBugsUrl += "&order=" + bzOrder;
     bzRestGetBugsUrl += "&target_milestone=" + bzProductMilestone;
     bzRestGetBugsUrl += "&component=" + bzComponent;
@@ -478,92 +481,45 @@ function loadName() {
 }
 
 function loadResolutions() {
+    bzProductResolutions = new Set();
     httpGet("/rest/field/bug/resolution", function(response) {
         var arrayResolutions = response.fields;
-
-        var resolutions = document.createElement("div");
-        resolutions.className = "resolutions";
-        resolutions.hidden = true;
-
-        var labelbox = document.createElement("div");
-        labelbox.className = "resolution";
-        labelbox.innerText += arrayResolutions[0].display_name;
-        labelbox.id = "title";
-        resolutions.appendChild(labelbox);
-
         arrayResolutions[0].values.forEach(function(resolution) {
             var resolutionName = resolution.name;
-            if (resolutionName !== "") {
-                var box = document.createElement("div");
-                box.className = "resolution drop-target";
-                box.innerText += resolutionName;
-                box.id = resolutionName;
-                resolutions.appendChild(box);
+            if (resolutionName === "") {
+                return;
             }
+            bzProductResolutions.add(resolutionName);
         });
-
-        // FIXME: this assumes the column name, but it may have been renamed by the bz instance.
-        document.querySelector(".board-column#RESOLVED .board-column-content").appendChild(resolutions);
     });
 }
 
 function loadPriorities() {
+    bzProductPriorities = new Set();
     httpGet("/rest/field/bug/priority", function(response) {
-        // FIXME: this assumes the column name, but it may have been renamed by the bz instance.
-        var columns = ["CONFIRMED", "IN_PROGRESS"];
-
-        columns.forEach(function(column) {
-            var arrayPriorities = response.fields;
-
-            priorities = document.getElementById(column).getElementsByClassName("priorities")[0];
-
-            var labelbox = document.createElement("div");
-            labelbox.className = "priority";
-            labelbox.innerText += arrayPriorities[0].display_name;
-            labelbox.id = "title";
-            priorities.appendChild(labelbox);
-
-            arrayPriorities[0].values.forEach(function(priority) {
-                var priorityName = priority.name;
-                if (priorityName !== "") {
-                    var box = document.createElement("div");
-                    box.className = "priority drop-target";
-                    box.innerText += priorityName;
-                    box.id = priorityName;
-                    priorities.appendChild(box);
-                }
-            });
+        var arrayPriorities = response.fields;
+        arrayPriorities[0].values.forEach(function(priority) {
+            var priorityName = priority.name;
+            if (priorityName === "") {
+                return;
+            }
+            bzProductPriorities.add(priorityName);
         });
     });
 }
 
 function loadSeverities() {
+    bzProductSeverities = new Set();
     httpGet("/rest/field/bug/bug_severity", function(response) {
-        // FIXME: this assumes the column name, but it may have been renamed by the bz instance.
-        var columns = ["CONFIRMED", "IN_PROGRESS"];
-
-        columns.forEach(function(column) {
-            var arraySeverities = response.fields;
-
-            severities = document.getElementById(column).getElementsByClassName("severities")[0];
-
-            var labelbox = document.createElement("div");
-            labelbox.className = "severity";
-            labelbox.innerText += arraySeverities[0].display_name;
-            labelbox.id = "title";
-            severities.appendChild(labelbox);
-
-            arraySeverities[0].values.forEach(function(severity) {
-                var severityName = severity.name;
-                if (severityName !== "") {
-                    var box = document.createElement("div");
-                    box.className = "severity drop-target";
-                    box.innerText += severityName;
-                    box.id = severityName;
-                    severities.appendChild(box);
-                }
-            });
+        var arraySeverities = response.fields;
+        arraySeverities[0].values.forEach(function(severity) {
+            var severityName = severity.name;
+            if (severityName === "") {
+                return;
+            }
+            bzProductSeverities.add(severityName);
         });
+
     });
 }
 
@@ -678,11 +634,28 @@ function addCard(bug) {
     var card = document.createElement('div');
     card.className = "card";
     card.dataset.bugId = bug.id;
+    card.dataset.bugStatus = bug.status;
+    card.dataset.bugPriority = bug.priority;
+    card.dataset.bugSeverity = bug.severity;
+    card.dataset.bugResolution = bug.resolution;
+    card.onclick = function() {
+        var bugObject = makeBugObject(bug.id);
+        bugObject.status = bug.status;
+        bugObject.priority = bug.priority;
+        bugObject.severity = bug.severity;
+        bugObject.resolution = bug.resolution;
+        showBugModal(bugObject, bugObject);
+    }
 
     var buglink = document.createElement('a');
     buglink.href= bzSiteUrl + "/show_bug.cgi?id=" + bug.id;
     buglink.innerHTML = "#" + bug.id;
     buglink.className = "card-ref";
+    buglink.onclick = function(ev) {
+        // On click follow href link.
+        // And prevent event propagation up to card click handler, which would cause modal to be shown.
+        ev.stopPropagation();
+    }
 
     var summary = document.createElement('div');
     summary.appendChild(document.createTextNode(bug.summary)); // so that we get HTML string escaping for free
@@ -741,6 +714,7 @@ function addCard(bug) {
     if (isLoggedIn() && bzAllowEditBugs) {
         card.draggable = "true";
         card.addEventListener('dragstart', dragCard);
+        card.style.cursor = "pointer";
     }
 
     if (bzLoadComments) {
@@ -995,53 +969,36 @@ function showColumnCounts() {
     });
 }
 
-function writeBug(bugID, fromStatus, targetStatus, bugResolution, bugPriority, bugSeverity, bugMilestone, bugComment) {
-    var dataObj = {
-        status: targetStatus,
-        resolution : "",
-        priority : "",
-        severity : "",
-        token : bzAuthObject.userToken,
-        comment : { body: "" },
-        target_milestone : ""
-    };
-
-    if (bugResolution !== "") {
-        dataObj.resolution = bugResolution;
-    } else {
+function writeBug(dataObj) {
+    if (dataObj.resolution === "") {
         delete dataObj.resolution;
     }
 
-    if (bugPriority !== "") {
-        dataObj.priority = bugPriority;
-    } else {
+    if (dataObj.priority === "") {
         delete dataObj.priority;
     }
 
-    if (bugMilestone !== "") {
-        dataObj.target_milestone = bugMilestone;
-    } else {
+    if (dataObj.target_milestone  === "") {
         delete dataObj.target_milestone;
     }
 
-    if (bugSeverity !== "") {
-        dataObj.severity = bugSeverity;
-    } else {
+    if (dataObj.severity === "") {
         delete dataObj.severity;
     }
 
-    if (bugComment !== "") {
-        dataObj.comment.body = bugComment;
-    } else if (bzAutoComment) {
-        dataObj.comment.body = "Auto-comment from bzKanban";
-    } else {
-        delete dataObj.comment;
+    if (dataObj.comment.body === "") {
+        if (bzAutoComment) {
+            dataObj.comment.body = "Auto-comment from bzKanban";
+        } else {
+            delete dataObj.comment;
+        }
     }
+
+    dataObj.token = bzAuthObject.userToken,
 
     showSpinner();
 
-    // TODO: maybe check if bugID != number
-    httpPut("/rest/bug/" + bugID, dataObj, function() {
+    httpPut("/rest/bug/" + dataObj.id, dataObj, function() {
         loadBoard();
     });
 }
@@ -1079,8 +1036,6 @@ function dragCardLeave(ev) {
 }
 
 function dragCard(ev) {
-    var fromStatus = ev.target.parentElement.parentElement.id;
-
     // Disable pointer-events for all other cards so that we
     // can reliably detect when a card enters and leaves a column.
     var cards = document.querySelectorAll(".card");
@@ -1092,17 +1047,16 @@ function dragCard(ev) {
 
     var card = ev.currentTarget;
     var bugID = card.dataset.bugId;
-    var bugData = {"id": bugID, "status": fromStatus};
+    var bugData = {
+        "id": bugID,
+        "status": card.dataset.bugStatus,
+        "priority": card.dataset.bugPriority,
+        "severity": card.dataset.bugSeverity
+    };
     ev.dataTransfer.setData("text", JSON.stringify(bugData));
 }
 
 function dragCardStart(ev) {
-    columnTitle = ev.currentTarget.childNodes[0].childNodes[0].data;
-    if (!(columnTitle == "UNCONFIRMED" || columnTitle == "VERIFIED")) {
-        showResolutions(document.getElementById("RESOLVED"));
-        showPriorities(document.getElementById(columnTitle));
-        showSeverities(document.getElementById(columnTitle));
-    }
     showBacklog();
 }
 
@@ -1113,12 +1067,6 @@ function dragCardEnd(ev) {
         card.style.pointerEvents = "auto";
     });
 
-    columnTitle = ev.currentTarget.childNodes[0].childNodes[0].data;
-    if (!(columnTitle == "UNCONFIRMED" || columnTitle == "VERIFIED")) {
-        hideResolutions(document.getElementById("RESOLVED"));
-        hidePriorities(document.getElementById(columnTitle));
-        hideSeverities(document.getElementById(columnTitle));
-    }
     hideBacklog();
 }
 
@@ -1128,31 +1076,17 @@ function dropCard(ev) {
 
     ev.preventDefault();
 
-    var bugData = JSON.parse(ev.dataTransfer.getData("text"));
+    var bugCurrent = JSON.parse(ev.dataTransfer.getData("text"));
 
-    var targetStatus = ev.currentTarget.id;
-    var targetResolution = "";
-    var targetPriority = "";
-    var targetSeverity = "";
-    var targetComment = "";
-
-    if (ev.target.classList.contains("resolution")) {
-        targetResolution = ev.target.id;
-    } else if (ev.target.classList.contains("priority")) {
-        targetPriority = ev.target.id;
-    } else if (ev.target.classList.contains("severity")) {
-        targetSeverity = ev.target.id;
-    }
+    var bugUpdate = makeBugObject(bugCurrent.id);
+    bugUpdate.status = ev.currentTarget.id;
 
     ev.target.classList.remove("drop-target-hover");
 
     if (bzAddCommentOnChange) {
-        showCommentModal(bugData.id, function(comment) {
-            targetComment = comment;
-            writeBug(bugData.id, bugData.status, targetStatus, targetResolution, targetPriority, targetSeverity, "", targetComment);
-        });
+        showBugModal(bugCurrent, bugUpdate);
     } else {
-        writeBug(bugData.id, bugData.status, targetStatus, targetResolution, targetPriority, targetSeverity, "", targetComment);
+        writeBug(bugUpdate);
     }
 }
 
@@ -1162,71 +1096,30 @@ function dropBacklog(ev) {
     }
     ev.preventDefault();
 
-    var bugData = JSON.parse(ev.dataTransfer.getData("text"));
+    var bugCurrent = JSON.parse(ev.dataTransfer.getData("text"));
 
-    var targetStatus = "CONFIRMED";
-    var targetResolution = "";
-    var targetPriority = bzDefaultPriority;
-    var targetSeverity = "";
-    var targetComment = "";
+    var bugUpdate = makeBugObject(bugCurrent.id);
+    bugUpdate.status = "CONFIRMED";
+    bugUpdate.priority = bzDefaultPriority;
 
     if (bzAddCommentOnChange) {
-        showCommentModal(bugData.id, function(comment) {
-            targetComment = comment;
-            writeBug(bugData.id, bugData.status, targetStatus, targetResolution, targetPriority, targetSeverity, bzDefaultMilestone, targetComment);
-        });
+        showBugModal(bugCurrent, bugUpdate);
     } else {
-            writeBug(bugData.id, bugData.status, targetStatus, targetResolution, targetPriority, targetSeverity, bzDefaultMilestone, targetComment);
+        writeBug(bugUpdate);
     }
-
 }
 
-function showResolutions(elem) {
-    var resolutions = elem.querySelectorAll(".resolutions");
-    resolutions.forEach(function(res) {
-        res.hidden = false;
-    });
-    hideCards(elem);
-}
-
-function hideResolutions(elem) {
-    var resolutions = elem.querySelectorAll(".resolutions");
-    resolutions.forEach(function(resolution) {
-        resolution.hidden = true;
-    });
-    showCards(elem);
-}
-
-function showPriorities(elem) {
-    var priorities = elem.querySelectorAll(".priorities");
-    priorities.forEach(function(priority) {
-        priority.hidden = false;
-    });
-    hideCards(elem);
-}
-
-function hidePriorities(elem) {
-    var priorities = elem.querySelectorAll(".priorities");
-    priorities.forEach(function(priority) {
-        priority.hidden = true;
-    });
-    showCards(elem);
-}
-
-function showSeverities(elem) {
-    var severities = elem.querySelectorAll(".severities");
-    severities.forEach(function(severity) {
-        severity.hidden = false;
-    });
-    hideCards(elem);
-}
-
-function hideSeverities(elem) {
-    var severities = elem.querySelectorAll(".severities");
-    severities.forEach(function(severity) {
-        severity.hidden = true;
-    });
-    showCards(elem);
+function makeBugObject(bugId) {
+    var bugObject = {
+        "id": bugId,
+        "status": "",
+        "resolution" : "",
+        "priority" : "",
+        "severity" : "",
+        "comment" : { body: "" },
+        "target_milestone" : ""
+    };
+    return bugObject;
 }
 
 function showCards(elem) {
@@ -1399,30 +1292,122 @@ function hideNewBugModal() {
     document.querySelector('#modalNewBug').remove();
 }
 
-function showCommentModal(bugId, responseCallback) {
+function showBugModal(bugCurrent, bugUpdate) {
     var commentModal = document.createElement("div");
-    commentModal.id = "modalComment";
+    commentModal.id = "modalBug";
     commentModal.className = "modal";
 
     var commentModalContent = document.createElement("div");
     commentModalContent.className = "modal-content";
 
-    var bugTitle = document.querySelector(".card[data-bug-id='" + bugId + "'] > .card-summary").innerText;
+    var card = document.querySelector(".card[data-bug-id='" + bugCurrent.id + "']");
+    var bugTitle = card.querySelector(".card-summary").innerText;
 
     var commentModalHeader = document.createElement("div");
     commentModalHeader.className = "modal-header";
-    commentModalHeader.innerText = "#" + bugId + " " + bugTitle;
+    commentModalHeader.innerText = "#" + bugCurrent.id + " " + bugTitle;
 
     var close = document.createElement("i");
     close.className = "fa fa-close modalClose";
     close.onclick = function() {
-        hideCommentModal();
+        hideBugModal();
     };
 
     commentModalHeader.appendChild(close);
 
     var commentModalBody = document.createElement("div");
     commentModalBody.className = "modal-body";
+
+    // Card was dragged
+    if (bugCurrent.status !== bugUpdate.status) {
+        // TODO show what's changed in modal as confirmation?
+        console.log("Bug " + bugCurrent.id + " moved from " + bugCurrent.status + " to " + bugUpdate.status);
+    }
+
+    // TODO replace hard coded column name somehow.
+    if (bugUpdate.status === "RESOLVED") {
+        //  Resolution field.
+        var resolutionLabel = document.createElement("label");
+        resolutionLabel.innerText = "Resolution";
+        var resolutions = document.createElement("select");
+        resolutions.name = "resolution";
+        resolutionLabel.appendChild(resolutions);
+
+        bzProductResolutions.forEach(function(resolution) {
+            var opt = document.createElement('option');
+            opt.innerText = resolution;
+            opt.value = resolution;
+            if (resolution === bugCurrent.resolution) {
+                opt.selected = true;
+            }
+            resolutions.appendChild(opt);
+        });
+
+        // Set to default value, and add change listener
+        bugUpdate.resolution = resolutions.value;
+        resolutions.onchange = function() {
+            bugUpdate.resolution = resolutions.value;
+        }
+
+        commentModalBody.appendChild(resolutionLabel);
+    }
+
+    // Card was clicked
+    if (bugCurrent.status === bugUpdate.status) {
+
+        // TODO show bug description?
+        // TODO show bug comments?
+
+        // Priority field.
+        var priorityLabel = document.createElement("label");
+        priorityLabel.innerText = "Priority";
+        var priorities = document.createElement("select");
+        priorities.name = "priority";
+        priorityLabel.appendChild(priorities);
+
+        bzProductPriorities.forEach(function(priority) {
+            var opt = document.createElement('option');
+            opt.innerText = priority;
+            opt.value = priority;
+            if (priority === bugCurrent.priority) {
+                opt.selected = true;
+            }
+            priorities.appendChild(opt);
+        });
+
+        // Set to default value, and add change listener
+        bugUpdate.priority = priorities.value;
+        priorities.onchange = function() {
+            bugUpdate.priority = priorities.value;
+        }
+
+        commentModalBody.appendChild(priorityLabel);
+
+        // Severity field.
+        var severityLabel = document.createElement("label");
+        severityLabel.innerText = "Severity";
+        var severities = document.createElement("select");
+        severities.name = "severity";
+        severityLabel.appendChild(severities);
+
+        bzProductSeverities.forEach(function(severity) {
+            var opt = document.createElement('option');
+            opt.innerText = severity;
+            opt.value = severity;
+            if (severity === bugCurrent.severity) {
+                opt.selected = true;
+            }
+            severities.appendChild(opt);
+        });
+
+        // Set to default value, and add change listener
+        bugUpdate.severity = severities.value;
+        severities.onchange = function() {
+            bugUpdate.severity = severities.value;
+        }
+
+        commentModalBody.appendChild(severityLabel);
+    }
 
     var commentBoxLabel = document.createElement("label");
     commentBoxLabel.innerText = "Additional Comments";
@@ -1436,9 +1421,9 @@ function showCommentModal(bugId, responseCallback) {
     submit.innerText = "Submit";
     submit.id = "submitComment";
     submit.onclick = function() {
-        var comment = document.querySelector("#commentBoxText").value;
-        responseCallback(comment);
-        hideCommentModal();
+        bugUpdate.comment.body = document.querySelector("#commentBoxText").value;
+        hideBugModal();
+        writeBug(bugUpdate);
     }
 
     commentModalBody.appendChild(commentBoxLabel);
@@ -1451,8 +1436,8 @@ function showCommentModal(bugId, responseCallback) {
     document.querySelector(bzDomElement).appendChild(commentModal);
 }
 
-function hideCommentModal() {
-    document.querySelector('#modalComment').remove();
+function hideBugModal() {
+    document.querySelector('#modalBug').remove();
 }
 
 // Register event handlers
