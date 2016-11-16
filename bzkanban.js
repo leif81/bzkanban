@@ -30,6 +30,7 @@ var bzDefaultPriority;
 var bzDefaultSeverity;
 var bzDefaultMilestone;
 var bzAuthObject;
+var bzDrake;
 
 function initBzkanban() {
     loadParams();
@@ -210,12 +211,14 @@ function initBacklogTarget() {
     backlog.id = "textBacklog";
     backlog.className = "drop-target";
     backlog.innerText = "Backlog";
+    /*
     backlog.addEventListener('drag', dragCardStart);
     backlog.addEventListener('dragend', dragCardEnd);
     backlog.addEventListener('dragover', dragCardOver);
     backlog.addEventListener('drop', dropBacklog);
     backlog.addEventListener('dragenter', dragCardEnter);
     backlog.addEventListener('dragleave', dragCardLeave);
+    */
 
     document.querySelector("#nav").appendChild(backlog);
 }
@@ -447,6 +450,10 @@ function loadColumns() {
             loadPriorities();
             loadSeverities();
             loadDefaultPrioritySeverityFields();
+
+            bzDrake = dragula(Array.from(document.querySelectorAll(".cards")))
+                .on('drag', dragCard)
+                .on('drop', dropCard);
         }
     });
 }
@@ -593,14 +600,6 @@ function addBoardColumn(status) {
     var div = document.createElement('div');
     div.className = "board-column";
     div.id = status;
-    if (isLoggedIn() && bzAllowEditBugs) {
-        div.addEventListener('drag', dragCardStart);
-        div.addEventListener('dragend', dragCardEnd);
-        div.addEventListener('dragover', dragCardOver);
-        div.addEventListener('drop', dropCard);
-        div.addEventListener('dragenter', dragCardEnter);
-        div.addEventListener('dragleave', dragCardLeave);
-    }
 
     var title = document.createElement('div');
     title.className = "board-column-title";
@@ -709,12 +708,6 @@ function addCard(bug) {
     assignee.appendChild(fullname);
     assignee.appendChild(picture);
     meta.appendChild(assignee);
-
-    if (isLoggedIn() && bzAllowEditBugs) {
-        card.draggable = "true";
-        card.addEventListener('dragstart', dragCard);
-        card.style.cursor = "pointer";
-    }
 
     if (bzLoadComments) {
         loadComments(bug);
@@ -979,7 +972,8 @@ function writeBug(dataObj) {
     showSpinner();
 
     httpPut("/rest/bug/" + dataObj.id, dataObj, function() {
-        loadBoard();
+        hideSpinner();
+        // Do nothing. dragula updated the DOM already.
     });
 }
 
@@ -989,80 +983,24 @@ function scheduleCheckForUpdates() {
     }, 600000);
 }
 
-function dragCardOver(ev) {
-    ev.preventDefault();
+function dragCard(el) {
+    showBacklog();
 }
 
-function dragCardEnter(ev) {
-    ev.preventDefault();
+function dropCard(el, target) {
+    hideBacklog();
 
-    if (ev.target.classList.contains("board-column")) {
-        ev.currentTarget.classList.add("drag-card");
-    }
-
-    if (ev.target.classList.contains("drop-target")) {
-        ev.target.classList.add("drop-target-hover");
-    }
-}
-
-function dragCardLeave(ev) {
-    if (ev.target.classList.contains("board-column")) {
-        ev.currentTarget.classList.remove("drag-card");
-    }
-
-    if (ev.target.classList.contains("drop-target")) {
-        ev.target.classList.remove("drop-target-hover");
-    }
-}
-
-function dragCard(ev) {
-    // Disable pointer-events for all other cards so that we
-    // can reliably detect when a card enters and leaves a column.
-    var cards = document.querySelectorAll(".card");
-    cards.forEach(function(card) {
-        if (card.dataset.bugId != ev.currentTarget.dataset.bugId) {
-            card.style.pointerEvents = "none";
-        }
-    });
-
-    var card = ev.currentTarget;
-    var bugID = card.dataset.bugId;
-    var bugData = {
-        "id": bugID,
+    var card = el;
+    var bugCurrent = {
+        "id": card.dataset.bugId,
         "status": card.dataset.bugStatus,
         "priority": card.dataset.bugPriority,
         "severity": card.dataset.bugSeverity
     };
-    ev.dataTransfer.setData("text", JSON.stringify(bugData));
-}
-
-function dragCardStart(ev) {
-    showBacklog();
-}
-
-function dragCardEnd(ev) {
-    // Re-enable pointer events for all cards.
-    var cards = document.querySelectorAll(".card");
-    cards.forEach(function(card) {
-        card.style.pointerEvents = "auto";
-    });
-
-    hideBacklog();
-}
-
-function dropCard(ev) {
-    var col = ev.currentTarget;
-    col.classList.remove("drag-card");
-
-    ev.preventDefault();
-
-    var bugCurrent = JSON.parse(ev.dataTransfer.getData("text"));
 
     var bugUpdate = {};
     bugUpdate.id = bugCurrent.id;
-    bugUpdate.status = ev.currentTarget.id;
-
-    ev.target.classList.remove("drop-target-hover");
+    bugUpdate.status = target.parentElement.parentElement.id;
 
     if (bzAddCommentOnChange) {
         showBugModal(bugCurrent, bugUpdate);
@@ -1276,6 +1214,8 @@ function showBugModal(bugCurrent, bugUpdate) {
     close.className = "fa fa-close modalClose";
     close.onclick = function() {
         hideBugModal();
+        // TODO If triggered by move, revert the move (DOM update).
+        // See https://github.com/bevacqua/dragula/issues/442
     };
 
     commentModalHeader.appendChild(close);
