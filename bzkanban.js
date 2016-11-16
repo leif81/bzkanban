@@ -28,8 +28,6 @@ var bzDefaultSeverity;
 var bzDefaultMilestone;
 var bzAuthObject;
 
-window.onload = initBzkanban;
-
 function initBzkanban() {
     loadParams();
     initNav();
