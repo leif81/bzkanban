@@ -158,6 +158,9 @@ body {
     margin-bottom: 0;
     padding-left: 15px;
 }
+#loginForm input {
+    margin-left: 3px;
+}
 #whoami {
     font-size: small;
 }
