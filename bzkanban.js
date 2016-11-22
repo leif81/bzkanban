@@ -637,7 +637,8 @@ function addCard(bug) {
     card.dataset.bugSeverity = bug.severity;
     card.dataset.bugResolution = bug.resolution;
     card.onclick = function() {
-        var bugObject = makeBugObject(bug.id);
+        var bugObject = {};
+        bugObject.id = bug.id;
         bugObject.status = bug.status;
         bugObject.priority = bug.priority;
         bugObject.severity = bug.severity;
@@ -968,28 +969,9 @@ function showColumnCounts() {
 }
 
 function writeBug(dataObj) {
-    if (dataObj.resolution === "") {
-        delete dataObj.resolution;
-    }
-
-    if (dataObj.priority === "") {
-        delete dataObj.priority;
-    }
-
-    if (dataObj.target_milestone  === "") {
-        delete dataObj.target_milestone;
-    }
-
-    if (dataObj.severity === "") {
-        delete dataObj.severity;
-    }
-
-    if (dataObj.comment.body === "") {
-        if (bzAutoComment) {
-            dataObj.comment.body = "Auto-comment from bzKanban";
-        } else {
-            delete dataObj.comment;
-        }
+    if (dataObj.comment.body === "" && bzAutoComment) {
+        dataObj.comment = {};
+        dataObj.comment.body = "Auto-comment from bzKanban";
     }
 
     dataObj.token = bzAuthObject.userToken,
@@ -1076,7 +1058,8 @@ function dropCard(ev) {
 
     var bugCurrent = JSON.parse(ev.dataTransfer.getData("text"));
 
-    var bugUpdate = makeBugObject(bugCurrent.id);
+    var bugUpdate = {};
+    bugUpdate.id = bugCurrent.id;
     bugUpdate.status = ev.currentTarget.id;
 
     ev.target.classList.remove("drop-target-hover");
@@ -1096,7 +1079,8 @@ function dropBacklog(ev) {
 
     var bugCurrent = JSON.parse(ev.dataTransfer.getData("text"));
 
-    var bugUpdate = makeBugObject(bugCurrent.id);
+    var bugUpdate = {};
+    bugUpdate.id = bugCurrent.id;
     bugUpdate.status = "CONFIRMED";
     bugUpdate.priority = bzDefaultPriority;
 
@@ -1105,19 +1089,6 @@ function dropBacklog(ev) {
     } else {
         writeBug(bugUpdate);
     }
-}
-
-function makeBugObject(bugId) {
-    var bugObject = {
-        "id": bugId,
-        "status": "",
-        "resolution" : "",
-        "priority" : "",
-        "severity" : "",
-        "comment" : { body: "" },
-        "target_milestone" : ""
-    };
-    return bugObject;
 }
 
 function showCards(elem) {
@@ -1419,6 +1390,7 @@ function showBugModal(bugCurrent, bugUpdate) {
     submit.innerText = "Submit";
     submit.id = "submitComment";
     submit.onclick = function() {
+        bugUpdate.comment = {};
         bugUpdate.comment.body = document.querySelector("#commentBoxText").value;
         hideBugModal();
         writeBug(bugUpdate);
