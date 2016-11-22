@@ -676,7 +676,7 @@ function addCard(bug) {
     if (bzShowGravatar) {
         picture.src = getPictureSrc(bug.assigned_to_detail.email);
     } else {
-        hidePicture(picture);
+        picture.style.display = "none";
     }
 
     var icons = document.createElement('span');
@@ -1130,10 +1130,6 @@ function getPictureSrc(email) {
     if (hashString !== "") {
         return ('https://www.gravatar.com/avatar/' + hashString + '?s=20&d=blank');
     }
-}
-
-function hidePicture(pictureobject) {
-    pictureobject.style.display = "none";
 }
 
 function updateAddressBar() {
