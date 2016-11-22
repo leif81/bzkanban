@@ -83,18 +83,18 @@ function initNav() {
     nav.id = "nav";
     document.querySelector(bzDomElement).appendChild(nav);
 
-    initQueryFields();
+    nav.appendChild(createQueryFields());
     if (bzAllowEditBugs) {
-        initBacklogTarget();
+        nav.appendChild(createBacklogTarget());
     }
 
     var spring = document.createElement("span");
     spring.className = "spring";
     nav.appendChild(spring);
 
-    initSpinner();
-    initActions();
-    initLoginForm();
+    nav.appendChild(createSpinner());
+    nav.appendChild(createActions());
+    nav.appendChild(createLoginForm());
 
     if (isLoggedIn()) {
         loadName();
@@ -117,7 +117,7 @@ function initBoard() {
     loadColumns();
 }
 
-function initQueryFields() {
+function createQueryFields() {
     var query = document.createElement("span");
     query.id = "query";
 
@@ -202,10 +202,10 @@ function initQueryFields() {
     query.appendChild(milestone);
     query.appendChild(assignee);
 
-    document.querySelector("#nav").appendChild(query);
+    return query;
 }
 
-function initBacklogTarget() {
+function createBacklogTarget() {
     var backlog = document.createElement("div");
     backlog.id = "textBacklog";
     backlog.className = "drop-target";
@@ -217,10 +217,10 @@ function initBacklogTarget() {
     backlog.addEventListener('dragenter', dragCardEnter);
     backlog.addEventListener('dragleave', dragCardLeave);
 
-    document.querySelector("#nav").appendChild(backlog);
+    return backlog;
 }
 
-function initSpinner() {
+function createSpinner() {
     var spinner = document.createElement("span");
     spinner.id = "spinner";
 
@@ -228,11 +228,10 @@ function initSpinner() {
     icon.className = "fa fa-cog fa-spin";
 
     spinner.appendChild(icon);
-
-    document.querySelector("#nav").appendChild(spinner);
+    return spinner;
 }
 
-function initActions() {
+function createActions() {
     var actions = document.createElement("span");
     actions.id = "actions";
 
@@ -268,10 +267,10 @@ function initActions() {
     actions.appendChild(login);
     actions.appendChild(bell);
 
-    document.querySelector("#nav").appendChild(actions);
+    return actions;
 }
 
-function initLoginForm() {
+function createLoginForm() {
     var loginForm = document.createElement("form");
     loginForm.id = "loginForm";
 
@@ -319,7 +318,7 @@ function initLoginForm() {
     loginForm.appendChild(passwordLabel);
     loginForm.appendChild(submit);
 
-    document.querySelector("#nav").appendChild(loginForm);
+    return loginForm;
 }
 
 
