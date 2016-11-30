@@ -5,7 +5,6 @@ var bzAllowEditBugs = true;
 var bzShowGravatar = true;
 var bzAddCommentOnChange = true;
 var bzLoadComments = false;
-var bzAutoComment = false;
 var bzCheckForUpdates = true;
 var bzAutoRefresh = false;
 var bzDomElement = "#bzkanban";
@@ -58,11 +57,6 @@ function loadParams() {
     var comments = getURLParameter('comments');
     if (comments !== null) {
         bzLoadComments = isTrue(comments);
-    }
-
-    var autocomment = getURLParameter('autocomment');
-    if (autocomment !== null) {
-        bzAutoComment = isTrue(autocomment);
     }
 
     var pictures = getURLParameter('gravatar');
@@ -968,11 +962,6 @@ function showColumnCounts() {
 }
 
 function writeBug(dataObj) {
-    if (dataObj.comment.body === "" && bzAutoComment) {
-        dataObj.comment = {};
-        dataObj.comment.body = "Auto-comment from bzKanban";
-    }
-
     dataObj.token = bzAuthObject.userToken,
 
     showSpinner();
@@ -1139,7 +1128,6 @@ function updateAddressBar() {
     newURL += "&assignee=" + bzAssignedTo;
     newURL += "&gravatar=" + bzShowGravatar;
     newURL += "&comments=" + bzLoadComments;
-    newURL += "&autocomment=" + bzAutoComment;
     newURL += "&autorefresh=" + bzAutoRefresh;
     newURL += "&site=" + bzSiteUrl;
 
