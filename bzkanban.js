@@ -629,14 +629,17 @@ function addCard(bug) {
     card.dataset.bugPriority = bug.priority;
     card.dataset.bugSeverity = bug.severity;
     card.dataset.bugResolution = bug.resolution;
-    card.onclick = function() {
-        var bugObject = {};
-        bugObject.id = bug.id;
-        bugObject.status = bug.status;
-        bugObject.priority = bug.priority;
-        bugObject.severity = bug.severity;
-        bugObject.resolution = bug.resolution;
-        showBugModal(bugObject, bugObject);
+
+    if (isLoggedIn() && bzAllowEditBugs) {
+        card.onclick = function() {
+            var bugObject = {};
+            bugObject.id = bug.id;
+            bugObject.status = bug.status;
+            bugObject.priority = bug.priority;
+            bugObject.severity = bug.severity;
+            bugObject.resolution = bug.resolution;
+            showBugModal(bugObject, bugObject);
+        }
     }
 
     var buglink = document.createElement('a');
