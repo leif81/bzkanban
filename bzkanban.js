@@ -325,7 +325,7 @@ function loadBoard() {
 function loadBugs() {
     bzBoardLoadTime = new Date().toISOString();
 
-    bzRestGetBugsUrl = "/rest/bug?product=" + bzProduct;
+    bzRestGetBugsUrl = "/rest.cgi/bug?product=" + bzProduct;
     bzRestGetBugsUrl += "&include_fields=summary,status,resolution,id,severity,priority,assigned_to,last_updated,deadline";
     bzRestGetBugsUrl += "&order=" + bzOrder;
     bzRestGetBugsUrl += "&target_milestone=" + bzProductMilestone;
@@ -351,7 +351,7 @@ function loadBugs() {
 }
 
 function loadProductsList() {
-    httpGet("/rest/product?type=enterable&include_fields=name", function(response) {
+    httpGet("/rest.cgi/product?type=enterable&include_fields=name", function(response) {
         document.getElementById("textProduct").disabled = false;
         var products = response.products;
         products.sort(function(a, b) {
@@ -370,7 +370,7 @@ function loadProductsList() {
 
 function loadMilestonesList() {
     clearMilestonesList();
-    httpGet("/rest/product?names=" + bzProduct + "&include_fields=milestones", function(response) {
+    httpGet("/rest.cgi/product?names=" + bzProduct + "&include_fields=milestones", function(response) {
         document.getElementById("textMilestone").disabled = false;
         var milestones = response.products[0].milestones;
         milestones.forEach(function(milestone) {
@@ -408,7 +408,7 @@ function loadAssigneesList() {
 
 function loadProductInfo() {
     if (bzProduct !== null) {
-        httpGet("/rest/product/" + bzProduct + "?include_fields=has_unconfirmed", function(response) {
+        httpGet("/rest.cgi/product/" + bzProduct + "?include_fields=has_unconfirmed", function(response) {
             bzProductHasUnconfirmed = response.products[0].has_unconfirmed;
             updateUnconfirmedColumnVisibilty();
         });
@@ -423,7 +423,7 @@ function loadProductInfo() {
 }
 
 function loadColumns() {
-    httpGet("/rest/field/bug/status/values", function(response) {
+    httpGet("/rest.cgi/field/bug/status/values", function(response) {
         var statuses = response.values;
         statuses.forEach(function(status) {
             addBoardColumn(status);
@@ -445,7 +445,7 @@ function loadColumns() {
 }
 
 function loadComments(bug) {
-    httpGet("/rest/bug/" + bug.id + "/comment?include_fields=id", function(response) {
+    httpGet("/rest.cgi/bug/" + bug.id + "/comment?include_fields=id", function(response) {
         var card = getCardElement(bug.id);
         var commentCount = response.bugs[bug.id].comments.length - 1;
         if (commentCount > 1) {
@@ -463,7 +463,7 @@ function loadComments(bug) {
 }
 
 function loadName() {
-    httpGet("/rest/user/" + bzAuthObject.userID, function(response) {
+    httpGet("/rest.cgi/user/" + bzAuthObject.userID, function(response) {
         bzUserFullName = response.users[0].real_name;
         if (bzUserFullName !== null) {
             document.getElementById("whoami").textContent = bzUserFullName;
@@ -473,7 +473,7 @@ function loadName() {
 
 function loadResolutions() {
     bzProductResolutions = new Set();
-    httpGet("/rest/field/bug/resolution", function(response) {
+    httpGet("/rest.cgi/field/bug/resolution", function(response) {
         var arrayResolutions = response.fields;
         arrayResolutions[0].values.forEach(function(resolution) {
             var resolutionName = resolution.name;
@@ -487,7 +487,7 @@ function loadResolutions() {
 
 function loadPriorities() {
     bzProductPriorities = new Set();
-    httpGet("/rest/field/bug/priority", function(response) {
+    httpGet("/rest.cgi/field/bug/priority", function(response) {
         var arrayPriorities = response.fields;
         arrayPriorities[0].values.forEach(function(priority) {
             var priorityName = priority.name;
@@ -501,7 +501,7 @@ function loadPriorities() {
 
 function loadSeverities() {
     bzProductSeverities = new Set();
-    httpGet("/rest/field/bug/bug_severity", function(response) {
+    httpGet("/rest.cgi/field/bug/bug_severity", function(response) {
         var arraySeverities = response.fields;
         arraySeverities[0].values.forEach(function(severity) {
             var severityName = severity.name;
@@ -516,7 +516,7 @@ function loadSeverities() {
 
 function loadComponentsList() {
     bzProductComponents = new Set();
-    httpGet("/rest/product/" + bzProduct + "?type=enterable&include_fields=components", function(response) {
+    httpGet("/rest.cgi/product/" + bzProduct + "?type=enterable&include_fields=components", function(response) {
         var components = response.products[0].components;
         components.sort(function(a, b) {
             return a.name.localeCompare(b.name);
@@ -532,7 +532,7 @@ function loadComponentsList() {
 
 function loadVersionsList() {
     bzProductVersions = new Set();
-    httpGet("/rest/product/" + bzProduct + "?type=enterable&include_fields=versions", function(response) {
+    httpGet("/rest.cgi/product/" + bzProduct + "?type=enterable&include_fields=versions", function(response) {
         var versions = response.products[0].versions;
         versions.sort(function(a, b) {
             return a.name.localeCompare(b.name);
@@ -570,14 +570,14 @@ function loadCheckForUpdates() {
 }
 
 function loadDefaultPrioritySeverityFields() {
-    httpGet("/rest/parameters", function(response) {
+    httpGet("/rest.cgi/parameters", function(response) {
         bzDefaultPriority = response.parameters.defaultpriority;
         bzDefaultSeverity = response.parameters.defaultseverity;
     });
 }
 
 function loadDefaultMilestone() {
-    httpGet("/rest/product/" + bzProduct + "?type=enterable&include_fields=default_milestone", function(response) {
+    httpGet("/rest.cgi/product/" + bzProduct + "?type=enterable&include_fields=default_milestone", function(response) {
         bzDefaultMilestone = response.products[0].default_milestone;
     });
 }
@@ -903,7 +903,7 @@ function hideNewBugButton() {
 function doAuth(user, password) {
     showSpinner();
     hideLoginForm();
-    httpGet("/rest/login?login=" + user + "&password=" + password, function(response) {
+    httpGet("/rest.cgi/login?login=" + user + "&password=" + password, function(response) {
         bzAuthObject = { 'userID': response.id, 'userToken': response.token };
         localStorage.setItem(bzSiteUrl, JSON.stringify(bzAuthObject));
         loadName();
@@ -969,7 +969,7 @@ function writeBug(dataObj) {
 
     showSpinner();
 
-    httpPut("/rest/bug/" + dataObj.id, dataObj, function() {
+    httpPut("/rest.cgi/bug/" + dataObj.id, dataObj, function() {
         loadBoard();
     });
 }
@@ -1209,7 +1209,7 @@ function showNewBugModal() {
 
         showSpinner();
 
-        httpRequest("POST", "/rest/bug", dataObj, function() {
+        httpRequest("POST", "/rest.cgi/bug", dataObj, function() {
             loadBoard();
         });
 
