@@ -1406,7 +1406,7 @@ document.addEventListener("visibilitychange", function() {
         bzCheckForUpdates = true;
         loadCheckForUpdates();
     }
-    });
+});
 
 
 // When the user clicks anywhere outside of the modal, close it
