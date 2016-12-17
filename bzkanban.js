@@ -1411,9 +1411,8 @@ document.addEventListener("visibilitychange", function() {
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function(event) {
-    document.querySelectorAll('.modal').forEach(function(el) {
-        if (event.target == el) {
-            el.style.display = "none";
-        }
-    });
+    var modal = document.querySelector('#modalBug');
+    if (event.target == modal) {
+        hideBugModal();
+    }
 };
