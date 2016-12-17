@@ -1393,7 +1393,10 @@ function showBugModal(bugCurrent, bugUpdate) {
 }
 
 function hideBugModal() {
-    document.querySelector('#modalBug').remove();
+    var modal = document.querySelector('#modalBug');
+    if (modal !== null) {
+        modal.remove();
+    }
 }
 
 // Register event handlers
@@ -1416,3 +1419,9 @@ window.onclick = function(event) {
         hideBugModal();
     }
 };
+
+document.addEventListener("keyup", function(e) {
+    if (e.code === "Escape") {
+        hideBugModal();
+    }
+});
