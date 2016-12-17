@@ -7,7 +7,7 @@ Visualize Bugzilla milestones as cards and columns with a Kanban inspired board.
 The goal is to compliment an existing Bugzilla workflow, so board columns represent actual bug statuses.
 Cards can be dragged from one column to another to change the bug status.
 
-It is implemented as a single-page application that uses Ajax calls to a http://bugzilla.readthedocs.io/en/latest/api/index.html[Bugzilla 5.0+ server REST API].
+It is implemented as a single-page application using Ajax with the http://bugzilla.readthedocs.io/en/latest/api/index.html[Bugzilla 5 server REST API].
 
 == Demo
 
@@ -33,7 +33,7 @@ https://rawgit.com/leif81/bzkanban/master/index.html?product=Bugzilla&milestone=
 These are some settings that can be manually controlled via the page URL.
 
  * `site`
- ** The Bugzilla instance to load data from. Overrides the internal setting. e.g. `site=https://bugzilla.mozilla.org`
+ ** The Bugzilla instance to load data from. Overrides the internal `bzSiteUrl` setting. e.g. `site=https://bugzilla.mozilla.org`
  * `comments`
  ** Show comment counts on cards. WARNING: it's expensive, one more request per card. e.g. `comments=true/false`
  * `autorefresh`
