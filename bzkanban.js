@@ -1413,12 +1413,12 @@ document.addEventListener("visibilitychange", function() {
 
 
 // When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
+window.addEventListener("click", function(event) {
     var modal = document.querySelector('#modalBug');
     if (event.target == modal) {
         hideBugModal();
     }
-};
+});
 
 document.addEventListener("keyup", function(e) {
     if (e.code === "Escape") {
