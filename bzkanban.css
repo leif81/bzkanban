@@ -143,11 +143,19 @@ body {
     margin-left: 15px;
 }
 #query .fa {
-    vertical-align: middle;
-    margin-right: 5px;
+    vertical-align: bottom;
+    border-radius: 3px 0 0 3px;
+    border-style: solid;
+    border-width: 1px 0 1px 1px;
+    border-color: darkgrey;
+    padding: 3.5px;
+    background-color: white;
+
 }
 #query select {
     width: 150px;
+    border-width: 1px 1px 1px 0;
+    border-radius: 0 3px 3px 0;
 }
 #query span {
     margin-right: 15px;
