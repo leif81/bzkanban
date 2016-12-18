@@ -126,6 +126,7 @@ function createQueryFields() {
 
     var productIcon = document.createElement("i");
     productIcon.className = "fa fa-archive";
+    productIcon.title = "Product";
 
     var productList = document.createElement("select");
     productList.id = "textProduct";
@@ -154,6 +155,7 @@ function createQueryFields() {
 
     var milestoneIcon = document.createElement("i");
     milestoneIcon.className = "fa fa-flag";
+    milestoneIcon.title = "Milestone";
 
     var milestoneList = document.createElement("select");
     milestoneList.id = "textMilestone";
@@ -178,6 +180,7 @@ function createQueryFields() {
 
     var assigneeIcon = document.createElement("i");
     assigneeIcon.className = "fa fa-user";
+    assigneeIcon.title = "Assignee";
 
     var assigneeList = document.createElement("select");
     assigneeList.id = "textAssignee";
