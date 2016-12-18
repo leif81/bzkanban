@@ -1252,6 +1252,14 @@ function showBugModal(bugCurrent, bugUpdate) {
     commentModal.id = "modalBug";
     commentModal.className = "modal";
 
+    // When the user clicks anywhere outside of the modal, close it
+    commentModal.addEventListener("click", function(e) {
+        // This ensures only clicks outside the modal-content close the modal.
+        if (e.target == commentModal) {
+            hideBugModal();
+        }
+    });
+
     var commentModalContent = document.createElement("div");
     commentModalContent.className = "modal-content";
 
@@ -1408,15 +1416,6 @@ document.addEventListener("visibilitychange", function() {
     } else {
         bzCheckForUpdates = true;
         loadCheckForUpdates();
-    }
-});
-
-
-// When the user clicks anywhere outside of the modal, close it
-window.addEventListener("click", function(event) {
-    var modal = document.querySelector('#modalBug');
-    if (event.target == modal) {
-        hideBugModal();
     }
 });
 
