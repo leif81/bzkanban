@@ -306,12 +306,10 @@ function createLoginForm() {
 
     passwordLabel.appendChild(password);
 
-    var submit = document.createElement("input");
+    var submit = document.createElement("button");
     submit.id = "btnAuthSubmit";
-    submit.value = "Submit";
+    submit.innerText = "Submit";
     submit.type = "button";
-
-    // When the user presses the login Submit button
     submit.addEventListener("click", function() {
         var user = document.getElementById("textUsername").value;
         var password = document.getElementById("textPassword").value;
