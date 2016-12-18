@@ -618,16 +618,6 @@ function addBoardColumn(status) {
     cards.className = "cards";
     content.appendChild(cards);
 
-    var prioritycontainer = document.createElement('div');
-    prioritycontainer.className = "priorities";
-    prioritycontainer.hidden = true;
-    content.appendChild(prioritycontainer);
-
-    var severitycontainer = document.createElement('div');
-    severitycontainer.className = "severities";
-    severitycontainer.hidden = true;
-    content.appendChild(severitycontainer);
-
     document.getElementById("board").appendChild(div);
 }
 
