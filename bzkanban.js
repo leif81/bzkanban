@@ -965,7 +965,7 @@ function showColumnCounts() {
 }
 
 function writeBug(dataObj) {
-    dataObj.token = bzAuthObject.userToken,
+    dataObj.token = bzAuthObject.userToken;
 
     showSpinner();
 
