@@ -1148,16 +1148,16 @@ function updateAddressBar() {
     history.pushState({}, '', newURL);
 }
 
-function showNewBugModal() {
+function createModal(elementId) {
     var modal = document.createElement("div");
-    modal.id = "modalNewBug";
+    modal.id = elementId;
     modal.className = "modal";
 
     // When the user clicks anywhere outside of the modal, close it
     modal.addEventListener("click", function(e) {
         // This ensures only clicks outside the modal-content close the modal.
         if (e.target == modal) {
-            hideBugModal();
+            hideModal();
         }
     });
 
@@ -1166,18 +1166,32 @@ function showNewBugModal() {
 
     var header = document.createElement("div");
     header.className = "modal-header";
-    header.innerText = "Add new bug to milestone " + bzProductMilestone;
 
     var close = document.createElement("i");
     close.className = "fa fa-close modalClose";
     close.onclick = function() {
-        hideNewBugModal();
+        hideModal();
     };
 
     header.appendChild(close);
 
     var body = document.createElement("div");
     body.className = "modal-body";
+
+    content.appendChild(header);
+    content.appendChild(body);
+    modal.appendChild(content);
+
+    return modal;
+}
+
+function showNewBugModal() {
+    var modal = createModal("modalNewBug");
+    var header = modal.querySelector(".modal-header");
+    var body = modal.querySelector(".modal-body");
+
+    var title = document.createTextNode("Add new bug to milestone " + bzProductMilestone);
+    header.appendChild(title);
 
     var summaryLabel = document.createElement("label");
     summaryLabel.innerText = "Summary";
@@ -1232,7 +1246,7 @@ function showNewBugModal() {
             loadBoard();
         });
 
-        hideNewBugModal();
+        hideModal();
     };
 
     body.appendChild(summaryLabel);
@@ -1240,10 +1254,6 @@ function showNewBugModal() {
     body.appendChild(componentLabel);
     body.appendChild(versionLabel);
     body.appendChild(submit);
-
-    content.appendChild(header);
-    content.appendChild(body);
-    modal.appendChild(content);
 
     bzProductComponents.forEach(function(component) {
         var opt = document.createElement('option');
@@ -1262,43 +1272,15 @@ function showNewBugModal() {
     document.querySelector(bzDomElement).appendChild(modal);
 }
 
-function hideNewBugModal() {
-    document.querySelector('#modalNewBug').remove();
-}
-
 function showBugModal(bugCurrent, bugUpdate) {
-    var commentModal = document.createElement("div");
-    commentModal.id = "modalBug";
-    commentModal.className = "modal";
-
-    // When the user clicks anywhere outside of the modal, close it
-    commentModal.addEventListener("click", function(e) {
-        // This ensures only clicks outside the modal-content close the modal.
-        if (e.target == commentModal) {
-            hideBugModal();
-        }
-    });
-
-    var commentModalContent = document.createElement("div");
-    commentModalContent.className = "modal-content";
+    var modal = createModal("modalBug");
+    var body = modal.querySelector(".modal-body");
+    var header = modal.querySelector(".modal-header");
 
     var card = document.querySelector(".card[data-bug-id='" + bugCurrent.id + "']");
     var bugTitle = card.querySelector(".card-summary").innerText;
-
-    var commentModalHeader = document.createElement("div");
-    commentModalHeader.className = "modal-header";
-    commentModalHeader.innerText = "#" + bugCurrent.id + " " + bugTitle;
-
-    var close = document.createElement("i");
-    close.className = "fa fa-close modalClose";
-    close.onclick = function() {
-        hideBugModal();
-    };
-
-    commentModalHeader.appendChild(close);
-
-    var commentModalBody = document.createElement("div");
-    commentModalBody.className = "modal-body";
+    var title = document.createTextNode("#" + bugCurrent.id + " " + bugTitle);
+    header.appendChild(title);
 
     // Card was dragged
     if (bugCurrent.status !== bugUpdate.status) {
@@ -1331,7 +1313,7 @@ function showBugModal(bugCurrent, bugUpdate) {
             bugUpdate.resolution = resolutions.value;
         };
 
-        commentModalBody.appendChild(resolutionLabel);
+        body.appendChild(resolutionLabel);
     }
 
     // Card was clicked
@@ -1363,7 +1345,7 @@ function showBugModal(bugCurrent, bugUpdate) {
             bugUpdate.priority = priorities.value;
         };
 
-        commentModalBody.appendChild(priorityLabel);
+        body.appendChild(priorityLabel);
 
         // Severity field.
         var severityLabel = document.createElement("label");
@@ -1388,7 +1370,7 @@ function showBugModal(bugCurrent, bugUpdate) {
             bugUpdate.severity = severities.value;
         };
 
-        commentModalBody.appendChild(severityLabel);
+        body.appendChild(severityLabel);
     }
 
     var commentBoxLabel = document.createElement("label");
@@ -1405,21 +1387,17 @@ function showBugModal(bugCurrent, bugUpdate) {
     submit.onclick = function() {
         bugUpdate.comment = {};
         bugUpdate.comment.body = document.querySelector("#commentBoxText").value;
-        hideBugModal();
+        hideModal();
         writeBug(bugUpdate);
     };
 
-    commentModalBody.appendChild(commentBoxLabel);
-    commentModalBody.appendChild(submit);
+    body.appendChild(commentBoxLabel);
+    body.appendChild(submit);
 
-    commentModalContent.appendChild(commentModalHeader);
-    commentModalContent.appendChild(commentModalBody);
-    commentModal.appendChild(commentModalContent);
-
-    document.querySelector(bzDomElement).appendChild(commentModal);
+    document.querySelector(bzDomElement).appendChild(modal);
 }
 
-function hideBugModal() {
+function hideModal() {
     var modal = document.querySelector('.modal');
     if (modal !== null) {
         modal.remove();
@@ -1440,6 +1418,6 @@ document.addEventListener("visibilitychange", function() {
 
 document.addEventListener("keyup", function(e) {
     if (e.code === "Escape") {
-        hideBugModal();
+        hideModal();
     }
 });
