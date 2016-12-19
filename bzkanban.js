@@ -1412,7 +1412,7 @@ function showBugModal(bugCurrent, bugUpdate) {
 }
 
 function hideBugModal() {
-    var modal = document.querySelector('#modalBug');
+    var modal = document.querySelector('.modal');
     if (modal !== null) {
         modal.remove();
     }
