@@ -719,7 +719,7 @@ function addCard(bug) {
     document.querySelector("#" + bug.status + " .cards").appendChild(card);
 
     var assigneeEmail = bug.assigned_to_detail.email;
-    if (assigneeEmail !== null) {
+    if (assigneeEmail !== undefined) {
         bzAssignees.set(assigneeEmail, bug.assigned_to_detail); // save for later
     }
 }
