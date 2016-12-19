@@ -104,7 +104,7 @@ function initNav() {
 
     loadProductsList();
 
-    if (bzProduct !== null) {
+    if (bzProduct !== "") {
         loadMilestonesList();
     }
 }
@@ -414,7 +414,7 @@ function loadAssigneesList() {
 }
 
 function loadProductInfo() {
-    if (bzProduct !== null) {
+    if (bzProduct !== "") {
         httpGet("/rest.cgi/product/" + bzProduct + "?include_fields=has_unconfirmed", function(response) {
             bzProductHasUnconfirmed = response.products[0].has_unconfirmed;
             updateUnconfirmedColumnVisibilty();
@@ -437,7 +437,7 @@ function loadColumns() {
         });
         updateUnconfirmedColumnVisibilty();
 
-        if (bzProduct !== null && bzProductMilestone !== null) {
+        if (bzProduct !== "" && bzProductMilestone !== "") {
             loadBoard();
             showNewBugButton();
         }
