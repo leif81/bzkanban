@@ -348,7 +348,7 @@ function loadBugs() {
 
         showColumnCounts();
         loadAssigneesList();
-        if (bzAssignedTo != "") {
+        if (bzAssignedTo !== "") {
             var name = bzAssignees.get(bzAssignedTo).real_name;
             filterByAssignee(name);
         }
