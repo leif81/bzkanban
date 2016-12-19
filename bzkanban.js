@@ -725,12 +725,11 @@ function addCard(bug) {
 
     document.querySelector("#" + bug.status + " .cards").appendChild(card);
 
-    var assigneeEmail = bug.assigned_to_detail.email;
-    if (assigneeEmail === undefined) {
-        // The bz username is often the email address if an email isn't set.
-        assigneeEmail = bug.assigned_to_detail.name;
+    if (bug.assigned_to_detail.email === undefined) {
+        // HACK: The bz username is often the email address if one isn't set.
+        bug.assigned_to_detail.email = bug.assigned_to_detail.name;
     }
-    bzAssignees.set(assigneeEmail, bug.assigned_to_detail); // save for later
+    bzAssignees.set(bug.assigned_to_detail.email, bug.assigned_to_detail); // save for later
 }
 
 function createDeadlineElement(deadline) {
