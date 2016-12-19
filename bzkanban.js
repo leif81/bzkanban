@@ -639,7 +639,7 @@ function addCard(bug) {
             bugObject.severity = bug.severity;
             bugObject.resolution = bug.resolution;
             showBugModal(bugObject, bugObject);
-        }
+        };
     }
 
     var buglink = document.createElement('a');
@@ -650,7 +650,7 @@ function addCard(bug) {
         // On click follow href link.
         // And prevent event propagation up to card click handler, which would cause modal to be shown.
         ev.stopPropagation();
-    }
+    };
 
     var summary = document.createElement('div');
     summary.appendChild(document.createTextNode(bug.summary)); // so that we get HTML string escaping for free
@@ -863,7 +863,7 @@ function httpRequest(method, url, dataObj, successCallback, errorCallback) {
             url += "&";
         }
 
-        url += "token=" + bzAuthObject.userToken
+        url += "token=" + bzAuthObject.userToken;
     }
 
     xhr.open(method, bzSiteUrl + url);
@@ -891,12 +891,12 @@ function hideSpinner() {
 }
 
 function showNewBugButton() {
-    var btn = document.querySelector('#btnCreate')
+    var btn = document.querySelector('#btnCreate');
     btn.style.display = 'initial';
 }
 
 function hideNewBugButton() {
-    var btn = document.querySelector('#btnCreate')
+    var btn = document.querySelector('#btnCreate');
     btn.style.display = 'none';
 }
 
@@ -1310,7 +1310,7 @@ function showBugModal(bugCurrent, bugUpdate) {
         bugUpdate.resolution = resolutions.value;
         resolutions.onchange = function() {
             bugUpdate.resolution = resolutions.value;
-        }
+        };
 
         commentModalBody.appendChild(resolutionLabel);
     }
@@ -1342,7 +1342,7 @@ function showBugModal(bugCurrent, bugUpdate) {
         bugUpdate.priority = priorities.value;
         priorities.onchange = function() {
             bugUpdate.priority = priorities.value;
-        }
+        };
 
         commentModalBody.appendChild(priorityLabel);
 
@@ -1367,7 +1367,7 @@ function showBugModal(bugCurrent, bugUpdate) {
         bugUpdate.severity = severities.value;
         severities.onchange = function() {
             bugUpdate.severity = severities.value;
-        }
+        };
 
         commentModalBody.appendChild(severityLabel);
     }
@@ -1376,7 +1376,7 @@ function showBugModal(bugCurrent, bugUpdate) {
     commentBoxLabel.innerText = "Additional Comments";
 
     var commentBox = document.createElement("textarea");
-    commentBox.id = "commentBoxText"
+    commentBox.id = "commentBoxText";
 
     commentBoxLabel.appendChild(commentBox);
 
@@ -1388,7 +1388,7 @@ function showBugModal(bugCurrent, bugUpdate) {
         bugUpdate.comment.body = document.querySelector("#commentBoxText").value;
         hideBugModal();
         writeBug(bugUpdate);
-    }
+    };
 
     commentModalBody.appendChild(commentBoxLabel);
     commentModalBody.appendChild(submit);
