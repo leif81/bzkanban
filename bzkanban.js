@@ -1153,6 +1153,14 @@ function showNewBugModal() {
     modal.id = "modalNewBug";
     modal.className = "modal";
 
+    // When the user clicks anywhere outside of the modal, close it
+    modal.addEventListener("click", function(e) {
+        // This ensures only clicks outside the modal-content close the modal.
+        if (e.target == modal) {
+            hideBugModal();
+        }
+    });
+
     var content = document.createElement("div");
     content.className = "modal-content";
 
