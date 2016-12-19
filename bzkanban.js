@@ -726,9 +726,11 @@ function addCard(bug) {
     document.querySelector("#" + bug.status + " .cards").appendChild(card);
 
     var assigneeEmail = bug.assigned_to_detail.email;
-    if (assigneeEmail !== undefined) {
-        bzAssignees.set(assigneeEmail, bug.assigned_to_detail); // save for later
+    if (assigneeEmail === undefined) {
+        // The bz username is often the email address if an email isn't set.
+        assigneeEmail = bug.assigned_to_detail.name;
     }
+    bzAssignees.set(assigneeEmail, bug.assigned_to_detail); // save for later
 }
 
 function createDeadlineElement(deadline) {
