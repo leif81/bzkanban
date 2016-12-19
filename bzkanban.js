@@ -37,8 +37,15 @@ function initBzkanban() {
 }
 
 function loadParams() {
-    bzProduct = getURLParameter('product');
-    bzProductMilestone = getURLParameter('milestone');
+    var product = getURLParameter('product');
+    if (product !== null) {
+        bzProduct = product;
+    }
+
+    var milestone = getURLParameter('milestone');
+    if (milestone !== null) {
+        bzProductMilestone = milestone;
+    }
 
     var assignee = getURLParameter('assignee');
     if (assignee !== null) {
