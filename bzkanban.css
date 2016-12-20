@@ -272,9 +272,22 @@ body {
 label {
     margin-right: 3px;
 }
-select, textarea {
+select, textarea, input, button {
     padding: 3px;
     border-radius: 3px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: darkgrey;
+}
+input {
+    padding: 4px;
+}
+button {
+    padding: 5px;
+    background-color: #E2E4E6;
+}
+button:hover {
+    background-color: lightgrey;
 }
 #actions button,
 #actions span {
