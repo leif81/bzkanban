@@ -95,7 +95,6 @@ function initNav() {
 
     nav.appendChild(createSpinner());
     nav.appendChild(createActions());
-    nav.appendChild(createLoginForm());
 
     if (isLoggedIn()) {
         loadName();
@@ -259,7 +258,7 @@ function createActions() {
     login.id = "btnSignIn";
     login.innerText = "Login";
     login.addEventListener("click", function() {
-        showLoginForm();
+        showLoginModal();
     });
 
     var bell = document.createElement("i");
@@ -274,9 +273,12 @@ function createActions() {
     return actions;
 }
 
-function createLoginForm() {
-    var loginForm = document.createElement("form");
-    loginForm.id = "loginForm";
+function showLoginModal() {
+    var loginModal = createModal("loginModal");
+    var header = loginModal.querySelector(".modal-header");
+    var body = loginModal.querySelector(".modal-body");
+
+    header.appendChild(document.createTextNode("Please log in"));
 
     var usernameLabel = document.createElement("label");
     usernameLabel.innerText = "Username";
@@ -314,13 +316,14 @@ function createLoginForm() {
         var user = document.getElementById("textUsername").value;
         var password = document.getElementById("textPassword").value;
         doAuth(user, password);
+        hideModal();
     });
 
-    loginForm.appendChild(usernameLabel);
-    loginForm.appendChild(passwordLabel);
-    loginForm.appendChild(submit);
+    body.appendChild(usernameLabel);
+    body.appendChild(passwordLabel);
+    body.appendChild(submit);
 
-    return loginForm;
+    document.querySelector(bzDomElement).appendChild(loginModal);
 }
 
 
@@ -904,11 +907,11 @@ function hideNewBugButton() {
 
 function doAuth(user, password) {
     showSpinner();
-    hideLoginForm();
     httpGet("/rest.cgi/login?login=" + user + "&password=" + password, function(response) {
         bzAuthObject = { 'userID': response.id, 'userToken': response.token };
         localStorage.setItem(bzSiteUrl, JSON.stringify(bzAuthObject));
         loadName();
+        hideSignInButton();
         // Rebuild the board so dnd events are registered.
         removeBoard();
         initBoard();
@@ -921,17 +924,6 @@ function doAuth(user, password) {
 
 function isLoggedIn() {
     return bzAuthObject !== null;
-}
-
-function showLoginForm() {
-    var elem = document.getElementById("loginForm");
-    elem.style.display = "inline-block";
-    hideSignInButton();
-}
-
-function hideLoginForm() {
-    var elem = document.getElementById("loginForm");
-    elem.style.display = "none";
 }
 
 function showSignInButton() {

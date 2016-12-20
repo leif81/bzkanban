@@ -160,15 +160,6 @@ body {
 #query span {
     margin-right: 15px;
 }
-#loginForm {
-    display: none;
-    font-size: small;
-    margin-bottom: 0;
-    padding-left: 15px;
-}
-#loginForm input {
-    margin-left: 3px;
-}
 #whoami {
     font-size: small;
 }
