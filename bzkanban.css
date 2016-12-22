@@ -280,6 +280,12 @@ button {
 button:hover {
     background-color: lightgrey;
 }
+a {
+    color: grey;
+}
+a:hover {
+    color: lightgrey;
+}
 #actions button,
 #actions span {
     margin-left: 5px;
