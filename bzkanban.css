@@ -87,6 +87,7 @@ body {
 }
 .card-meta .assignee img#picture {
     margin-left: 5px;
+    border-radius: 10px;
 }
 .card-meta #icons {
 }
