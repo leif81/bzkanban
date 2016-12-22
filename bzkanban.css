@@ -70,7 +70,6 @@ body {
 .card-meta {
     font-size: smaller;
     color: grey;
-    padding: 1px;
     margin-top: 10px;
     display: flex;
     flex-direction: row;
