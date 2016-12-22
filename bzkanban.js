@@ -1113,7 +1113,7 @@ function getPictureSrc(email) {
     var hashString = hash.toString(CryptoJS.enc.Base64);
 
     if (hashString !== "") {
-        return ('https://www.gravatar.com/avatar/' + hashString + '?s=20&d=blank');
+        return ('https://www.gravatar.com/avatar/' + hashString + '?s=20&d=identicon');
     }
 }
 
