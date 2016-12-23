@@ -347,7 +347,8 @@ function loadBugs() {
         var bugs = response.bugs;
 
         bugs.forEach(function(bug) {
-            addCard(bug);
+            var card = createCard(bug);
+            document.querySelector("#" + bug.status + " .cards").appendChild(card);
         });
 
         showColumnCounts();
@@ -622,7 +623,7 @@ function addBoardColumn(status) {
     document.getElementById("board").appendChild(div);
 }
 
-function addCard(bug) {
+function createCard(bug) {
     var card = document.createElement('div');
     card.className = "card";
     card.dataset.bugId = bug.id;
@@ -717,13 +718,13 @@ function addCard(bug) {
         loadComments(bug);
     }
 
-    document.querySelector("#" + bug.status + " .cards").appendChild(card);
-
     if (bug.assigned_to_detail.email === undefined) {
         // HACK: The bz username is often the email address if one isn't set.
         bug.assigned_to_detail.email = bug.assigned_to_detail.name;
     }
     bzAssignees.set(bug.assigned_to_detail.email, bug.assigned_to_detail); // save for later
+
+    return card;
 }
 
 function createDeadlineElement(deadline) {
