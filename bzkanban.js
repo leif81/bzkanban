@@ -167,7 +167,6 @@ function createQueryFields() {
 
         // Clear affected state.
         bzAssignedTo = "";
-        clearAssigneesList();
         showNewBugButton();
 
         // Hot load the board without a form submit.
@@ -329,6 +328,7 @@ function showLoginModal() {
 
 function loadBoard() {
     showSpinner();
+    clearAssigneesList();
     clearCards();
     loadBugs();
 }
