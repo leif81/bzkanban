@@ -1077,20 +1077,6 @@ function dropBacklog(ev) {
     }
 }
 
-function showCards(elem) {
-    var cards = elem.querySelectorAll(".card");
-    cards.forEach(function(card) {
-        card.style.display = "block";
-    });
-}
-
-function hideCards(elem) {
-    var cards = elem.querySelectorAll(".card");
-    cards.forEach(function(card) {
-        card.style.display = "none";
-    });
-}
-
 function showBacklog() {
     document.getElementById("textBacklog").style.display = "inline-block";
 }
