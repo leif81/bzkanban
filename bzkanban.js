@@ -910,11 +910,8 @@ function doAuth(user, password) {
     httpGet("/rest.cgi/login?login=" + user + "&password=" + password, function(response) {
         bzAuthObject = { 'userID': response.id, 'userToken': response.token };
         localStorage.setItem(bzSiteUrl, JSON.stringify(bzAuthObject));
-        loadName();
-        hideSignInButton();
-        // Rebuild the board so dnd events are registered.
-        removeBoard();
-        initBoard();
+        // force page refresh to rebuild entire page state based on users privelges.
+        location.reload();
     }, function(error) {
         // Login failed.
         showSignInButton();
