@@ -844,8 +844,7 @@ function httpRequest(method, url, dataObj, successCallback, errorCallback) {
                 switch (obj.code) {
                     case 32000:
                         // auth token has expired
-                        localStorage.removeItem(bzSiteUrl);
-                        showSignInButton();
+                        signOut();
                         break;
                 }
 
@@ -925,6 +924,11 @@ function doAuth(user, password) {
 
 function isLoggedIn() {
     return bzAuthObject !== null;
+}
+
+function signOut() {
+    localStorage.removeItem(bzSiteUrl);
+    showSignInButton();
 }
 
 function showSignInButton() {
