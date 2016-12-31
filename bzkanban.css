@@ -260,6 +260,15 @@ body {
 .modal-footer button {
     align-self: flex-end;
 }
+.bug-description {
+    border-style: solid;
+    border-color: darkgrey;
+    border-width: thin;
+    border-radius: 3px;
+    padding: 7px;
+    font-weight: normal;
+    font-size: small;
+}
 select, textarea, input, button {
     padding: 3px;
     border-radius: 3px;

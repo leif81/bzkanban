@@ -1298,7 +1298,18 @@ function showBugModal(bugCurrent, bugUpdate) {
     // Card was clicked
     if (bugCurrent.status === bugUpdate.status) {
 
-        // TODO show bug description?
+        // Description field
+        var descriptionLabel = document.createElement("label");
+        descriptionLabel.innerText = "Description";
+        var description = document.createElement("div");
+        description.className = "bug-description";
+        httpGet("/rest/bug/" + bugCurrent.id + "/comment?include_fields=text", function(response) {
+            var comment0 = response.bugs[bugCurrent.id].comments[0].text;
+            description.innerText = comment0;
+        });
+        descriptionLabel.appendChild(description);
+        body.appendChild(descriptionLabel);
+
         // TODO show bug comments?
 
         // Priority field.
