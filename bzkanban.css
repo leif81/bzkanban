@@ -254,6 +254,7 @@ body {
 }
 .modal-body label {
     margin-top: 10px;
+    font-weight: bold;
 }
 .modal-body ul {
     margin: 0px;
