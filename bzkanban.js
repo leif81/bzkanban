@@ -1150,8 +1150,12 @@ function createModal(elementId) {
     var body = document.createElement("div");
     body.className = "modal-body";
 
+    var footer = document.createElement("div");
+    footer.className = "modal-footer";
+
     content.appendChild(header);
     content.appendChild(body);
+    content.appendChild(footer);
     modal.appendChild(content);
 
     return modal;
@@ -1161,6 +1165,7 @@ function showNewBugModal() {
     var modal = createModal("modalNewBug");
     var header = modal.querySelector(".modal-header");
     var body = modal.querySelector(".modal-body");
+    var footer = modal.querySelector(".modal-footer");
 
     var title = document.createTextNode("Add new bug to milestone " + bzProductMilestone);
     header.appendChild(title);
@@ -1225,7 +1230,8 @@ function showNewBugModal() {
     body.appendChild(descriptionLabel);
     body.appendChild(componentLabel);
     body.appendChild(versionLabel);
-    body.appendChild(submit);
+
+    footer.appendChild(submit);
 
     bzProductComponents.forEach(function(component) {
         var opt = document.createElement('option');
@@ -1248,6 +1254,7 @@ function showBugModal(bugCurrent, bugUpdate) {
     var modal = createModal("modalBug");
     var body = modal.querySelector(".modal-body");
     var header = modal.querySelector(".modal-header");
+    var footer = modal.querySelector(".modal-footer");
 
     var card = document.querySelector(".card[data-bug-id='" + bugCurrent.id + "']");
     var bugTitle = card.querySelector(".card-summary").innerText;
@@ -1364,7 +1371,8 @@ function showBugModal(bugCurrent, bugUpdate) {
     };
 
     body.appendChild(commentBoxLabel);
-    body.appendChild(submit);
+
+    footer.appendChild(submit);
 
     document.querySelector(bzDomElement).appendChild(modal);
 }

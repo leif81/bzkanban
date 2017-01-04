@@ -235,7 +235,8 @@ body {
     align-self: stretch;
     font-size: x-large;
 }
-.modal-body {
+.modal-body,
+.modal-footer {
     display: flex;
     padding: 15px;
     flex-direction: column;
@@ -244,9 +245,6 @@ body {
 .modal-body input,
 .modal-body select {
     width: 100%;
-}
-.modal-body button {
-    align-self: flex-end;
 }
 .modal-body textarea {
     width: 100%;
@@ -259,8 +257,8 @@ body {
 .modal-body ul {
     margin: 0px;
 }
-.modal-body button {
-    margin-top: 5px;
+.modal-footer button {
+    align-self: flex-end;
 }
 select, textarea, input, button {
     padding: 3px;
