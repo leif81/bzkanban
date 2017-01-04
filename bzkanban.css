@@ -260,6 +260,14 @@ body {
 .modal-footer button {
     align-self: flex-end;
 }
+.bug-comments {
+    display: flex;
+    flex-direction: column;
+}
+.bug-meta {
+    display: flex;
+    flex-direction: column;
+}
 .bug-description {
     border-style: solid;
     border-color: darkgrey;

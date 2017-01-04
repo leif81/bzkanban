@@ -1170,6 +1170,12 @@ function showNewBugModal() {
     var title = document.createTextNode("Add new bug to milestone " + bzProductMilestone);
     header.appendChild(title);
 
+    var comments = document.createElement('div');
+    comments.className = 'bug-comments';
+
+    var meta = document.createElement('div');
+    meta.className = 'bug-meta';
+
     var summaryLabel = document.createElement("label");
     summaryLabel.innerText = "Summary";
     var summary = document.createElement("input");
@@ -1226,10 +1232,13 @@ function showNewBugModal() {
         hideModal();
     };
 
-    body.appendChild(summaryLabel);
-    body.appendChild(descriptionLabel);
-    body.appendChild(componentLabel);
-    body.appendChild(versionLabel);
+    comments.appendChild(summaryLabel);
+    comments.appendChild(descriptionLabel);
+    meta.appendChild(componentLabel);
+    meta.appendChild(versionLabel);
+
+    body.appendChild(comments);
+    body.appendChild(meta);
 
     footer.appendChild(submit);
 
@@ -1267,6 +1276,15 @@ function showBugModal(bugCurrent, bugUpdate) {
         console.log("Bug " + bugCurrent.id + " moved from " + bugCurrent.status + " to " + bugUpdate.status);
     }
 
+    var comments = document.createElement('div');
+    comments.className = 'bug-comments';
+
+    var meta = document.createElement('div');
+    meta.className = 'bug-meta';
+
+    body.appendChild(comments);
+    body.appendChild(meta);
+
     // TODO replace hard coded column name somehow.
     if (bugUpdate.status === "RESOLVED") {
         //  Resolution field.
@@ -1292,7 +1310,7 @@ function showBugModal(bugCurrent, bugUpdate) {
             bugUpdate.resolution = resolutions.value;
         };
 
-        body.appendChild(resolutionLabel);
+        meta.appendChild(resolutionLabel);
     }
 
     // Card was clicked
@@ -1308,7 +1326,7 @@ function showBugModal(bugCurrent, bugUpdate) {
             description.innerText = comment0;
         });
         descriptionLabel.appendChild(description);
-        body.appendChild(descriptionLabel);
+        comments.appendChild(descriptionLabel);
 
         // TODO show bug comments?
 
@@ -1335,7 +1353,7 @@ function showBugModal(bugCurrent, bugUpdate) {
             bugUpdate.priority = priorities.value;
         };
 
-        body.appendChild(priorityLabel);
+        meta.appendChild(priorityLabel);
 
         // Severity field.
         var severityLabel = document.createElement("label");
@@ -1360,7 +1378,7 @@ function showBugModal(bugCurrent, bugUpdate) {
             bugUpdate.severity = severities.value;
         };
 
-        body.appendChild(severityLabel);
+        meta.appendChild(severityLabel);
     }
 
     var commentBoxLabel = document.createElement("label");
@@ -1381,7 +1399,7 @@ function showBugModal(bugCurrent, bugUpdate) {
         writeBug(bugUpdate);
     };
 
-    body.appendChild(commentBoxLabel);
+    comments.appendChild(commentBoxLabel);
 
     footer.appendChild(submit);
 
