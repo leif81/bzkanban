@@ -10,6 +10,8 @@ var bzLoadComments = false;
 var bzCheckForUpdates = true;
 var bzAutoRefresh = false;
 var bzDomElement = "#bzkanban";
+var backlogTitle = "BACKLOG";
+var backlogSearch = "&target_milestone=---&bug_status=UNCONFIRMED&bug_status=CONFIRMED";
 
 // "Private" global variables. Do not touch.
 var bzProduct = "";
@@ -88,6 +90,7 @@ function initNav() {
 
     nav.appendChild(createQueryFields());
     if (bzAllowEditBugs) {
+        nav.appendChild(createBacklogButton());
         nav.appendChild(createBacklogTarget());
     }
 
@@ -226,6 +229,27 @@ function createBacklogTarget() {
     return backlog;
 }
 
+function createBacklogButton() {
+    var backlogShowButton = document.createElement("button");
+    backlogShowButton.id = "btnShow" + backlogTitle;
+    backlogShowButton.innerText = "Show Backlog";
+    backlogShowButton.toggle = false;
+    backlogShowButton.addEventListener("click", function() {
+        var button = document.getElementById("btnShow" + backlogTitle);
+        if (!button.toggle) {
+            document.querySelector("#" + backlogTitle + ".board-column").style.display = null;
+            button.innerText = "Hide Backlog";
+            button.toggle = true;
+        } else {
+            document.querySelector("#" + backlogTitle + ".board-column").style.display = "none";
+            button.innerText = "Show Backlog";
+            button.toggle = false;
+        }
+    });
+
+    return backlogShowButton;
+}
+
 function createSpinner() {
     var spinner = document.createElement("span");
     spinner.id = "spinner";
@@ -336,6 +360,7 @@ function loadBoard() {
     clearAssigneesList();
     clearCards();
     loadBugs();
+    loadBacklogCards(backlogTitle);
 }
 
 function loadBugs() {
@@ -443,7 +468,7 @@ function loadColumns() {
     httpGet("/rest.cgi/field/bug/status/values", function(response) {
         var statuses = response.values;
         statuses.forEach(function(status) {
-            addBoardColumn(status);
+            addBoardColumn(status, "after");
         });
         updateUnconfirmedColumnVisibilty();
 
@@ -597,7 +622,7 @@ function loadDefaultMilestone() {
     });
 }
 
-function addBoardColumn(status) {
+function addBoardColumn(status, direction) {
     var div = document.createElement('div');
     div.className = "board-column";
     div.id = status;
@@ -623,7 +648,13 @@ function addBoardColumn(status) {
     cards.className = "cards";
     content.appendChild(cards);
 
-    document.getElementById("board").appendChild(div);
+    if (direction === "after") {
+        document.getElementById("board").appendChild(div);
+    }
+    if (direction === "before") {
+        var board = document.getElementById("board");
+        board.insertBefore(div, board.childNodes[0]);
+    }
 }
 
 function createCard(bug) {
@@ -1100,6 +1131,19 @@ function showBacklog() {
 
 function hideBacklog() {
     document.getElementById("textBacklog").style.display = "none";
+}
+
+function loadBacklogCards(column) {
+    httpGet("/rest.cgi/bug?product=" + bzProduct + backlogSearch, function(response) {
+        addBoardColumn(column, "before");
+        document.querySelector("#" + backlogTitle + ".board-column").style.display = "none";
+        var bugs = response.bugs;
+
+        bugs.forEach(function(bug) {
+            var card = createCard(bug);
+            document.querySelector("#" + column + " .cards").appendChild(card);
+        });
+    });
 }
 
 function isTrue(string) {
