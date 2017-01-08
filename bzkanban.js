@@ -472,9 +472,13 @@ function loadProductInfo() {
 
 function loadColumns() {
     httpGet("/rest.cgi/field/bug/status/values", function(response) {
+        // Always add a backlog as first column
+        var backlog = addBoardColumn(backlogTitle);
+        backlog.style.display = 'none';
+
         var statuses = response.values;
         statuses.forEach(function(status) {
-            addBoardColumn(status, "after");
+            addBoardColumn(status);
         });
         updateUnconfirmedColumnVisibilty();
 
@@ -628,7 +632,7 @@ function loadDefaultMilestone() {
     });
 }
 
-function addBoardColumn(status, direction) {
+function addBoardColumn(status) {
     var div = document.createElement('div');
     div.className = "board-column";
     div.id = status;
@@ -654,13 +658,9 @@ function addBoardColumn(status, direction) {
     cards.className = "cards";
     content.appendChild(cards);
 
-    if (direction === "after") {
-        document.getElementById("board").appendChild(div);
-    }
-    if (direction === "before") {
-        var board = document.getElementById("board");
-        board.insertBefore(div, board.childNodes[0]);
-    }
+    document.getElementById("board").appendChild(div);
+
+    return div;
 }
 
 function createCard(bug) {
