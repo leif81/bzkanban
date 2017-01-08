@@ -234,11 +234,16 @@ function createBacklogButton() {
     backlogShowButton.id = "btnShow" + backlogTitle;
     backlogShowButton.innerText = "Show Backlog";
     backlogShowButton.toggle = false;
-    backlogShowButton.style.display = "none";
     backlogShowButton.addEventListener("click", function() {
         var button = document.getElementById("btnShow" + backlogTitle);
         var backlogCol = document.querySelector("#" + backlogTitle + ".board-column");
         if (!button.toggle) {
+            // Load backlog on first access.
+            var backlog = backlogCol.querySelector(".cards");
+            if (backlog.children.length == 0) {
+                loadBacklogCards();
+            }
+
             backlogCol.style.display = null;
             button.innerText = "Hide Backlog";
             button.toggle = true;
@@ -362,7 +367,6 @@ function loadBoard() {
     clearAssigneesList();
     clearCards();
     loadBugs();
-    loadBacklogCards(backlogTitle);
 }
 
 function loadBugs() {
@@ -1135,11 +1139,8 @@ function hideBacklog() {
     document.getElementById("textBacklog").style.display = "none";
 }
 
-function loadBacklogCards(column) {
+function loadBacklogCards() {
     httpGet("/rest.cgi/bug?product=" + bzProduct + backlogSearch, function(response) {
-        addBoardColumn(column, "before");
-        document.getElementById("btnShow" + column).style.display = null;
-        document.querySelector("#" + backlogTitle + ".board-column").style.display = "none";
         var bugs = response.bugs;
         var backlogCards = document.querySelector("#" + backlogTitle + " .cards");
 
