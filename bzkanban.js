@@ -233,11 +233,10 @@ function createBacklogButton() {
     var backlogShowButton = document.createElement("button");
     backlogShowButton.id = "btnShow" + backlogTitle;
     backlogShowButton.innerText = "Show Backlog";
-    backlogShowButton.toggle = false;
     backlogShowButton.addEventListener("click", function() {
         var button = document.getElementById("btnShow" + backlogTitle);
         var backlogCol = document.querySelector("#" + backlogTitle + ".board-column");
-        if (!button.toggle) {
+        if (backlogCol.style.display === "none") {
             // Load backlog on first access.
             var backlog = backlogCol.querySelector(".cards");
             if (backlog.children.length == 0) {
@@ -246,11 +245,9 @@ function createBacklogButton() {
 
             backlogCol.style.display = null;
             button.innerText = "Hide Backlog";
-            button.toggle = true;
         } else {
             backlogCol.style.display = "none";
             button.innerText = "Show Backlog";
-            button.toggle = false;
         }
     });
 
