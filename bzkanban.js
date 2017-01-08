@@ -1,3 +1,5 @@
+'use strict';
+
 // Configuration options.
 var bzSiteUrl = "http://bugzilla.msec.local";
 var bzOrder = "priority,bug_severity,assigned_to";
