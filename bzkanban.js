@@ -234,6 +234,7 @@ function createBacklogButton() {
     backlogShowButton.id = "btnShow" + backlogTitle;
     backlogShowButton.innerText = "Show Backlog";
     backlogShowButton.toggle = false;
+    backlogShowButton.style.display = "none";
     backlogShowButton.addEventListener("click", function() {
         var button = document.getElementById("btnShow" + backlogTitle);
         if (!button.toggle) {
@@ -1136,6 +1137,7 @@ function hideBacklog() {
 function loadBacklogCards(column) {
     httpGet("/rest.cgi/bug?product=" + bzProduct + backlogSearch, function(response) {
         addBoardColumn(column, "before");
+        document.getElementById("btnShow" + column).style.display = null;
         document.querySelector("#" + backlogTitle + ".board-column").style.display = "none";
         var bugs = response.bugs;
 
