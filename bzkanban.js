@@ -1140,7 +1140,9 @@ function hideBacklog() {
 }
 
 function loadBacklogCards() {
+    showSpinner();
     httpGet("/rest.cgi/bug?product=" + bzProduct + backlogSearch, function(response) {
+        hideSpinner();
         var bugs = response.bugs;
         var backlogCards = document.querySelector("#" + backlogTitle + " .cards");
 
