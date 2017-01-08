@@ -1141,10 +1141,11 @@ function loadBacklogCards(column) {
         document.getElementById("btnShow" + column).style.display = null;
         document.querySelector("#" + backlogTitle + ".board-column").style.display = "none";
         var bugs = response.bugs;
+        var backlogCards = document.querySelector("#" + backlogTitle + " .cards");
 
         bugs.forEach(function(bug) {
             var card = createCard(bug);
-            document.querySelector("#" + column + " .cards").appendChild(card);
+            backlogCards.appendChild(card);
         });
     });
 }
