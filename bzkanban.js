@@ -237,12 +237,13 @@ function createBacklogButton() {
     backlogShowButton.style.display = "none";
     backlogShowButton.addEventListener("click", function() {
         var button = document.getElementById("btnShow" + backlogTitle);
+        var backlogCol = document.querySelector("#" + backlogTitle + ".board-column");
         if (!button.toggle) {
-            document.querySelector("#" + backlogTitle + ".board-column").style.display = null;
+            backlogCol.style.display = null;
             button.innerText = "Hide Backlog";
             button.toggle = true;
         } else {
-            document.querySelector("#" + backlogTitle + ".board-column").style.display = "none";
+            backlogCol.style.display = "none";
             button.innerText = "Show Backlog";
             button.toggle = false;
         }
