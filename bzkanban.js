@@ -1147,6 +1147,9 @@ function loadBacklogCards() {
             var card = createCard(bug);
             backlogCards.appendChild(card);
         });
+
+        // force a recount now that we have a new column.
+        showColumnCounts();
     });
 }
 
