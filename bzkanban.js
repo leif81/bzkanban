@@ -1098,6 +1098,7 @@ function dropCard(ev) {
     var bugUpdate = {};
     bugUpdate.id = bugCurrent.id;
     bugUpdate.status = ev.currentTarget.id;
+    bugUpdate.target_milestone = bzProductMilestone;
 
     ev.target.classList.remove("drop-target-hover");
 
