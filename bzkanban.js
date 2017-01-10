@@ -844,7 +844,7 @@ function httpRequest(method, url, dataObj, successCallback, errorCallback) {
             if (obj.error !== null) {
                 hideSpinner();
                 switch (obj.code) {
-                    case 32000:
+                    case "32000":
                         // auth token has expired
                         signOut();
                         break;
