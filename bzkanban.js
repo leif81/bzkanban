@@ -875,6 +875,7 @@ function httpRequest(method, url, dataObj, successCallback, errorCallback) {
 
     xhr.open(method, bzSiteUrl + url);
     xhr.setRequestHeader("Accept", "application/json");
+    xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send(JSON.stringify(dataObj));
 }
 
