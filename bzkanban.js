@@ -10,8 +10,7 @@ var bzLoadComments = false;
 var bzCheckForUpdates = true;
 var bzAutoRefresh = false;
 var bzDomElement = "#bzkanban";
-var backlogTitle = "BACKLOG";
-var backlogSearch = "&target_milestone=---&bug_status=UNCONFIRMED&bug_status=CONFIRMED";
+var bzBacklogSearch = "&target_milestone=---&bug_status=UNCONFIRMED&bug_status=CONFIRMED";
 
 // "Private" global variables. Do not touch.
 var bzProduct = "";
@@ -231,11 +230,11 @@ function createBacklogTarget() {
 
 function createBacklogButton() {
     var backlogShowButton = document.createElement("button");
-    backlogShowButton.id = "btnShow" + backlogTitle;
+    backlogShowButton.id = "btnShowBacklog";
     backlogShowButton.innerText = "Show Backlog";
     backlogShowButton.addEventListener("click", function() {
-        var button = document.getElementById("btnShow" + backlogTitle);
-        var backlogCol = document.querySelector("#" + backlogTitle + ".board-column");
+        var button = document.getElementById("btnShowBacklog");
+        var backlogCol = document.querySelector("#BACKLOG.board-column");
         if (backlogCol.style.display === "none") {
             // Load backlog on first access.
             var backlog = backlogCol.querySelector(".cards");
@@ -470,7 +469,7 @@ function loadProductInfo() {
 function loadColumns() {
     httpGet("/rest.cgi/field/bug/status/values", function(response) {
         // Always add a backlog as first column
-        var backlog = addBoardColumn(backlogTitle);
+        var backlog = addBoardColumn("BACKLOG");
         backlog.style.display = 'none';
 
         var statuses = response.values;
@@ -1139,10 +1138,10 @@ function hideBacklog() {
 
 function loadBacklogCards() {
     showSpinner();
-    httpGet("/rest.cgi/bug?product=" + bzProduct + backlogSearch, function(response) {
+    httpGet("/rest.cgi/bug?product=" + bzProduct + bzBacklogSearch, function(response) {
         hideSpinner();
         var bugs = response.bugs;
-        var backlogCards = document.querySelector("#" + backlogTitle + " .cards");
+        var backlogCards = document.querySelector("#BACKLOG" + " .cards");
 
         bugs.forEach(function(bug) {
             var card = createCard(bug);
