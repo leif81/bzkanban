@@ -10,7 +10,7 @@ var bzLoadComments = false;
 var bzCheckForUpdates = true;
 var bzAutoRefresh = false;
 var bzDomElement = "#bzkanban";
-var bzBacklogSearch = "&target_milestone=---&bug_status=UNCONFIRMED&bug_status=CONFIRMED";
+var bzBacklogSearch = "&target_milestone=---&resolution=---";
 
 // "Private" global variables. Do not touch.
 var bzProduct = "";
