@@ -218,7 +218,12 @@ function createBacklogButton() {
     backlogShowButton.id = "btnShowBacklog";
     backlogShowButton.innerText = "Show Backlog";
     backlogShowButton.addEventListener("click", function() {
-        toggleBacklog();
+        var backlogCol = document.querySelector("#BACKLOG.board-column");
+        if (backlogCol.style.display === "none") {
+            showBacklog();
+        } else {
+            hideBacklog();
+        }
     });
 
     return backlogShowButton;
@@ -1097,15 +1102,6 @@ function dropBacklog(ev, bugCurrent) {
         showBugModal(bugCurrent, bugUpdate);
     } else {
         writeBug(bugUpdate);
-    }
-}
-
-function toggleBacklog() {
-    var backlogCol = document.querySelector("#BACKLOG.board-column");
-    if (backlogCol.style.display === "none") {
-        showBacklog();
-    } else {
-        hideBacklog();
     }
 }
 
