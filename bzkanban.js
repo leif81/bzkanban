@@ -648,6 +648,7 @@ function createCard(bug) {
 
     var buglink = document.createElement('a');
     buglink.href= bzSiteUrl + "/show_bug.cgi?id=" + bug.id;
+    buglink.target = "_blank"; // open in new tab
     buglink.innerHTML = "#" + bug.id;
     buglink.className = "card-ref";
     buglink.onclick = function(ev) {
