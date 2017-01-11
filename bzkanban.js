@@ -88,9 +88,6 @@ function initNav() {
     document.querySelector(bzDomElement).appendChild(nav);
 
     nav.appendChild(createQueryFields());
-    if (bzAllowEditBugs) {
-        nav.appendChild(createBacklogButton());
-    }
 
     var spring = document.createElement("span");
     spring.className = "spring";
@@ -219,6 +216,10 @@ function createBacklogButton() {
     backlogShowButton.innerText = "Show Backlog";
     backlogShowButton.addEventListener("click", function() {
         var backlogCol = document.querySelector("#BACKLOG.board-column");
+        if (bzProduct === "") {
+            alert ("Select a product first");
+            return;
+        }
         if (backlogCol.style.display === "none") {
             showBacklog();
         } else {
@@ -271,6 +272,7 @@ function createActions() {
     bell.id = "notification";
     bell.className = "fa fa-bell";
 
+    actions.appendChild(createBacklogButton());
     actions.appendChild(newbug);
     actions.appendChild(whoami);
     actions.appendChild(login);
