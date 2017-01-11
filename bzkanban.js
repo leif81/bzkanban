@@ -349,8 +349,9 @@ function loadBugs() {
         var bugs = response.bugs;
 
         bugs.forEach(function(bug) {
+            var colTitle = ifSpaces(bug.status);
             var card = createCard(bug);
-            document.querySelector("#" + bug.status + " .cards").appendChild(card);
+            document.querySelector("#" + colTitle + " .cards").appendChild(card);
         });
 
         showColumnCounts();
@@ -598,8 +599,9 @@ function loadDefaultMilestone() {
 
 function addBoardColumn(status) {
     var div = document.createElement('div');
+    var label = ifSpaces(status);
     div.className = "board-column";
-    div.id = status;
+    div.id = label;
     if (isLoggedIn() && bzAllowEditBugs) {
         div.addEventListener('drag', dragCardStart);
         div.addEventListener('dragend', dragCardEnd);
@@ -1412,6 +1414,16 @@ function hideModal() {
     var modal = document.querySelector('.modal');
     if (modal !== null) {
         modal.remove();
+    }
+}
+
+function ifSpaces(text) {
+    var test = text.indexOf(' ');
+    if (test > 0) {
+        var a = text.replace(/\ /g, "_");
+        return a;
+    } else {
+        return text;
     }
 }
 
