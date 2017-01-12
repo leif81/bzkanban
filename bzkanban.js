@@ -216,12 +216,11 @@ function createBacklogButton() {
     backlogShowButton.id = "btnShowBacklog";
     backlogShowButton.innerText = "Show Backlog";
     backlogShowButton.addEventListener("click", function() {
-        var backlogCol = document.querySelector("#BACKLOG.board-column");
         if (bzProduct === "") {
             alert ("Select a product first");
             return;
         }
-        if (backlogCol.style.display === "none") {
+        if (!isBacklogVisible()) {
             showBacklog();
         } else {
             hideBacklog();
@@ -342,6 +341,9 @@ function loadBoard() {
     clearAssigneesList();
     clearCards();
     loadBugs();
+    if (isBacklogVisible()) {
+        loadBacklogCards();
+    }
 }
 
 function loadBugs() {
@@ -1094,10 +1096,10 @@ function showBacklog() {
     var button = document.getElementById("btnShowBacklog");
     var backlogCol = document.querySelector("#BACKLOG.board-column");
 
-    if (backlogCol.style.display === "none") {
-        // Load backlog on first access.
+    if (!isBacklogVisible()) {
         var backlog = backlogCol.querySelector(".cards");
         if (backlog.children.length == 0) {
+            // Load backlog on first access.
             loadBacklogCards();
         }
 
@@ -1110,13 +1112,22 @@ function hideBacklog() {
     var button = document.getElementById("btnShowBacklog");
     var backlogCol = document.querySelector("#BACKLOG.board-column");
 
-    if (backlogCol.style.display === "" || null) {
+    if (isBacklogVisible()) {
         var backlog = backlogCol.querySelector(".cards");
         backlogCol.style.display = "none";
         button.innerText = "Show Backlog";
     }
 }
 
+function isBacklogVisible() {
+    var backlogCol = document.querySelector("#BACKLOG.board-column");
+
+    if (backlogCol.style.display === "") {
+        return true;
+    } else {
+        return false;
+    }
+}
 function loadBacklogCards() {
     showSpinner();
     bzRestGetBacklogUrl = "/rest.cgi/bug?product=" + bzProduct;
