@@ -10,7 +10,6 @@ var bzLoadComments = false;
 var bzCheckForUpdates = true;
 var bzAutoRefresh = false;
 var bzDomElement = "#bzkanban";
-var bzBacklogSearch = "&target_milestone=---&resolution=---";
 var bzBacklogDefaultStatus = "CONFIRMED";
 
 // "Private" global variables. Do not touch.
@@ -23,6 +22,7 @@ var bzUserFullName = "";
 var bzProductHasUnconfirmed = false;
 var bzBoardLoadTime = "";
 var bzRestGetBugsUrl = "";
+var bzRestGetBacklogUrl = "";
 var bzAssignees = new Map();
 var bzProductComponents;
 var bzProductVersions;
@@ -1120,7 +1120,15 @@ function hideBacklog() {
 
 function loadBacklogCards() {
     showSpinner();
-    httpGet("/rest.cgi/bug?product=" + bzProduct + bzBacklogSearch, function(response) {
+    bzRestGetBacklogUrl = "/rest.cgi/bug?product=" + bzProduct;
+    bzRestGetBacklogUrl += "&include_fields=summary,status,id,severity,priority,assigned_to,last_updated,deadline";
+    bzRestGetBacklogUrl += "&order=" + bzOrder;
+    bzRestGetBacklogUrl += "&target_milestone=---";
+    bzRestGetBacklogUrl += "&resolution=---";
+    bzRestGetBacklogUrl += "&component=" + bzComponent;
+    bzRestGetBacklogUrl += "&priority=" + bzPriority;
+
+    httpGet(bzRestGetBacklogUrl, function(response) {
         hideSpinner();
         var bugs = response.bugs;
         var backlogCards = document.querySelector("#BACKLOG" + " .cards");
