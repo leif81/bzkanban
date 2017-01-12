@@ -342,7 +342,6 @@ function loadBoard() {
     clearAssigneesList();
     clearCards();
     loadBugs();
-    loadBacklogCards();
 }
 
 function loadBugs() {
