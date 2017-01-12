@@ -1095,7 +1095,7 @@ function showBacklog() {
     var button = document.getElementById("btnShowBacklog");
     var backlogCol = document.querySelector("#BACKLOG.board-column");
 
-    if (backlogCol.style.display === "none" || null) {
+    if (backlogCol.style.display === "none") {
         // Load backlog on first access.
         var backlog = backlogCol.querySelector(".cards");
         if (backlog.children.length == 0) {
