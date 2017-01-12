@@ -1069,35 +1069,17 @@ function dropCard(ev) {
     ev.preventDefault();
 
     var bugCurrent = JSON.parse(ev.dataTransfer.getData("text"));
+
+    var bugUpdate = {};
+    bugUpdate.id = bugCurrent.id;
     if (ev.currentTarget.id === "BACKLOG") {
-        dropBacklog(ev, bugCurrent);
-        return;
-    }
-
-    var bugUpdate = {};
-    bugUpdate.id = bugCurrent.id;
-    bugUpdate.status = ev.currentTarget.id;
-    bugUpdate.target_milestone = bzProductMilestone;
-
-    ev.target.classList.remove("drop-target-hover");
-
-    if (bzAddCommentOnChange) {
-        showBugModal(bugCurrent, bugUpdate);
+        bugUpdate.status = bzBacklogDefaultStatus;
+        bugUpdate.target_milestone = "---";
+        bugUpdate.priority = bzDefaultPriority;
     } else {
-        writeBug(bugUpdate);
+        bugUpdate.status = ev.currentTarget.id;
+        bugUpdate.target_milestone = bzProductMilestone;
     }
-}
-
-function dropBacklog(ev, bugCurrent) {
-//    ev.preventDefault();
-
-//    var bugCurrent = JSON.parse(ev.dataTransfer.getData("text"));
-
-    var bugUpdate = {};
-    bugUpdate.id = bugCurrent.id;
-    bugUpdate.status = bzBacklogDefaultStatus;
-    bugUpdate.target_milestone = "---";
-    bugUpdate.priority = bzDefaultPriority;
 
     ev.target.classList.remove("drop-target-hover");
 
