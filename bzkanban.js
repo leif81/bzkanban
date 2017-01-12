@@ -278,6 +278,7 @@ function showLoginModal() {
     var loginModal = createModal("loginModal");
     var header = loginModal.querySelector(".modal-header");
     var body = loginModal.querySelector(".modal-body");
+    var footer = loginModal.querySelector(".modal-footer");
 
     header.appendChild(document.createTextNode("Please log in"));
 
@@ -322,7 +323,7 @@ function showLoginModal() {
 
     body.appendChild(usernameLabel);
     body.appendChild(passwordLabel);
-    body.appendChild(submit);
+    footer.appendChild(submit);
 
     document.querySelector(bzDomElement).appendChild(loginModal);
 }
