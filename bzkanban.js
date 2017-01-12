@@ -11,6 +11,7 @@ var bzCheckForUpdates = true;
 var bzAutoRefresh = false;
 var bzDomElement = "#bzkanban";
 var bzBacklogSearch = "&target_milestone=---&resolution=---";
+var bzBacklogDefaultStatus = "CONFIRMED";
 
 // "Private" global variables. Do not touch.
 var bzProduct = "";
@@ -1094,7 +1095,7 @@ function dropBacklog(ev, bugCurrent) {
 
     var bugUpdate = {};
     bugUpdate.id = bugCurrent.id;
-    bugUpdate.status = "SUBMITTED";
+    bugUpdate.status = bzBacklogDefaultStatus;
     bugUpdate.target_milestone = "---";
     bugUpdate.priority = bzDefaultPriority;
 
