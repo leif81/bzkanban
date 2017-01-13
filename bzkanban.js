@@ -150,6 +150,7 @@ function createQueryFields() {
         clearCards();
         updateAddressBar();
         hideNewBugButton();
+        hideNotification();
     });
 
     var milestone = document.createElement("span");
@@ -170,6 +171,7 @@ function createQueryFields() {
         // Clear affected state.
         bzAssignedTo = "";
         showNewBugButton();
+        hideNotification();
 
         // Hot load the board without a form submit.
         loadBoard();
@@ -912,6 +914,11 @@ function showNotification(message) {
     var bell = document.querySelector("#notification");
     bell.style.display = "inline";
     bell.title = message;
+}
+
+function hideNotification() {
+    var bell = document.querySelector("#notification");
+    bell.style.display = null;
 }
 
 function doAuth(user, password) {
