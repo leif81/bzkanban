@@ -571,9 +571,7 @@ function loadCheckForUpdates() {
             if (bzAutoRefresh) {
                 loadBoard();
             } else {
-                var bell = document.getElementById("notification");
-                bell.style.display = "inline";
-                bell.title = response.bugs.length + " bug(s) have been updated externally. Hit refresh!";
+                showNotification(response.bugs.length + " bug(s) have been updated externally. Hit refresh!");
             }
         }
 
@@ -908,6 +906,12 @@ function showNewBugButton() {
 function hideNewBugButton() {
     var btn = document.querySelector('#btnCreate');
     btn.style.display = 'none';
+}
+
+function showNotification(message) {
+    var bell = document.querySelector("#notification");
+    bell.style.display = "inline";
+    bell.title = message;
 }
 
 function doAuth(user, password) {
