@@ -1137,8 +1137,10 @@ function isBacklogVisible() {
         return false;
     }
 }
+
 function loadBacklogCards() {
     showSpinner();
+
     bzRestGetBacklogUrl = "/rest.cgi/bug?product=" + bzProduct;
     bzRestGetBacklogUrl += "&include_fields=summary,status,id,severity,priority,assigned_to,last_updated,deadline";
     bzRestGetBacklogUrl += "&order=" + bzOrder;
