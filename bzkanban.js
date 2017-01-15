@@ -149,6 +149,7 @@ function createQueryFields() {
         clearAssigneesList();
         clearCards();
         updateAddressBar();
+        hideBacklogButton();
         hideNewBugButton();
         hideNotification();
     });
@@ -170,6 +171,7 @@ function createQueryFields() {
 
         // Clear affected state.
         bzAssignedTo = "";
+        showBacklogButton();
         showNewBugButton();
         hideNotification();
 
@@ -215,11 +217,8 @@ function createBacklogButton() {
     var backlogShowButton = document.createElement("button");
     backlogShowButton.id = "btnShowBacklog";
     backlogShowButton.innerText = "Show Backlog";
+    backlogShowButton.style.display = "none";
     backlogShowButton.addEventListener("click", function() {
-        if (bzProduct === "") {
-            alert ("Select a product first");
-            return;
-        }
         if (!isBacklogVisible()) {
             showBacklog();
         } else {
@@ -912,6 +911,16 @@ function showSpinner() {
 function hideSpinner() {
     var spinner = document.querySelector('#spinner');
     spinner.style.display = 'none';
+}
+
+function showBacklogButton() {
+    var btn = document.querySelector('#btnShowBacklog');
+    btn.style.display = 'initial';
+}
+
+function hideBacklogButton() {
+    var btn = document.querySelector('#btnShowBacklog');
+    btn.style.display = 'none';
 }
 
 function showNewBugButton() {
