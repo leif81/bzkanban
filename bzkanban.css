@@ -48,6 +48,10 @@ body {
     border-radius: 0 0 3px 3px;
     background: #E2E4E6;
 }
+#BACKLOG .board-column-title,
+#BACKLOG .board-column-content {
+    background: darkgrey;
+}
 .card {
     background-color: white;
     border-radius: 3px;

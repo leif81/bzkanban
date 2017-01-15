@@ -10,6 +10,7 @@ var bzLoadComments = false;
 var bzCheckForUpdates = true;
 var bzAutoRefresh = false;
 var bzDomElement = "#bzkanban";
+var bzBacklogDefaultStatus = "CONFIRMED";
 
 // "Private" global variables. Do not touch.
 var bzProduct = "";
@@ -21,6 +22,7 @@ var bzUserFullName = "";
 var bzProductHasUnconfirmed = false;
 var bzBoardLoadTime = "";
 var bzRestGetBugsUrl = "";
+var bzRestGetBacklogUrl = "";
 var bzAssignees = new Map();
 var bzProductComponents;
 var bzProductVersions;
@@ -87,9 +89,6 @@ function initNav() {
     document.querySelector(bzDomElement).appendChild(nav);
 
     nav.appendChild(createQueryFields());
-    if (bzAllowEditBugs) {
-        nav.appendChild(createBacklogTarget());
-    }
 
     var spring = document.createElement("span");
     spring.className = "spring";
@@ -144,11 +143,13 @@ function createQueryFields() {
         // Clear affected state.
         bzProductMilestone = "";
         bzAssignedTo = "";
+        hideBacklog();
         loadMilestonesList();
         loadProductInfo();
         clearAssigneesList();
         clearCards();
         updateAddressBar();
+        hideBacklogButton();
         hideNewBugButton();
         hideNotification();
     });
@@ -170,6 +171,7 @@ function createQueryFields() {
 
         // Clear affected state.
         bzAssignedTo = "";
+        showBacklogButton();
         showNewBugButton();
         hideNotification();
 
@@ -211,19 +213,20 @@ function createQueryFields() {
     return query;
 }
 
-function createBacklogTarget() {
-    var backlog = document.createElement("div");
-    backlog.id = "textBacklog";
-    backlog.className = "drop-target";
-    backlog.innerText = "Backlog";
-    backlog.addEventListener('drag', dragCardStart);
-    backlog.addEventListener('dragend', dragCardEnd);
-    backlog.addEventListener('dragover', dragCardOver);
-    backlog.addEventListener('drop', dropBacklog);
-    backlog.addEventListener('dragenter', dragCardEnter);
-    backlog.addEventListener('dragleave', dragCardLeave);
+function createBacklogButton() {
+    var backlogShowButton = document.createElement("button");
+    backlogShowButton.id = "btnShowBacklog";
+    backlogShowButton.innerText = "Show Backlog";
+    backlogShowButton.style.display = "none";
+    backlogShowButton.addEventListener("click", function() {
+        if (!isBacklogVisible()) {
+            showBacklog();
+        } else {
+            hideBacklog();
+        }
+    });
 
-    return backlog;
+    return backlogShowButton;
 }
 
 function createSpinner() {
@@ -268,6 +271,7 @@ function createActions() {
     bell.id = "notification";
     bell.className = "fa fa-bell";
 
+    actions.appendChild(createBacklogButton());
     actions.appendChild(newbug);
     actions.appendChild(whoami);
     actions.appendChild(login);
@@ -336,6 +340,9 @@ function loadBoard() {
     clearAssigneesList();
     clearCards();
     loadBugs();
+    if (isBacklogVisible()) {
+        loadBacklogCards();
+    }
 }
 
 function loadBugs() {
@@ -441,6 +448,10 @@ function loadProductInfo() {
 
 function loadColumns() {
     httpGet("/rest.cgi/field/bug/status/values", function(response) {
+        // Always add a backlog as first column
+        var backlog = addBoardColumn("BACKLOG");
+        hideBacklog();
+
         var statuses = response.values;
         statuses.forEach(function(status) {
             addBoardColumn(status);
@@ -624,6 +635,8 @@ function addBoardColumn(status) {
     content.appendChild(cards);
 
     document.getElementById("board").appendChild(div);
+
+    return div;
 }
 
 function createCard(bug) {
@@ -900,6 +913,16 @@ function hideSpinner() {
     spinner.style.display = 'none';
 }
 
+function showBacklogButton() {
+    var btn = document.querySelector('#btnShowBacklog');
+    btn.style.display = 'initial';
+}
+
+function hideBacklogButton() {
+    var btn = document.querySelector('#btnShowBacklog');
+    btn.style.display = 'none';
+}
+
 function showNewBugButton() {
     var btn = document.querySelector('#btnCreate');
     btn.style.display = 'initial';
@@ -992,6 +1015,9 @@ function scheduleCheckForUpdates() {
     }, 600000);
 }
 
+function dragCardStart(ev) {
+}
+
 function dragCardOver(ev) {
     ev.preventDefault();
 }
@@ -1039,18 +1065,12 @@ function dragCard(ev) {
     ev.dataTransfer.setData("text", JSON.stringify(bugData));
 }
 
-function dragCardStart(ev) {
-    showBacklog();
-}
-
 function dragCardEnd(ev) {
     // Re-enable pointer events for all cards.
     var cards = document.querySelectorAll(".card");
     cards.forEach(function(card) {
         card.style.pointerEvents = "auto";
     });
-
-    hideBacklog();
 }
 
 function dropCard(ev) {
@@ -1063,7 +1083,14 @@ function dropCard(ev) {
 
     var bugUpdate = {};
     bugUpdate.id = bugCurrent.id;
-    bugUpdate.status = ev.currentTarget.id;
+    if (ev.currentTarget.id === "BACKLOG") {
+        bugUpdate.status = bzBacklogDefaultStatus;
+        bugUpdate.target_milestone = "---";
+        bugUpdate.priority = bzDefaultPriority;
+    } else {
+        bugUpdate.status = ev.currentTarget.id;
+        bugUpdate.target_milestone = bzProductMilestone;
+    }
 
     ev.target.classList.remove("drop-target-hover");
 
@@ -1074,32 +1101,67 @@ function dropCard(ev) {
     }
 }
 
-function dropBacklog(ev) {
-    if (ev.target.classList.contains("drop-target")) {
-        ev.target.classList.remove("drop-target-hover");
-    }
-    ev.preventDefault();
-
-    var bugCurrent = JSON.parse(ev.dataTransfer.getData("text"));
-
-    var bugUpdate = {};
-    bugUpdate.id = bugCurrent.id;
-    bugUpdate.status = "CONFIRMED";
-    bugUpdate.priority = bzDefaultPriority;
-
-    if (bzAddCommentOnChange) {
-        showBugModal(bugCurrent, bugUpdate);
-    } else {
-        writeBug(bugUpdate);
-    }
-}
-
 function showBacklog() {
-    document.getElementById("textBacklog").style.display = "inline-block";
+    var button = document.getElementById("btnShowBacklog");
+    var backlogCol = document.querySelector("#BACKLOG.board-column");
+
+    if (!isBacklogVisible()) {
+        var backlog = backlogCol.querySelector(".cards");
+        if (backlog.children.length == 0) {
+            // Load backlog on first access.
+            loadBacklogCards();
+        }
+
+        backlogCol.style.display = null;
+        button.innerText = "Hide Backlog";
+    }
 }
 
 function hideBacklog() {
-    document.getElementById("textBacklog").style.display = "none";
+    var button = document.getElementById("btnShowBacklog");
+    var backlogCol = document.querySelector("#BACKLOG.board-column");
+
+    if (isBacklogVisible()) {
+        var backlog = backlogCol.querySelector(".cards");
+        backlogCol.style.display = "none";
+        button.innerText = "Show Backlog";
+    }
+}
+
+function isBacklogVisible() {
+    var backlogCol = document.querySelector("#BACKLOG.board-column");
+
+    if (backlogCol.style.display === "") {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function loadBacklogCards() {
+    showSpinner();
+
+    bzRestGetBacklogUrl = "/rest.cgi/bug?product=" + bzProduct;
+    bzRestGetBacklogUrl += "&include_fields=summary,status,id,severity,priority,assigned_to,last_updated,deadline";
+    bzRestGetBacklogUrl += "&order=" + bzOrder;
+    bzRestGetBacklogUrl += "&target_milestone=---";
+    bzRestGetBacklogUrl += "&resolution=---";
+    bzRestGetBacklogUrl += "&component=" + bzComponent;
+    bzRestGetBacklogUrl += "&priority=" + bzPriority;
+
+    httpGet(bzRestGetBacklogUrl, function(response) {
+        hideSpinner();
+        var bugs = response.bugs;
+        var backlogCards = document.querySelector("#BACKLOG" + " .cards");
+
+        bugs.forEach(function(bug) {
+            var card = createCard(bug);
+            backlogCards.appendChild(card);
+        });
+
+        // force a recount now that we have a new column.
+        showColumnCounts();
+    });
 }
 
 function isTrue(string) {
