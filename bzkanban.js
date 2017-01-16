@@ -461,6 +461,7 @@ function loadColumns() {
         if (bzProduct !== "" && bzProductMilestone !== "") {
             loadBoard();
             showNewBugButton();
+            showBacklogButton();
         }
 
         if (isLoggedIn()) {
