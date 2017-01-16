@@ -1459,7 +1459,7 @@ function showBugModal(bugCurrent, bugUpdate) {
     }
 
     var commentBoxLabel = document.createElement("label");
-    commentBoxLabel.innerText = "Additional Comment";
+    commentBoxLabel.innerText = "Additional Comments";
 
     var commentBox = document.createElement("textarea");
     commentBox.id = "commentBoxText";
