@@ -259,6 +259,7 @@ function createActions() {
 
     var whoami = document.createElement("span");
     whoami.id = "whoami";
+    whoami.style.display = "none";
 
     var login = document.createElement("button");
     login.id = "btnSignIn";
@@ -495,7 +496,9 @@ function loadName() {
     httpGet("/rest.cgi/user/" + bzAuthObject.userID, function(response) {
         bzUserFullName = response.users[0].real_name;
         if (bzUserFullName !== null) {
-            document.getElementById("whoami").textContent = bzUserFullName;
+            var el = document.getElementById("whoami");
+            el.textContent = bzUserFullName;
+            el.style.display = null; // unhide it
         }
     });
 }
