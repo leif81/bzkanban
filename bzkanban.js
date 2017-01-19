@@ -851,7 +851,6 @@ function httpRequest(method, url, dataObj, successCallback, errorCallback) {
             if (response === "") {
                 var msg = "No response from " + bzSiteUrl + " for request " + url;
                 console.warn(msg);
-                alert(msg);
                 return;
             }
 
