@@ -1410,8 +1410,20 @@ function showBugModal(bugCurrent, bugUpdate) {
 
     var card = getCardElement(bugCurrent.id);
     var bugTitle = card.querySelector(".card-summary").innerText;
-    var title = document.createTextNode("#" + bugCurrent.id + " " + bugTitle);
-    header.appendChild(title);
+    var bugNumber = document.createTextNode("#" + bugCurrent.id + " ");
+    var bugTitleText = document.createElement("label");
+    bugTitleText.innerText = bugTitle;
+    bugTitleText.id = "showBugTitleText";
+    bugTitleText.onclick = function() {
+        var labelText = document.getElementById("showBugTitleText").innerText;
+        var inputBugTitle = document.createElement("input");
+        inputBugTitle.id = "showBugTitleText";
+        bugTitleText.parentNode.replaceChild(inputBugTitle, bugTitleText);
+        inputBugTitle.value = labelText;
+    }
+
+    header.appendChild(bugNumber);
+    header.appendChild(bugTitleText);
 
     // Card was dragged
     if (bugCurrent.status !== bugUpdate.status) {
@@ -1565,6 +1577,12 @@ function showBugModal(bugCurrent, bugUpdate) {
     submit.onclick = function() {
         bugUpdate.comment = {};
         bugUpdate.comment.body = document.querySelector("#commentBoxText").value;
+
+        var newBugSummary = document.querySelector("input#showBugTitleText");
+        if (newBugSummary) {
+            bugUpdate.summary = newBugSummary.value;
+        }
+
         hideModal();
         writeBug(bugUpdate);
     };

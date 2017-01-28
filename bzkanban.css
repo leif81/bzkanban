@@ -227,6 +227,14 @@ body {
     padding: 15px;
     align-self: stretch;
 }
+.modal-header input {
+    width: 80%;
+    font-size: inherit;
+    padding: initial;
+}
+.modal-header label:hover {
+    background-color: lightgray;
+}
 .modal-body,
 .modal-footer {
     display: flex;
