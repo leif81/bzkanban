@@ -1410,7 +1410,7 @@ function showBugModal(bugCurrent, bugUpdate) {
 
     var card = getCardElement(bugCurrent.id);
     var bugTitle = card.querySelector(".card-summary").innerText;
-    var bugNumber = document.createTextNode("#" + bugCurrent.id + " ");
+    var bugNumber = document.createTextNode(" #" + bugCurrent.id);
     var bugTitleText = document.createElement("label");
     bugTitleText.innerText = bugTitle;
     bugTitleText.id = "showBugTitleText";
@@ -1422,8 +1422,8 @@ function showBugModal(bugCurrent, bugUpdate) {
         inputBugTitle.value = labelText;
     }
 
-    header.appendChild(bugNumber);
     header.appendChild(bugTitleText);
+    header.appendChild(bugNumber);
 
     // Card was dragged
     if (bugCurrent.status !== bugUpdate.status) {
