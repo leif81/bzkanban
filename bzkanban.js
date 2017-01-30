@@ -1395,19 +1395,44 @@ function showBugModal(bugCurrent, bugUpdate) {
     // Card was clicked
     if (bugCurrent.status === bugUpdate.status) {
 
-        // Description field
-        var descriptionLabel = document.createElement("label");
-        descriptionLabel.innerText = "Description";
-        var description = document.createElement("div");
-        description.className = "bug-description";
+        // Show comments and description
         httpGet("/rest/bug/" + bugCurrent.id + "/comment?include_fields=text", function(response) {
-            var comment0 = response.bugs[bugCurrent.id].comments[0].text;
-            description.innerText = comment0;
-        });
-        descriptionLabel.appendChild(description);
-        comments.appendChild(descriptionLabel);
+            var commentsObj = response.bugs[bugCurrent.id].comments;
+            var comment;
 
-        // TODO show bug comments?
+            for (comment in commentsObj) {
+                if (comment === "0") {
+                    // Description
+                    var descriptionLabel = document.createElement("label");
+                    descriptionLabel.innerText = "Description";
+                    var description = document.createElement("div");
+                    description.className = "bug-description";
+                    description.innerText = commentsObj[0].text;
+
+                    descriptionLabel.appendChild(description);
+                    comments.appendChild(descriptionLabel);
+
+                    // Add enterable textarea for new comment
+                    var commentBoxLabel = document.createElement("label");
+                    commentBoxLabel.innerText = "Additional Comments";
+                    var commentBox = document.createElement("textarea");
+                    commentBox.id = "commentBoxText";
+
+                    commentBoxLabel.appendChild(commentBox);
+                    comments.appendChild(commentBoxLabel);
+                } else {
+                    // Show existing comments
+                    var commentLabel = document.createElement("label");
+                    commentLabel.innerText = "Comment " + comment;
+                    var otherCommentsBox = document.createElement("div");
+                    otherCommentsBox.className = "bug-description";
+                    otherCommentsBox.innerText = commentsObj[comment].text;
+
+                    commentLabel.appendChild(otherCommentsBox);
+                    comments.appendChild(commentLabel);
+                }
+            }
+        });
 
         // Priority field.
         var priorityLabel = document.createElement("label");
@@ -1460,14 +1485,6 @@ function showBugModal(bugCurrent, bugUpdate) {
         meta.appendChild(severityLabel);
     }
 
-    var commentBoxLabel = document.createElement("label");
-    commentBoxLabel.innerText = "Additional Comments";
-
-    var commentBox = document.createElement("textarea");
-    commentBox.id = "commentBoxText";
-
-    commentBoxLabel.appendChild(commentBox);
-
     var submit = document.createElement("button");
     submit.innerText = "Submit";
     submit.id = "submitComment";
@@ -1477,8 +1494,6 @@ function showBugModal(bugCurrent, bugUpdate) {
         hideModal();
         writeBug(bugUpdate);
     };
-
-    comments.appendChild(commentBoxLabel);
 
     footer.appendChild(submit);
 

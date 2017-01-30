@@ -215,6 +215,7 @@ body {
     border-width: 1px;
     border-color: black;
     border-style: solid;
+    max-height: 80%;
 }
 @keyframes animatetop {
     from {
@@ -250,6 +251,7 @@ body {
     display: flex;
     padding: 15px;
     align-self: stretch;
+    min-height: 4vh;
 }
 .modal-body input,
 .modal-body select {
@@ -274,6 +276,7 @@ body {
     display: flex;
     flex-direction: column;
     flex: 0.8;
+    overflow-y: auto;
 }
 .bug-meta {
     display: flex;
