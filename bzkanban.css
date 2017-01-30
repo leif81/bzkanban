@@ -208,7 +208,7 @@ body {
     margin: auto;
     flex-direction: column;
     align-items: flex-start;
-    width: 600px;
+    width: 700px;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
     animation-name: animatetop;
     animation-duration: 0.4s;
@@ -239,11 +239,16 @@ body {
     align-self: stretch;
     font-size: x-large;
 }
+.modal-body {
+    flex-direction: row;
+}
+.modal-footer {
+    flex-direction: column;
+}
 .modal-body,
 .modal-footer {
     display: flex;
     padding: 15px;
-    flex-direction: column;
     align-self: stretch;
 }
 .modal-body input,
@@ -267,10 +272,14 @@ body {
 .bug-comments {
     display: flex;
     flex-direction: column;
+    flex: 0.8;
 }
 .bug-meta {
     display: flex;
     flex-direction: column;
+    font-size: x-small;
+    margin-left: 10px;
+    flex: 0.2;
 }
 .bug-description {
     border-style: solid;
