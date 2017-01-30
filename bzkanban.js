@@ -1411,15 +1411,7 @@ function showBugModal(bugCurrent, bugUpdate) {
 
                     descriptionLabel.appendChild(description);
                     comments.appendChild(descriptionLabel);
-
-                    // Add enterable textarea for new comment
-                    var commentBoxLabel = document.createElement("label");
-                    commentBoxLabel.innerText = "Additional Comments";
-                    var commentBox = document.createElement("textarea");
-                    commentBox.id = "commentBoxText";
-
-                    commentBoxLabel.appendChild(commentBox);
-                    comments.appendChild(commentBoxLabel);
+                    comments.appendChild(createCommentsBox());
                 } else {
                     // Show existing comments
                     var commentLabel = document.createElement("label");
@@ -1483,6 +1475,8 @@ function showBugModal(bugCurrent, bugUpdate) {
         };
 
         meta.appendChild(severityLabel);
+    } else {
+        comments.appendChild(createCommentsBox());
     }
 
     var submit = document.createElement("button");
@@ -1505,6 +1499,18 @@ function hideModal() {
     if (modal !== null) {
         modal.remove();
     }
+}
+
+function createCommentsBox() {
+    // Add enterable textarea for new comment
+    var commentBoxLabel = document.createElement("label");
+    commentBoxLabel.innerText = "Additional Comments";
+    var commentBox = document.createElement("textarea");
+    commentBox.id = "commentBoxText";
+
+    commentBoxLabel.appendChild(commentBox);
+
+    return commentBoxLabel;
 }
 
 // Register event handlers
