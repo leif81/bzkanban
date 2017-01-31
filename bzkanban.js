@@ -1400,32 +1400,23 @@ function showBugModal(bugCurrent, bugUpdate) {
         httpGet("/rest/bug/" + bugCurrent.id + "/comment?include_fields=text", function(response) {
             hideSpinner();
             var commentsObj = response.bugs[bugCurrent.id].comments;
-            var comment;
 
-            for (comment in commentsObj) {
+            for (var comment in commentsObj) {
+                var commentLabel = document.createElement("label");
                 if (comment === "0") {
-                    // Description
-                    var descriptionLabel = document.createElement("label");
-                    descriptionLabel.innerText = "Description";
-                    var description = document.createElement("div");
-                    description.className = "bug-description";
-                    description.innerText = commentsObj[0].text;
-
-                    descriptionLabel.appendChild(description);
-                    comments.appendChild(descriptionLabel);
-                    comments.appendChild(createCommentsBox());
+                    commentLabel.innerText = "Description";
                 } else {
-                    // Show existing comments
-                    var commentLabel = document.createElement("label");
                     commentLabel.innerText = "Comment " + comment;
-                    var otherCommentsBox = document.createElement("div");
-                    otherCommentsBox.className = "bug-description";
-                    otherCommentsBox.innerText = commentsObj[comment].text;
-
-                    commentLabel.appendChild(otherCommentsBox);
-                    comments.appendChild(commentLabel);
                 }
+                var commentText = document.createElement("div");
+                commentText.className = "bug-description";
+                commentText.innerText = commentsObj[comment].text;
+
+                commentLabel.appendChild(commentText);
+                comments.appendChild(commentLabel);
             }
+
+            comments.appendChild(createCommentsBox());
         });
 
         // Priority field.
