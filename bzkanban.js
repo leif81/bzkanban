@@ -1396,6 +1396,8 @@ function showBugModal(bugCurrent, bugUpdate) {
     // Card was clicked
     if (bugCurrent.status === bugUpdate.status) {
 
+        body.style.display = "none"; // HACK: hide until comments reponse comes back so layout isn't broken.
+
         // Show comments and description
         httpGet("/rest/bug/" + bugCurrent.id + "/comment?include_fields=text", function(response) {
             hideSpinner();
@@ -1417,6 +1419,8 @@ function showBugModal(bugCurrent, bugUpdate) {
             }
 
             comments.appendChild(createCommentsBox());
+
+            body.style.display = null; // unhide it
         });
 
         // Priority field.
