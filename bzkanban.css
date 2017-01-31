@@ -233,7 +233,7 @@ body {
     padding: initial;
 }
 .modal-header label:hover {
-    background-color: lightgray;
+    cursor: auto;
 }
 .modal-body,
 .modal-footer {
