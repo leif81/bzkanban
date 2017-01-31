@@ -285,7 +285,7 @@ body {
     margin-left: 10px;
     flex: 0.2;
 }
-.bug-description {
+.bug-comment {
     border-style: solid;
     border-color: darkgrey;
     border-width: thin;

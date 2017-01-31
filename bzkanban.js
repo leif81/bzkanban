@@ -1409,7 +1409,7 @@ function showBugModal(bugCurrent, bugUpdate) {
                     commentLabel.innerText = "Comment " + comment;
                 }
                 var commentText = document.createElement("div");
-                commentText.className = "bug-description";
+                commentText.className = "bug-comment";
                 commentText.innerText = commentsObj[comment].text;
 
                 commentLabel.appendChild(commentText);
