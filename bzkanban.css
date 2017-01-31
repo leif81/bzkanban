@@ -208,7 +208,7 @@ body {
     margin: auto;
     flex-direction: column;
     align-items: flex-start;
-    width: 700px;
+    width: 44em;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
     animation-name: animatetop;
     animation-duration: 0.4s;
@@ -252,6 +252,7 @@ body {
     padding: 15px;
     align-self: stretch;
     min-height: 4vh;
+    overflow-y: auto;
 }
 .modal-body input,
 .modal-body select {
@@ -275,15 +276,14 @@ body {
 .bug-comments {
     display: flex;
     flex-direction: column;
-    flex: 0.8;
-    overflow-y: auto;
+    overflow-wrap: break-word;
 }
 .bug-meta {
     display: flex;
     flex-direction: column;
     font-size: x-small;
     margin-left: 10px;
-    flex: 0.2;
+    width: 100%;
 }
 .bug-comment {
     border-style: solid;
@@ -293,6 +293,7 @@ body {
     padding: 7px;
     font-weight: normal;
     font-size: small;
+    width: 36em;
 }
 select, textarea, input, button {
     padding: 3px;
