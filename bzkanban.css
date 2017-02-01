@@ -277,6 +277,7 @@ body {
     display: flex;
     flex-direction: column;
     overflow-wrap: break-word;
+    width: 120em;
 }
 .bug-meta {
     display: flex;
@@ -293,7 +294,6 @@ body {
     padding: 7px;
     font-weight: normal;
     font-size: small;
-    width: 36em;
 }
 select, textarea, input, button {
     padding: 3px;
