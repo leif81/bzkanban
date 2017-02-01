@@ -294,6 +294,10 @@ body {
     font-weight: normal;
     font-size: small;
 }
+.bug-comment-date {
+    padding-left: 20px;
+    font-size: x-small;
+}
 select, textarea, input, button {
     padding: 3px;
     border-radius: 3px;

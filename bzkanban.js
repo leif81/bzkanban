@@ -1400,7 +1400,7 @@ function showBugModal(bugCurrent, bugUpdate) {
         showSpinner();
 
         // Show comments and description
-        httpGet("/rest/bug/" + bugCurrent.id + "/comment?include_fields=text", function(response) {
+        httpGet("/rest/bug/" + bugCurrent.id + "/comment?include_fields=text,time", function(response) {
             hideSpinner();
             var commentsObj = response.bugs[bugCurrent.id].comments;
 
@@ -1415,6 +1415,11 @@ function showBugModal(bugCurrent, bugUpdate) {
                 commentText.className = "bug-comment";
                 commentText.innerText = commentsObj[comment].text;
 
+                var commentDate = document.createElement("label");
+                commentDate.className = "bug-comment-date";
+                commentDate.innerText = new Date(commentsObj[comment].time);
+
+                commentLabel.appendChild(commentDate);
                 commentLabel.appendChild(commentText);
                 comments.appendChild(commentLabel);
             }
