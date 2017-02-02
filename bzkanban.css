@@ -277,7 +277,7 @@ body {
     display: flex;
     flex-direction: column;
     overflow-wrap: break-word;
-    width: 120em;
+    width: 75%;
 }
 .bug-meta {
     display: flex;
