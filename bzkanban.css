@@ -276,6 +276,7 @@ body {
     flex-direction: column;
     overflow-wrap: break-word;
     min-width: 75%;
+    max-width: 75%;
 }
 .bug-meta {
     display: flex;
