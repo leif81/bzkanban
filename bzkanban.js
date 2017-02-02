@@ -383,6 +383,7 @@ function loadProductsList() {
 
 function loadMilestonesList() {
     clearMilestonesList();
+    showSpinner();
     httpGet("/rest.cgi/product?names=" + bzProduct + "&include_fields=milestones", function(response) {
         document.getElementById("textMilestone").disabled = false;
         var milestones = response.products[0].milestones;
@@ -394,6 +395,7 @@ function loadMilestonesList() {
         });
         // select it in list.
         document.getElementById("textMilestone").value = bzProductMilestone;
+        hideSpinner();
     });
 }
 
