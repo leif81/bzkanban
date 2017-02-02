@@ -1362,7 +1362,6 @@ function showBugModal(bugCurrent, bugUpdate) {
     meta.className = 'bug-meta';
 
     body.appendChild(comments);
-    showSpinner();
     body.appendChild(meta);
 
     // TODO replace hard coded column name somehow.
@@ -1397,6 +1396,8 @@ function showBugModal(bugCurrent, bugUpdate) {
     if (bugCurrent.status === bugUpdate.status) {
 
         body.style.display = "none"; // HACK: hide until comments reponse comes back so layout isn't broken.
+
+        showSpinner();
 
         // Show comments and description
         httpGet("/rest/bug/" + bugCurrent.id + "/comment?include_fields=text", function(response) {
@@ -1473,7 +1474,6 @@ function showBugModal(bugCurrent, bugUpdate) {
 
         meta.appendChild(severityLabel);
     } else {
-        hideSpinner();
         comments.appendChild(createCommentsBox());
     }
 
