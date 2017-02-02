@@ -186,10 +186,6 @@ body {
 #nav .spring {
     flex: 1;
 }
-#spinner {
-    padding-right: 5px;
-    display: none;
-}
 .modal {
     position: fixed;
     z-index: 1;
@@ -320,4 +316,7 @@ a:hover {
 #actions button,
 #actions span {
     margin-left: 5px;
+}
+.busy {
+    cursor: wait;
 }

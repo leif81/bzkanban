@@ -94,7 +94,6 @@ function initNav() {
     spring.className = "spring";
     nav.appendChild(spring);
 
-    nav.appendChild(createSpinner());
     nav.appendChild(createActions());
 
     if (isLoggedIn()) {
@@ -227,17 +226,6 @@ function createBacklogButton() {
     });
 
     return backlogShowButton;
-}
-
-function createSpinner() {
-    var spinner = document.createElement("span");
-    spinner.id = "spinner";
-
-    var icon = document.createElement("i");
-    icon.className = "fa fa-cog fa-spin";
-
-    spinner.appendChild(icon);
-    return spinner;
 }
 
 function createActions() {
@@ -907,13 +895,11 @@ function getCardElement(bugId) {
 }
 
 function showSpinner() {
-    var spinner = document.querySelector('#spinner');
-    spinner.style.display = 'block';
+    document.body.classList.add("busy");
 }
 
 function hideSpinner() {
-    var spinner = document.querySelector('#spinner');
-    spinner.style.display = 'none';
+    document.body.classList.remove("busy");
 }
 
 function showBacklogButton() {
