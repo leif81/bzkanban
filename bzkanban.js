@@ -1403,9 +1403,11 @@ function showBugModal(bugCurrent, bugUpdate) {
                 commentText.className = "bug-comment";
                 commentText.innerText = commentsObj[comment].text;
 
+                var date = new Date(commentsObj[comment].time);
                 var commentDate = document.createElement("span");
                 commentDate.className = "bug-comment-date";
-                commentDate.innerText = new Date(commentsObj[comment].time);
+                commentDate.title = date;
+                commentDate.innerText = new timeago().format(date);
 
                 commentLabel.appendChild(commentDate);
                 commentLabel.appendChild(commentText);
