@@ -41,41 +41,41 @@ function initBzkanban() {
 }
 
 function loadParams() {
-    var product = getURLParameter('product');
+    var product = getURLParameter("product");
     if (product !== null) {
         bzProduct = product;
     }
 
-    var milestone = getURLParameter('milestone');
+    var milestone = getURLParameter("milestone");
     if (milestone !== null) {
         bzProductMilestone = milestone;
     }
 
-    var assignee = getURLParameter('assignee');
+    var assignee = getURLParameter("assignee");
     if (assignee !== null) {
         bzAssignedTo = assignee;
     }
 
     // Allow the Bugzilla site URL to be overriden. Useful for testing.
     // For most permanent deployments just change the hardcodecoded bzSiteUrl.
-    var site = getURLParameter('site');
+    var site = getURLParameter("site");
     if (site !== null) {
         bzSiteUrl = site;
     }
 
     // Loading comments is expensive becase it's one extra request per bug.
     // Causing some Bugzilla servers to respond with "too many requests" errors.
-    var comments = getURLParameter('comments');
+    var comments = getURLParameter("comments");
     if (comments !== null) {
         bzLoadComments = isTrue(comments);
     }
 
-    var pictures = getURLParameter('gravatar');
+    var pictures = getURLParameter("gravatar");
     if (pictures !== null) {
         bzShowGravatar = isTrue(pictures);
     }
 
-    var autorefresh = getURLParameter('autorefresh');
+    var autorefresh = getURLParameter("autorefresh");
     if (autorefresh !== null) {
         bzAutoRefresh = isTrue(autorefresh);
     }
@@ -134,7 +134,7 @@ function createQueryFields() {
 
     // When the user changes the Product drop down
     productList.addEventListener("input", function() {
-        bzProduct = document.getElementById('textProduct').value;
+        bzProduct = document.getElementById("textProduct").value;
 
         // Disable Milestones until it's refreshed
         document.getElementById("textMilestone").disabled = true;
@@ -166,7 +166,7 @@ function createQueryFields() {
 
     // When the user changes the Milestone drop down
     milestoneList.addEventListener("input", function() {
-        bzProductMilestone = document.getElementById('textMilestone').value;
+        bzProductMilestone = document.getElementById("textMilestone").value;
 
         // Clear affected state.
         bzAssignedTo = "";
@@ -192,7 +192,7 @@ function createQueryFields() {
 
     // When the user changes the Assignee drop down
     assigneeList.addEventListener("input", function() {
-        bzAssignedTo = document.getElementById('textAssignee').value;
+        bzAssignedTo = document.getElementById("textAssignee").value;
         updateAddressBar();
         var name = bzAssignees.get(bzAssignedTo).real_name;
         filterByAssignee(name);
@@ -371,7 +371,7 @@ function loadProductsList() {
             return a.name.localeCompare(b.name);
         });
         products.forEach(function(product) {
-            var option = document.createElement('option');
+            var option = document.createElement("option");
             option.value = product.name;
             option.text = product.name;
             document.getElementById("textProduct").appendChild(option);
@@ -388,7 +388,7 @@ function loadMilestonesList() {
         document.getElementById("textMilestone").disabled = false;
         var milestones = response.products[0].milestones;
         milestones.forEach(function(milestone) {
-            var option = document.createElement('option');
+            var option = document.createElement("option");
             option.value = milestone.name;
             option.text = milestone.name;
             document.getElementById("textMilestone").appendChild(option);
@@ -410,7 +410,7 @@ function loadAssigneesList() {
     var elem = document.getElementById("textAssignee");
 
     sorted.forEach(function(assignee) {
-        var option = document.createElement('option');
+        var option = document.createElement("option");
         option.value = assignee.email;
         option.text = assignee.real_name;
         elem.appendChild(option);
@@ -472,7 +472,7 @@ function loadComments(bug) {
             var commentElement = card.children.cardmeta.children.icons.children.comment;
             commentElement.style.display = null; // unhide it
 
-            var icon = document.createElement('i');
+            var icon = document.createElement("i");
             icon.setAttribute("class", "fa fa-comment-o fa-sm");
             icon.style.marginRight = "4px";
 
@@ -603,28 +603,28 @@ function loadDefaultMilestone() {
 }
 
 function addBoardColumn(status) {
-    var div = document.createElement('div');
+    var div = document.createElement("div");
     div.className = "board-column";
     div.id = status;
     if (isLoggedIn() && bzAllowEditBugs) {
-        div.addEventListener('drag', dragCardStart);
-        div.addEventListener('dragend', dragCardEnd);
-        div.addEventListener('dragover', dragCardOver);
-        div.addEventListener('drop', dropCard);
-        div.addEventListener('dragenter', dragCardEnter);
-        div.addEventListener('dragleave', dragCardLeave);
+        div.addEventListener("drag", dragCardStart);
+        div.addEventListener("dragend", dragCardEnd);
+        div.addEventListener("dragover", dragCardOver);
+        div.addEventListener("drop", dropCard);
+        div.addEventListener("dragenter", dragCardEnter);
+        div.addEventListener("dragleave", dragCardLeave);
     }
 
-    var title = document.createElement('div');
+    var title = document.createElement("div");
     title.className = "board-column-title";
     title.innerHTML = status;
     div.appendChild(title);
 
-    var content = document.createElement('div');
+    var content = document.createElement("div");
     content.className = "board-column-content";
     div.appendChild(content);
 
-    var cards = document.createElement('div');
+    var cards = document.createElement("div");
     cards.className = "cards";
     content.appendChild(cards);
 
@@ -634,7 +634,7 @@ function addBoardColumn(status) {
 }
 
 function createCard(bug) {
-    var card = document.createElement('div');
+    var card = document.createElement("div");
     card.className = "card";
     card.dataset.bugId = bug.id;
     card.dataset.bugStatus = bug.status;
@@ -654,7 +654,7 @@ function createCard(bug) {
         };
     }
 
-    var buglink = document.createElement('a');
+    var buglink = document.createElement("a");
     buglink.href= bzSiteUrl + "/show_bug.cgi?id=" + bug.id;
     buglink.target = "_blank"; // open in new tab
     buglink.innerHTML = "#" + bug.id;
@@ -665,22 +665,22 @@ function createCard(bug) {
         ev.stopPropagation();
     };
 
-    var summary = document.createElement('div');
+    var summary = document.createElement("div");
     summary.appendChild(document.createTextNode(bug.summary)); // so that we get HTML string escaping for free
     summary.className = "card-summary";
 
-    var meta = document.createElement('div');
+    var meta = document.createElement("div");
     meta.className = "card-meta";
     meta.setAttribute("id", "cardmeta");
 
-    var assignee = document.createElement('span');
+    var assignee = document.createElement("span");
     assignee.className = "assignee";
 
-    var fullname = document.createElement('span');
+    var fullname = document.createElement("span");
     fullname.className = "fullname";
     fullname.innerHTML = bug.assigned_to_detail.real_name;
 
-    var picture = document.createElement('img');
+    var picture = document.createElement("img");
     picture.setAttribute("id", "picture");
     if (bzShowGravatar) {
         picture.src = getPictureSrc(bug.assigned_to_detail.email);
@@ -688,21 +688,21 @@ function createCard(bug) {
         picture.style.display = "none";
     }
 
-    var icons = document.createElement('span');
+    var icons = document.createElement("span");
     icons.setAttribute("id", "icons");
 
-    var comment = document.createElement('span');
+    var comment = document.createElement("span");
     comment.setAttribute("id", "comment");
     comment.style.display = "none";
 
     var deadline = createDeadlineElement(bug.deadline);
 
-    var priority = document.createElement('span');
+    var priority = document.createElement("span");
     priority.setAttribute("id", "priority");
     priority.innerHTML = bug.priority;
     priority.dataset.priority = bug.priority;
 
-    var severity = document.createElement('span');
+    var severity = document.createElement("span");
     severity.setAttribute("id", "severity");
     severity.innerHTML = bug.severity;
     severity.dataset.severity = bug.severity;
@@ -721,7 +721,7 @@ function createCard(bug) {
 
     if (isLoggedIn() && bzAllowEditBugs) {
         card.draggable = "true";
-        card.addEventListener('dragstart', dragCard);
+        card.addEventListener("dragstart", dragCard);
         card.style.cursor = "pointer";
     }
 
@@ -739,7 +739,7 @@ function createCard(bug) {
 }
 
 function createDeadlineElement(deadline) {
-    var deadlineElement = document.createElement('span');
+    var deadlineElement = document.createElement("span");
     deadlineElement.setAttribute("id", "deadline");
 
     if (deadline === undefined || deadline === null) {
@@ -750,10 +750,10 @@ function createDeadlineElement(deadline) {
     var month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
     var todayDate = Date.now();
     var cardDate = new Date();
-    var dateArray = deadline.split('-');
+    var dateArray = deadline.split("-");
     cardDate.setFullYear(dateArray[0], dateArray[1] - 1, dateArray[2]);
 
-    var icon = document.createElement('i');
+    var icon = document.createElement("i");
     icon.setAttribute("class", "fa fa-calendar-o fa-sm");
     icon.style.marginRight = "4px";
 
@@ -872,7 +872,7 @@ function httpRequest(method, url, dataObj, successCallback, errorCallback) {
     // Append login token to every request.
     // Becase some Bugzilla instances require auth for even viewing bugs, etc.
     if (bzAuthObject !== null ) {
-        if (url.indexOf('?') == -1) {
+        if (url.indexOf("?") == -1) {
             url += "?";
         } else {
             url += "&";
@@ -905,22 +905,22 @@ function hideSpinner() {
 }
 
 function showBacklogButton() {
-    var btn = document.querySelector('#btnShowBacklog');
+    var btn = document.querySelector("#btnShowBacklog");
     btn.style.display = 'initial';
 }
 
 function hideBacklogButton() {
-    var btn = document.querySelector('#btnShowBacklog');
+    var btn = document.querySelector("#btnShowBacklog");
     btn.style.display = 'none';
 }
 
 function showNewBugButton() {
-    var btn = document.querySelector('#btnCreate');
+    var btn = document.querySelector("#btnCreate");
     btn.style.display = 'initial';
 }
 
 function hideNewBugButton() {
-    var btn = document.querySelector('#btnCreate');
+    var btn = document.querySelector("#btnCreate");
     btn.style.display = 'none';
 }
 
@@ -973,7 +973,7 @@ function showColumnCounts() {
         if (cardCount !== null) {
             cardCount.remove();
         }
-        cardCount = document.createElement('span');
+        cardCount = document.createElement("span");
         cardCount.className = "board-column-card-count";
 
         var cards = col.querySelectorAll(".card");
@@ -1170,7 +1170,7 @@ function getPictureSrc(email) {
     var hashString = hash.toString(CryptoJS.enc.Base64);
 
     if (hashString !== "") {
-        return ('https://www.gravatar.com/avatar/' + hashString + '?s=20&d=identicon');
+        return ("https://www.gravatar.com/avatar/" + hashString + "?s=20&d=identicon");
     }
 }
 
@@ -1237,11 +1237,11 @@ function showNewBugModal() {
     var title = document.createTextNode("Add new bug to milestone " + bzProductMilestone);
     header.appendChild(title);
 
-    var comments = document.createElement('div');
-    comments.className = 'bug-comments';
+    var comments = document.createElement("div");
+    comments.className = "bug-comments";
 
-    var meta = document.createElement('div');
-    meta.className = 'bug-meta';
+    var meta = document.createElement("div");
+    meta.className = "bug-meta";
 
     var summaryLabel = document.createElement("label");
     summaryLabel.innerText = "Summary";
@@ -1310,14 +1310,14 @@ function showNewBugModal() {
     footer.appendChild(submit);
 
     bzProductComponents.forEach(function(component) {
-        var opt = document.createElement('option');
+        var opt = document.createElement("option");
         opt.innerText = component;
         opt.value = component;
         components.appendChild(opt);
     });
 
     bzProductVersions.forEach(function(version) {
-        var opt = document.createElement('option');
+        var opt = document.createElement("option");
         opt.innerText = version;
         opt.value = version;
         versions.appendChild(opt);
@@ -1343,11 +1343,11 @@ function showBugModal(bugCurrent, bugUpdate) {
         console.log("Bug " + bugCurrent.id + " moved from " + bugCurrent.status + " to " + bugUpdate.status);
     }
 
-    var comments = document.createElement('div');
-    comments.className = 'bug-comments';
+    var comments = document.createElement("div");
+    comments.className = "bug-comments";
 
-    var meta = document.createElement('div');
-    meta.className = 'bug-meta';
+    var meta = document.createElement("div");
+    meta.className = "bug-meta";
 
     body.appendChild(comments);
     body.appendChild(meta);
@@ -1362,7 +1362,7 @@ function showBugModal(bugCurrent, bugUpdate) {
         resolutionLabel.appendChild(resolutions);
 
         bzProductResolutions.forEach(function(resolution) {
-            var opt = document.createElement('option');
+            var opt = document.createElement("option");
             opt.innerText = resolution;
             opt.value = resolution;
             if (resolution === bugCurrent.resolution) {
@@ -1425,7 +1425,7 @@ function showBugModal(bugCurrent, bugUpdate) {
         priorityLabel.appendChild(priorities);
 
         bzProductPriorities.forEach(function(priority) {
-            var opt = document.createElement('option');
+            var opt = document.createElement("option");
             opt.innerText = priority;
             opt.value = priority;
             if (priority === bugCurrent.priority) {
@@ -1450,7 +1450,7 @@ function showBugModal(bugCurrent, bugUpdate) {
         severityLabel.appendChild(severities);
 
         bzProductSeverities.forEach(function(severity) {
-            var opt = document.createElement('option');
+            var opt = document.createElement("option");
             opt.innerText = severity;
             opt.value = severity;
             if (severity === bugCurrent.severity) {
@@ -1486,7 +1486,7 @@ function showBugModal(bugCurrent, bugUpdate) {
 }
 
 function hideModal() {
-    var modal = document.querySelector('.modal');
+    var modal = document.querySelector(".modal");
     if (modal !== null) {
         modal.remove();
     }
