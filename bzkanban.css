@@ -270,7 +270,7 @@ body {
 .bug-meta {
     display: flex;
     flex-direction: column;
-    font-size: x-small;
+    font-size: small;
     margin-left: 10px;
     width: 100%;
 }
