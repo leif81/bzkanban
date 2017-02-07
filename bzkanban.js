@@ -674,6 +674,7 @@ function createCard(bug) {
     meta.setAttribute("id", "cardmeta");
 
     var assignee = document.createElement("span");
+    assignee.title = "Assignee";
     assignee.className = "assignee";
 
     var fullname = document.createElement("span");
@@ -699,11 +700,13 @@ function createCard(bug) {
 
     var priority = document.createElement("span");
     priority.setAttribute("id", "priority");
+    priority.title = "Priority";
     priority.innerHTML = bug.priority;
     priority.dataset.priority = bug.priority;
 
     var severity = document.createElement("span");
     severity.setAttribute("id", "severity");
+    severity.title = "Severity";
     severity.innerHTML = bug.severity;
     severity.dataset.severity = bug.severity;
 
