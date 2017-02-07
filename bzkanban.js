@@ -1399,6 +1399,11 @@ function showBugModal(bugCurrent, bugUpdate) {
             hideSpinner();
             var commentsObj = response.bugs[bugCurrent.id].comments;
 
+            var md = window.markdownit({
+                linkify: true,
+                breaks: true
+            });
+
             for (var comment in commentsObj) {
                 var commentLabel = document.createElement("label");
                 if (comment === "0") {
@@ -1408,7 +1413,7 @@ function showBugModal(bugCurrent, bugUpdate) {
                 }
                 var commentText = document.createElement("div");
                 commentText.className = "bug-comment";
-                commentText.innerText = commentsObj[comment].text;
+                commentText.innerHTML = md.render(commentsObj[comment].text); // markdown-it!
 
                 var date = new Date(commentsObj[comment].time);
                 var commentDate = document.createElement("span");
