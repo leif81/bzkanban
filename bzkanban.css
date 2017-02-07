@@ -88,51 +88,44 @@ body {
     flex-wrap: wrap;
     justify-content: flex-end;
 }
-.card-meta .assignee img#picture {
+.assignee .gravatar {
     margin-left: 5px;
     border-radius: 10px;
 }
-.card-meta #icons {
-}
-.card-meta #deadline {
+.card-meta .badge {
     margin-right: 5px;
 }
-.card-meta #comment {
-    margin-right: 5px;
-}
-.card-meta #severity,
-.card-meta #priority {
+.badge {
     border-radius: 3px;
     border-width: 1px;
     border-style: solid;
-    margin-right: 5px;
     padding: 1px;
 }
-.card-meta #severity[data-severity='blocker'],
-.card-meta #severity[data-severity='critical'],
-.card-meta #severity[data-severity='major'] {
+.badge[data-severity='blocker'],
+.badge[data-severity='critical'],
+.badge[data-severity='major'] {
     color: red;
 }
-.card-meta #severity[data-severity='normal'],
-.card-meta #severity[data-severity='minor'],
-.card-meta #severity[data-severity='trivial'] {
+.badge[data-severity='normal'],
+.badge[data-severity='minor'],
+.badge[data-severity='trivial'] {
     color: gray;
 }
-.card-meta #severity[data-severity='enhancement'] {
+.badge[data-severity='enhancement'] {
     color: green;
 }
-.card-meta #priority[data-priority='P1'],
-.card-meta #priority[data-priority='Highest'] {
+.badge[data-priority='P1'],
+.badge[data-priority='Highest'] {
     color: red;
 }
-.card-meta #priority[data-priority='P2'],
-.card-meta #priority[data-priority='High'] {
+.badge[data-priority='P2'],
+.badge[data-priority='High'] {
     color: orange;
 }
-.card-meta #priority[data-priority='P3'],
-.card-meta #priority[data-priority='Normal'],
-.card-meta #priority[data-priority='normal'],
-.card-meta #priority[data-priority='---'] {
+.badge[data-priority='P3'],
+.badge[data-priority='Normal'],
+.badge[data-priority='normal'],
+.badge[data-priority='---'] {
     color: green;
 }
 #textBacklog {

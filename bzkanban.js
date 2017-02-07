@@ -469,11 +469,11 @@ function loadComments(bug) {
         var card = getCardElement(bug.id);
         var commentCount = response.bugs[bug.id].comments.length - 1;
         if (commentCount > 1) {
-            var commentElement = card.children.cardmeta.children.icons.children.comment;
+            var commentElement = card.querySelector(".comment-count");
             commentElement.style.display = null; // unhide it
 
             var icon = document.createElement("i");
-            icon.setAttribute("class", "fa fa-comment-o fa-sm");
+            icon.className = "fa fa-comment-o fa-sm";
             icon.style.marginRight = "4px";
 
             commentElement.appendChild(icon);
@@ -671,7 +671,6 @@ function createCard(bug) {
 
     var meta = document.createElement("div");
     meta.className = "card-meta";
-    meta.setAttribute("id", "cardmeta");
 
     var assignee = document.createElement("span");
     assignee.title = "Assignee";
@@ -682,7 +681,7 @@ function createCard(bug) {
     fullname.innerHTML = bug.assigned_to_detail.real_name;
 
     var picture = document.createElement("img");
-    picture.setAttribute("id", "picture");
+    picture.className = "gravatar";
     if (bzShowGravatar) {
         picture.src = getPictureSrc(bug.assigned_to_detail.email);
     } else {
@@ -690,22 +689,22 @@ function createCard(bug) {
     }
 
     var icons = document.createElement("span");
-    icons.setAttribute("id", "icons");
+    icons.className = "badges";
 
     var comment = document.createElement("span");
-    comment.setAttribute("id", "comment");
+    comment.className = "comment-count";
     comment.style.display = "none";
 
     var deadline = createDeadlineElement(bug.deadline);
 
     var priority = document.createElement("span");
-    priority.setAttribute("id", "priority");
+    priority.className = "badge priority";
     priority.title = "Priority";
     priority.innerHTML = bug.priority;
     priority.dataset.priority = bug.priority;
 
     var severity = document.createElement("span");
-    severity.setAttribute("id", "severity");
+    severity.className = "badge severity";
     severity.title = "Severity";
     severity.innerHTML = bug.severity;
     severity.dataset.severity = bug.severity;
@@ -743,7 +742,7 @@ function createCard(bug) {
 
 function createDeadlineElement(deadline) {
     var deadlineElement = document.createElement("span");
-    deadlineElement.setAttribute("id", "deadline");
+    deadlineElement.className = "badge deadline";
 
     if (deadline === undefined || deadline === null) {
         deadlineElement.style.display = "none";
@@ -757,7 +756,7 @@ function createDeadlineElement(deadline) {
     cardDate.setFullYear(dateArray[0], dateArray[1] - 1, dateArray[2]);
 
     var icon = document.createElement("i");
-    icon.setAttribute("class", "fa fa-calendar-o fa-sm");
+    icon.className = "fa fa-calendar-o fa-sm";
     icon.style.marginRight = "4px";
 
     var dateText = document.createTextNode(cardDate.getDate() + " " + month[cardDate.getMonth()] + " " + cardDate.getFullYear());
