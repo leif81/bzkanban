@@ -474,7 +474,6 @@ function loadComments(bug) {
 
             var icon = document.createElement("i");
             icon.className = "fa fa-comment-o fa-sm";
-            icon.style.marginRight = "4px";
 
             commentElement.appendChild(icon);
             commentElement.appendChild(document.createTextNode(commentCount));
@@ -692,7 +691,7 @@ function createCard(bug) {
     icons.className = "badges";
 
     var comment = document.createElement("span");
-    comment.className = "comment-count";
+    comment.className = "badge comment-count";
     comment.style.display = "none";
 
     var deadline = createDeadlineElement(bug.deadline);
@@ -700,14 +699,21 @@ function createCard(bug) {
     var priority = document.createElement("span");
     priority.className = "badge priority";
     priority.title = "Priority";
-    priority.innerHTML = bug.priority;
     priority.dataset.priority = bug.priority;
+    var priorityIcon = document.createElement("i");
+    priorityIcon.className = "fa fa-sort";
+    priority.appendChild(priorityIcon);
+    priority.appendChild(document.createTextNode(bug.priority));
 
     var severity = document.createElement("span");
     severity.className = "badge severity";
     severity.title = "Severity";
-    severity.innerHTML = bug.severity;
     severity.dataset.severity = bug.severity;
+    var severityIcon = document.createElement("i");
+    severityIcon.className = "fa";
+    severityIcon.classList.add("fa-lightbulb-o");
+    severity.appendChild(severityIcon);
+    severity.appendChild(document.createTextNode(bug.severity));
 
     card.appendChild(buglink);
     card.appendChild(summary);
@@ -757,7 +763,6 @@ function createDeadlineElement(deadline) {
 
     var icon = document.createElement("i");
     icon.className = "fa fa-calendar-o fa-sm";
-    icon.style.marginRight = "4px";
 
     var dateText = document.createTextNode(cardDate.getDate() + " " + month[cardDate.getMonth()] + " " + cardDate.getFullYear());
 

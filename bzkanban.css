@@ -93,13 +93,10 @@ body {
     border-radius: 10px;
 }
 .card-meta .badge {
-    margin-right: 5px;
+    margin-right: 10px;
 }
-.badge {
-    border-radius: 3px;
-    border-width: 1px;
-    border-style: solid;
-    padding: 1px;
+.badge .fa {
+    padding-right: 3px;
 }
 .badge[data-severity='blocker'],
 .badge[data-severity='critical'],
