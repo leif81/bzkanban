@@ -254,7 +254,8 @@ body {
 .modal-footer button {
     align-self: flex-end;
 }
-#modalBug .modal-body {
+#modalBug .modal-body,
+#modalNewBug .modal-body {
     flex-direction: row;
 }
 .bug-comments {
