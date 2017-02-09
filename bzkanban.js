@@ -1395,7 +1395,7 @@ function showBugModal(bugCurrent, bugUpdate) {
         showSpinner();
 
         // Show comments and description
-        httpGet("/rest/bug/" + bugCurrent.id + "/comment?include_fields=text,time", function(response) {
+        httpGet("/rest.cgi/bug/" + bugCurrent.id + "/comment?include_fields=text,time", function(response) {
             hideSpinner();
             var commentsObj = response.bugs[bugCurrent.id].comments;
 
