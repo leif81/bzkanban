@@ -232,8 +232,10 @@ body {
     padding: 15px;
     flex-direction: column;
     align-self: stretch;
-    min-height: 4vh;
     overflow-y: auto;
+}
+.modal-footer {
+    min-height: 25px;
 }
 .modal-body input,
 .modal-body select {
