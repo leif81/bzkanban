@@ -1215,6 +1215,7 @@ function createModal(elementId) {
 
     var close = document.createElement("i");
     close.className = "fa fa-close modalClose";
+    close.title = "Close window";
     close.onclick = function() {
         hideModal();
     };
