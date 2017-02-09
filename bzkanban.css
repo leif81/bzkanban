@@ -222,16 +222,18 @@ body {
     cursor: pointer;
 }
 .modal-header {
+    font-size: x-large;
+}
+.modal-header,
+.modal-body,
+.modal-footer {
     padding: 15px;
     align-self: stretch;
-    font-size: x-large;
 }
 .modal-body,
 .modal-footer {
     display: flex;
-    padding: 15px;
     flex-direction: column;
-    align-self: stretch;
     overflow-y: auto;
 }
 .modal-footer {
