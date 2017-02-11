@@ -316,3 +316,20 @@ a:hover {
 .busy {
     cursor: wait;
 }
+@media only screen and (max-device-width: 480px) {
+    #nav span {
+        display: inline-block;
+    }
+    span#whoami {
+        display: none;
+    }
+    #board {
+        flex-direction: column;
+    }
+    .board-column {
+        display: inline;
+    }
+    .modal-content {
+        width: initial;
+    }
+}
