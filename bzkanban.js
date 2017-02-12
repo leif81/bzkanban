@@ -354,6 +354,9 @@ function loadBugs() {
 
         showColumnCounts();
         loadAssigneesList();
+        if (isLoggedIn() && bzShowGravatar) {
+            loadEmailAddress();
+        }
         if (bzAssignedTo !== "") {
             var name = bzAssignees.get(bzAssignedTo).real_name;
             filterByAssignee(name);
@@ -681,6 +684,7 @@ function createCard(bug) {
 
     var picture = document.createElement("img");
     picture.className = "gravatar";
+    picture.className += " gravatar-" + bug.assigned_to_detail.name;
     if (bzShowGravatar) {
         picture.src = getPictureSrc(bug.assigned_to_detail.email);
     } else {
@@ -1502,6 +1506,29 @@ function createCommentsBox() {
     commentBoxLabel.appendChild(commentBox);
 
     return commentBoxLabel;
+}
+
+function loadEmailAddress() {
+    var idUrl = "";
+    bzAssignees.forEach(function(user) {
+        if (user.id === undefined) { return; }
+        idUrl += "ids=" + user.id + "&";
+    });
+    httpGet("/rest.cgi/user?" + idUrl + "include_fields=email,name", function(response) {
+        response.users.forEach(function(user) {
+            var userDetail = bzAssignees.get(user.name);
+            userDetail.email = user.email
+            bzAssignees.set(user.name, userDetail);
+            updateGravatarIcons(user);
+        });
+    });
+}
+
+function updateGravatarIcons(user) {
+    var gravatarIcon = document.getElementsByClassName("gravatar-" + user.name);
+    Array.prototype.forEach.call(gravatarIcon, function(card) {
+        card.src = getPictureSrc(user.email);
+    });
 }
 
 // Register event handlers
