@@ -309,6 +309,12 @@ a {
 a:hover {
     color: lightgrey;
 }
+blockquote {
+    font-style: italic;
+    margin-left: 10px;
+    padding-left: 10px;
+    border-left: 5px solid #eee;
+}
 #actions button,
 #actions span {
     margin-left: 5px;
