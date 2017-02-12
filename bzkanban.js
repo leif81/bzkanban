@@ -1390,7 +1390,7 @@ function showBugModal(bugCurrent, bugUpdate) {
         showSpinner();
 
         // Show comments and description
-        httpGet("/rest.cgi/bug/" + bugCurrent.id + "/comment?include_fields=text,time", function(response) {
+        httpGet("/rest.cgi/bug/" + bugCurrent.id + "/comment?include_fields=text,time,creator", function(response) {
             hideSpinner();
             var commentsObj = response.bugs[bugCurrent.id].comments;
 
@@ -1410,6 +1410,7 @@ function showBugModal(bugCurrent, bugUpdate) {
                 commentDate.className = "bug-comment-date";
                 commentDate.title = date;
                 commentDate.innerText = new timeago().format(date);
+                commentDate.innerText += " by " + commentsObj[comment].creator;
 
                 commentLabel.appendChild(commentDate);
                 commentLabel.appendChild(commentText);
