@@ -81,6 +81,16 @@ function loadParams() {
     }
 
     bzAuthObject = JSON.parse(localStorage.getItem(bzSiteUrl));
+
+    var modal = getURLParameter("modal");
+    if (modal !== null) {
+        // The modal needs data that won't be available until the board is loaded.
+        onBoardLoaded(function() {
+            // HACK: reopen the modal with a click.
+            var card = getCardElement(bug.id);
+            card.click();
+        });
+    }
 }
 
 function initNav() {
@@ -599,6 +609,20 @@ function loadDefaultMilestone() {
     httpGet("/rest.cgi/product/" + bzProduct + "?type=enterable&include_fields=default_milestone", function(response) {
         bzDefaultMilestone = response.products[0].default_milestone;
     });
+}
+
+function onBoardLoaded(callback) {
+    var id = window.setInterval(function() {
+        if (bzDefaultPriority !== undefined &&
+            bzDefaultSeverity !== undefined &&
+            bzDefaultMilestone !== undefined &&
+            bzProductPriorities !== undefined &&
+            bzProductSeverities !== undefined &&
+            bzBoardLoadTime !== "") {
+            clearInterval(id);
+            callback();
+        }
+    }, 50); // milliseconds
 }
 
 function addBoardColumn(status) {
@@ -1192,6 +1216,12 @@ function updateAddressBar() {
     newURL += "&autorefresh=" + bzAutoRefresh;
     newURL += "&site=" + bzSiteUrl;
 
+    // If the modal is open, remember that too.
+    var modal = document.querySelector("#modalBug");
+    if (modal !== null) {
+        newURL += "&modal=" + modal.dataset.bugId;
+    }
+
     history.pushState({}, '', newURL);
 }
 
@@ -1339,6 +1369,8 @@ function showBugModal(bugCurrent, bugUpdate) {
     var body = modal.querySelector(".modal-body");
     var header = modal.querySelector(".modal-header");
     var footer = modal.querySelector(".modal-footer");
+
+    modal.dataset.bugId = bugCurrent.id;
 
     var card = getCardElement(bugCurrent.id);
     var bugTitle = card.querySelector(".card-summary").innerText;
@@ -1493,6 +1525,7 @@ function showBugModal(bugCurrent, bugUpdate) {
     footer.appendChild(submit);
 
     document.querySelector(bzDomElement).appendChild(modal);
+    updateAddressBar();
 }
 
 function hideModal() {
