@@ -157,9 +157,6 @@ body {
 #whoami {
     font-size: small;
 }
-.drop-target-hover {
-    background: gold;
-}
 #notification {
     display: none;
     margin-left: 5px;

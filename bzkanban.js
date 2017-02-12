@@ -1026,19 +1026,11 @@ function dragCardEnter(ev) {
     if (ev.target.classList.contains("board-column")) {
         ev.currentTarget.classList.add("drag-card");
     }
-
-    if (ev.target.classList.contains("drop-target")) {
-        ev.target.classList.add("drop-target-hover");
-    }
 }
 
 function dragCardLeave(ev) {
     if (ev.target.classList.contains("board-column")) {
         ev.currentTarget.classList.remove("drag-card");
-    }
-
-    if (ev.target.classList.contains("drop-target")) {
-        ev.target.classList.remove("drop-target-hover");
     }
 }
 
@@ -1089,8 +1081,6 @@ function dropCard(ev) {
         bugUpdate.status = ev.currentTarget.id;
         bugUpdate.target_milestone = bzProductMilestone;
     }
-
-    ev.target.classList.remove("drop-target-hover");
 
     if (bzAddCommentOnChange) {
         showBugModal(bugCurrent, bugUpdate);
