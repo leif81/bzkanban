@@ -1340,7 +1340,7 @@ function showBugModal(bugCurrent, bugUpdate) {
     var header = modal.querySelector(".modal-header");
     var footer = modal.querySelector(".modal-footer");
 
-    var card = document.querySelector(".card[data-bug-id='" + bugCurrent.id + "']");
+    var card = getCardElement(bugCurrent.id);
     var bugTitle = card.querySelector(".card-summary").innerText;
     var title = document.createTextNode("#" + bugCurrent.id + " " + bugTitle);
     header.appendChild(title);
