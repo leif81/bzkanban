@@ -1541,7 +1541,7 @@ function loadEmailAddress() {
 function updateGravatarIcons(user) {
     var gravatarIcon = document.querySelectorAll(".assignee[data-assignee-name='" + user.name + "'] .gravatar");
     var gravatar = getPictureSrc(user.email);
-    Array.prototype.forEach.call(gravatarIcon, function(card) {
+    gravatarIcon.forEach(function(card) {
         card.src = gravatar;
     });
 }
