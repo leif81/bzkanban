@@ -1,3 +1,5 @@
+/* jshint browser: true, devel: true */
+/* global linkifyHtml, timeago, CryptoJS, Map, Set */
 'use strict';
 
 // Configuration options.
