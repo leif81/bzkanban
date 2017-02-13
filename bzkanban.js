@@ -1539,8 +1539,9 @@ function loadEmailAddress() {
 
 function updateGravatarIcons(user) {
     var gravatarIcon = document.getElementsByClassName("gravatar-" + user.name);
+    var gravatar = getPictureSrc(user.email);
     Array.prototype.forEach.call(gravatarIcon, function(card) {
-        card.src = getPictureSrc(user.email);
+        card.src = gravatar;
     });
 }
 
