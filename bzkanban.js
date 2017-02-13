@@ -1406,6 +1406,16 @@ function showBugModal(bugCurrent, bugUpdate) {
                 var commentText = document.createElement("div");
                 commentText.className = "bug-comment";
                 commentText.innerText = commentsObj[comment].text;
+                commentText.innerHTML = linkifyHtml(commentText.innerHTML, {
+                    // Only linkify links that begin with http or https protocol.
+                    // e.g., "http://google.com" will be linkified, but "google.com" will not.
+                    // This avoids things like filenames (e.g. foobar.txt) from being interpretted as links.
+                    validate: {
+                        url: function(value) {
+                            return /^https?:\/\//.test(value);
+                        }
+                    }
+                });
 
                 var date = new Date(commentsObj[comment].time);
                 var commentDate = document.createElement("span");
