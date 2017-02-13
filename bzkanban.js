@@ -1532,7 +1532,7 @@ function loadEmailAddress() {
     httpGet("/rest.cgi/user?" + idUrl + "include_fields=email,name", function(response) {
         response.users.forEach(function(user) {
             var userDetail = bzAssignees.get(user.name);
-            userDetail.email = user.email
+            userDetail.email = user.email;
             bzAssignees.set(user.name, userDetail);
             updateGravatarIcons(user);
         });
