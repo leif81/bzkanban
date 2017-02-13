@@ -679,6 +679,7 @@ function createCard(bug) {
     var assignee = document.createElement("span");
     assignee.title = "Assignee";
     assignee.className = "assignee";
+    assignee.dataset.assigneeName = bug.assigned_to_detail.name;
 
     var fullname = document.createElement("span");
     fullname.className = "fullname";
@@ -686,7 +687,6 @@ function createCard(bug) {
 
     var picture = document.createElement("img");
     picture.className = "gravatar";
-    picture.className += " gravatar-" + bug.assigned_to_detail.name;
     if (bzShowGravatar) {
         picture.src = getPictureSrc(bug.assigned_to_detail.email);
     } else {
@@ -1539,7 +1539,7 @@ function loadEmailAddress() {
 }
 
 function updateGravatarIcons(user) {
-    var gravatarIcon = document.getElementsByClassName("gravatar-" + user.name);
+    var gravatarIcon = document.querySelectorAll(".assignee[data-assignee-name='" + user.name + "'] .gravatar");
     var gravatar = getPictureSrc(user.email);
     Array.prototype.forEach.call(gravatarIcon, function(card) {
         card.src = gravatar;
