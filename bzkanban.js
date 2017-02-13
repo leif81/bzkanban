@@ -1099,7 +1099,7 @@ function showBacklog() {
 
     if (!isBacklogVisible()) {
         var backlog = backlogCol.querySelector(".cards");
-        if (backlog.children.length == 0) {
+        if (backlog.children.length === 0) {
             // Load backlog on first access.
             loadBacklogCards();
         }
