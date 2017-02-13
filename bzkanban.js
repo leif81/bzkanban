@@ -1541,10 +1541,10 @@ function loadEmailAddress() {
 }
 
 function updateGravatarIcons(user) {
-    var gravatarIcon = document.querySelectorAll(".assignee[data-assignee-name='" + user.name + "'] .gravatar");
+    var gravatarIcons = document.querySelectorAll(".assignee[data-assignee-name='" + user.name + "'] .gravatar");
     var gravatar = getPictureSrc(user.email);
-    gravatarIcon.forEach(function(card) {
-        card.src = gravatar;
+    gravatarIcons.forEach(function(icon) {
+        icon.src = gravatar;
     });
 }
 
