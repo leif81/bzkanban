@@ -1524,7 +1524,9 @@ function createCommentsBox() {
 function loadEmailAddress() {
     var idUrl = "";
     bzAssignees.forEach(function(user) {
-        if (user.id === undefined) { return; }
+        if (user.id === undefined) {
+            return;
+        }
         idUrl += "ids=" + user.id + "&";
     });
     httpGet("/rest.cgi/user?" + idUrl + "include_fields=email,name", function(response) {
