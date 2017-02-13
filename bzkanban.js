@@ -356,6 +356,7 @@ function loadBugs() {
 
         showColumnCounts();
         loadAssigneesList();
+        // Needed for Bugzilla 6 because email not returned in bug info anymore.
         if (isLoggedIn() && bzShowGravatar) {
             loadEmailAddress();
         }
@@ -688,6 +689,7 @@ function createCard(bug) {
     var picture = document.createElement("img");
     picture.className = "gravatar";
     if (bzShowGravatar) {
+        // Email field removed in Bugzilla 6.
         picture.src = getPictureSrc(bug.assigned_to_detail.email);
     } else {
         picture.style.display = "none";
