@@ -688,11 +688,13 @@ function createCard(bug) {
 
     var picture = document.createElement("img");
     picture.className = "gravatar";
+    picture.style.display = "none";
     if (bzShowGravatar) {
         // Email field removed in Bugzilla 6.
-        picture.src = getPictureSrc(bug.assigned_to_detail.email);
-    } else {
-        picture.style.display = "none";
+        if (bug.assigned_to_detail.email !== undefined) {
+            picture.src = getPictureSrc(bug.assigned_to_detail.email);
+            picture.style.display = "block";
+        }
     }
 
     var icons = document.createElement("span");
@@ -1545,6 +1547,7 @@ function updateGravatarIcons(user) {
     var gravatar = getPictureSrc(user.email);
     gravatarIcons.forEach(function(icon) {
         icon.src = gravatar;
+        icon.style.display = "block";
     });
 }
 
