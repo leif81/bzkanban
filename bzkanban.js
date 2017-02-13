@@ -1526,6 +1526,12 @@ function createCommentsBox() {
 }
 
 function loadEmailAddress() {
+    // Avoid doing request if no assignees. Happens on empty board.
+    // The "ALL" user counts as one entry, ignore it.
+    if (bzAssignees.size === 1) {
+        return;
+    }
+
     var idUrl = "";
     bzAssignees.forEach(function(user) {
         if (user.id === undefined) {
