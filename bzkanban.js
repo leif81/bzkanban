@@ -1533,7 +1533,6 @@ function loadEmailAddress() {
         response.users.forEach(function(user) {
             var userDetail = bzAssignees.get(user.name);
             userDetail.email = user.email;
-            bzAssignees.set(user.name, userDetail);
             updateGravatarIcons(user);
         });
     });
