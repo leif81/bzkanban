@@ -724,6 +724,8 @@ function createCard(bug) {
             bugObject.priority = bug.priority;
             bugObject.severity = bug.severity;
             bugObject.resolution = bug.resolution;
+            bugObject.blocks = bug.blocks;
+            bugObject.depends_on = bug.depends_on;
             showBugModal(bugObject, bugObject);
         };
     }
@@ -1582,6 +1584,36 @@ function showBugModal(bugCurrent, bugUpdate) {
         };
 
         meta.appendChild(severityLabel);
+
+        // Blocks list
+        var blocksLabel = document.createElement("label");
+        blocksLabel.innerText = "Blocks";
+        var blocks = document.createElement("textarea");
+        blocks.disabled = true;
+        blocks.name = "blocks";
+        if (bugCurrent.blocks.length >= 1) {
+            bugCurrent.blocks.forEach(function(bug) {
+                blocks.value += bug + " ";
+            });
+        }
+        blocksLabel.appendChild(blocks);
+
+        meta.appendChild(blocksLabel);
+
+        // Depends On list
+        var dependsOnLabel = document.createElement("label");
+        dependsOnLabel.innerText = "Depends On";
+        var dependsOn = document.createElement("textarea");
+        dependsOn.disabled = true;
+        dependsOn.name = "dependson";
+        if (bugCurrent.depends_on.length >= 1) {
+            bugCurrent.depends_on.forEach(function(bug) {
+                dependsOn.value += bug + " ";
+            });
+        }
+        dependsOnLabel.appendChild(dependsOn);
+
+        meta.appendChild(dependsOnLabel);
     } else {
         comments.appendChild(createCommentsBox());
     }
