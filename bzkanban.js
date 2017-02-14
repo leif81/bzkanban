@@ -1,5 +1,5 @@
 /* jshint browser: true, devel: true */
-/* global linkifyHtml, timeago, CryptoJS, Map, Set */
+/* global async, linkifyHtml, timeago, CryptoJS, Map, Set */
 'use strict';
 
 // Configuration options.
@@ -38,8 +38,13 @@ var bzAuthObject;
 
 function initBzkanban() {
     loadParams();
-    initNav();
-    initBoard();
+    async.parallel([
+        initNav,
+        initBoard
+    ],
+    function(err, results) {
+        console.log("bzkanban initialized!");
+    });
 }
 
 function loadParams() {
@@ -85,7 +90,7 @@ function loadParams() {
     bzAuthObject = JSON.parse(localStorage.getItem(bzSiteUrl));
 }
 
-function initNav() {
+function initNav(callback) {
     var nav = document.createElement("div");
     nav.id = "nav";
     document.querySelector(bzDomElement).appendChild(nav);
@@ -98,25 +103,34 @@ function initNav() {
 
     nav.appendChild(createActions());
 
-    if (isLoggedIn()) {
-        loadName();
-        hideSignInButton();
-    }
-
-    loadProductsList();
-
-    if (bzProduct !== "") {
-        loadMilestonesList();
-    }
+    async.parallel([
+        loadName,
+        loadProductsList,
+        loadMilestonesList
+    ],
+    function(err, results) {
+        console.log("Nav initialized!");
+        callback();
+    });
 }
 
-function initBoard() {
+function initBoard(callbackInitBoard) {
     var board = document.createElement("div");
     board.id = "board";
     document.querySelector(bzDomElement).appendChild(board);
 
-    loadProductInfo();
-    loadColumns();
+    async.parallel([
+        loadColumnsAndCards,
+        loadProductInfo,
+        loadResolutions,
+        loadPriorities,
+        loadSeverities,
+        loadDefaultPrioritySeverityFields
+    ],
+    function(err, results) {
+        console.log("Board initialized!");
+        callbackInitBoard();
+    });
 }
 
 function createQueryFields() {
@@ -144,15 +158,20 @@ function createQueryFields() {
         // Clear affected state.
         bzProductMilestone = "";
         bzAssignedTo = "";
+        showSpinner();
         hideBacklog();
-        loadMilestonesList();
-        loadProductInfo();
         clearAssigneesList();
         clearCards();
         updateAddressBar();
         hideBacklogButton();
         hideNewBugButton();
         hideNotification();
+        async.parallel([
+            loadMilestonesList,
+            loadProductInfo
+        ], function(err, result) {
+            hideSpinner();
+        });
     });
 
     var milestone = document.createElement("span");
@@ -172,8 +191,6 @@ function createQueryFields() {
 
         // Clear affected state.
         bzAssignedTo = "";
-        showBacklogButton();
-        showNewBugButton();
         hideNotification();
 
         // Hot load the board without a form submit.
@@ -326,17 +343,48 @@ function showLoginModal() {
 }
 
 
-function loadBoard() {
+function loadBoard(callbackLoadBoard) {
+    if (bzProduct === "" || bzProductMilestone === "") {
+        if (callbackLoadBoard !== undefined) {
+            return callbackLoadBoard();
+        } else {
+            return;
+        }
+    }
+
     showSpinner();
     clearAssigneesList();
     clearCards();
-    loadBugs();
-    if (isBacklogVisible()) {
-        loadBacklogCards();
-    }
+
+    async.series([
+        loadBugs,
+        function(callback) {
+            if (isBacklogVisible()) {
+                loadBacklogCards(callback);
+            } else {
+                callback();
+            }
+        },
+        function(callback) {
+            // Needed for Bugzilla 6 because email not returned in bug info anymore.
+            if (isLoggedIn() && bzShowGravatar) {
+                loadEmailAddress(callback);
+            } else {
+                callback();
+            }
+        }
+    ], function(err, results) {
+        showNewBugButton();
+        showBacklogButton();
+        hideSpinner();
+        console.log("Board loaded!");
+        if (callbackLoadBoard !== undefined) {
+            callbackLoadBoard();
+        }
+    });
 }
 
-function loadBugs() {
+function loadBugs(callback) {
     bzBoardLoadTime = new Date().toISOString();
 
     bzRestGetBugsUrl = "/rest.cgi/bug?product=" + bzProduct;
@@ -356,20 +404,18 @@ function loadBugs() {
 
         showColumnCounts();
         loadAssigneesList();
-        // Needed for Bugzilla 6 because email not returned in bug info anymore.
-        if (isLoggedIn() && bzShowGravatar) {
-            loadEmailAddress();
-        }
         if (bzAssignedTo !== "") {
             var name = bzAssignees.get(bzAssignedTo).real_name;
             filterByAssignee(name);
         }
-        hideSpinner();
         scheduleCheckForUpdates();
+
+        console.log("Loaded bugs: " + bugs.length);
+        callback();
     });
 }
 
-function loadProductsList() {
+function loadProductsList(callback) {
     httpGet("/rest.cgi/product?type=enterable&include_fields=name", function(response) {
         document.getElementById("textProduct").disabled = false;
         var products = response.products;
@@ -384,12 +430,17 @@ function loadProductsList() {
         });
         // select it in list.
         document.getElementById("textProduct").value = bzProduct;
+
+        callback();
     });
 }
 
-function loadMilestonesList() {
+function loadMilestonesList(callback) {
+    if (bzProduct === "") {
+        return callback();
+    }
+
     clearMilestonesList();
-    showSpinner();
     httpGet("/rest.cgi/product?names=" + bzProduct + "&include_fields=milestones", function(response) {
         document.getElementById("textMilestone").disabled = false;
         var milestones = response.products[0].milestones;
@@ -401,7 +452,8 @@ function loadMilestonesList() {
         });
         // select it in list.
         document.getElementById("textMilestone").value = bzProductMilestone;
-        hideSpinner();
+
+        callback();
     });
 }
 
@@ -427,23 +479,33 @@ function loadAssigneesList() {
     elem.removeAttribute("disabled");
 }
 
-function loadProductInfo() {
-    if (bzProduct !== "") {
-        httpGet("/rest.cgi/product/" + bzProduct + "?include_fields=has_unconfirmed", function(response) {
-            bzProductHasUnconfirmed = response.products[0].has_unconfirmed;
-            updateUnconfirmedColumnVisibilty();
-        });
-
-        // used for populating New Bug modal
-        if (isLoggedIn()) {
-            loadDefaultMilestone();
-            loadComponentsList();
-            loadVersionsList();
-        }
+function loadProductInfo(callback) {
+    if (bzProduct === "") {
+        return callback();
     }
+
+    async.parallel([
+        loadUnconfirmedVisibility,
+        loadDefaultMilestone,
+        loadComponentsList,
+        loadVersionsList
+    ],
+    function(err, results) {
+        callback();
+    });
 }
 
-function loadColumns() {
+function loadColumnsAndCards(callback) {
+    async.series([
+        loadColumns,
+        loadBoard
+    ],
+    function(err, results) {
+        callback();
+    });
+}
+
+function loadColumns(callback) {
     httpGet("/rest.cgi/field/bug/status/values", function(response) {
         // Always add a backlog as first column
         var backlog = addBoardColumn("BACKLOG");
@@ -454,18 +516,7 @@ function loadColumns() {
             addBoardColumn(status);
         });
 
-        if (bzProduct !== "" && bzProductMilestone !== "") {
-            loadBoard();
-            showNewBugButton();
-            showBacklogButton();
-        }
-
-        if (isLoggedIn()) {
-            loadResolutions();
-            loadPriorities();
-            loadSeverities();
-            loadDefaultPrioritySeverityFields();
-        }
+        callback();
     });
 }
 
@@ -486,18 +537,23 @@ function loadComments(bug) {
     });
 }
 
-function loadName() {
+function loadName(callback) {
+    if (!isLoggedIn()) {
+        return callback();
+    }
     httpGet("/rest.cgi/user/" + bzAuthObject.userID, function(response) {
         bzUserFullName = response.users[0].real_name;
         if (bzUserFullName !== null) {
             var el = document.getElementById("whoami");
             el.textContent = bzUserFullName;
             el.style.display = null; // unhide it
+            hideSignInButton();
         }
+        callback();
     });
 }
 
-function loadResolutions() {
+function loadResolutions(callback) {
     bzProductResolutions = new Set();
     httpGet("/rest.cgi/field/bug/resolution", function(response) {
         var arrayResolutions = response.fields;
@@ -508,10 +564,11 @@ function loadResolutions() {
             }
             bzProductResolutions.add(resolutionName);
         });
+        callback();
     });
 }
 
-function loadPriorities() {
+function loadPriorities(callback) {
     bzProductPriorities = new Set();
     httpGet("/rest.cgi/field/bug/priority", function(response) {
         var arrayPriorities = response.fields;
@@ -522,10 +579,11 @@ function loadPriorities() {
             }
             bzProductPriorities.add(priorityName);
         });
+        callback();
     });
 }
 
-function loadSeverities() {
+function loadSeverities(callback) {
     bzProductSeverities = new Set();
     httpGet("/rest.cgi/field/bug/bug_severity", function(response) {
         var arraySeverities = response.fields;
@@ -536,11 +594,11 @@ function loadSeverities() {
             }
             bzProductSeverities.add(severityName);
         });
-
+        callback();
     });
 }
 
-function loadComponentsList() {
+function loadComponentsList(callback) {
     bzProductComponents = new Set();
     httpGet("/rest.cgi/product/" + bzProduct + "?type=enterable&include_fields=components", function(response) {
         var components = response.products[0].components;
@@ -553,10 +611,11 @@ function loadComponentsList() {
             }
             bzProductComponents.add(component.name);
         });
+        callback();
     });
 }
 
-function loadVersionsList() {
+function loadVersionsList(callback) {
     bzProductVersions = new Set();
     httpGet("/rest.cgi/product/" + bzProduct + "?type=enterable&include_fields=versions", function(response) {
         var versions = response.products[0].versions;
@@ -569,6 +628,7 @@ function loadVersionsList() {
             }
             bzProductVersions.add(version.name);
         });
+        callback();
     });
 }
 
@@ -593,16 +653,26 @@ function loadCheckForUpdates() {
     });
 }
 
-function loadDefaultPrioritySeverityFields() {
+function loadDefaultPrioritySeverityFields(callback) {
     httpGet("/rest.cgi/parameters", function(response) {
         bzDefaultPriority = response.parameters.defaultpriority;
         bzDefaultSeverity = response.parameters.defaultseverity;
+        callback();
     });
 }
 
-function loadDefaultMilestone() {
+function loadUnconfirmedVisibility(callback) {
+    httpGet("/rest.cgi/product/" + bzProduct + "?include_fields=has_unconfirmed", function(response) {
+        bzProductHasUnconfirmed = response.products[0].has_unconfirmed;
+        updateUnconfirmedColumnVisibilty();
+        callback();
+    });
+}
+
+function loadDefaultMilestone(callback) {
     httpGet("/rest.cgi/product/" + bzProduct + "?type=enterable&include_fields=default_milestone", function(response) {
         bzDefaultMilestone = response.products[0].default_milestone;
+        callback();
     });
 }
 
@@ -1009,8 +1079,6 @@ function showColumnCounts() {
 function writeBug(dataObj) {
     dataObj.token = bzAuthObject.userToken;
 
-    showSpinner();
-
     httpPut("/rest.cgi/bug/" + dataObj.id, dataObj, function() {
         loadBoard();
     });
@@ -1135,7 +1203,7 @@ function isBacklogVisible() {
     }
 }
 
-function loadBacklogCards() {
+function loadBacklogCards(callback) {
     showSpinner();
 
     bzRestGetBacklogUrl = "/rest.cgi/bug?product=" + bzProduct;
@@ -1158,6 +1226,8 @@ function loadBacklogCards() {
 
         // force a recount now that we have a new column.
         showColumnCounts();
+
+        callback();
     });
 }
 
@@ -1296,8 +1366,6 @@ function showNewBugModal() {
             platform: "ALL",
             target_milestone: bzProductMilestone
         };
-
-        showSpinner();
 
         httpRequest("POST", "/rest.cgi/bug", dataObj, function() {
             loadBoard();
@@ -1524,11 +1592,11 @@ function createCommentsBox() {
     return commentBoxLabel;
 }
 
-function loadEmailAddress() {
+function loadEmailAddress(callback) {
     // Avoid doing request if no assignees. Happens on empty board.
     // The "ALL" user counts as one entry, ignore it.
     if (bzAssignees.size === 1) {
-        return;
+        return callback();
     }
 
     var idUrl = "";
@@ -1544,6 +1612,7 @@ function loadEmailAddress() {
             userDetail.email = user.email;
             updateGravatarIcons(user);
         });
+        callback();
     });
 }
 
