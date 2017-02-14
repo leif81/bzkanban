@@ -388,7 +388,7 @@ function loadBugs(callback) {
     bzBoardLoadTime = new Date().toISOString();
 
     bzRestGetBugsUrl = "/rest.cgi/bug?product=" + bzProduct;
-    bzRestGetBugsUrl += "&include_fields=summary,status,resolution,id,severity,priority,assigned_to,last_updated,deadline";
+    bzRestGetBugsUrl += "&include_fields=summary,status,resolution,id,severity,priority,assigned_to,last_updated,deadline,blocks,depends_on";
     bzRestGetBugsUrl += "&order=" + bzOrder;
     bzRestGetBugsUrl += "&target_milestone=" + bzProductMilestone;
     bzRestGetBugsUrl += "&component=" + bzComponent;
@@ -794,6 +794,30 @@ function createCard(bug) {
     severity.appendChild(severityIcon);
     severity.appendChild(document.createTextNode(bug.severity));
 
+    var depends = document.createElement("span");
+    depends.className = "badge depends";
+    depends.title = "Depends On";
+    if (bug.depends_on.length >= 1) {
+        depends.style.display = "";
+    } else {
+        depends.style.display = "none";
+    }
+    var dependsIcon = document.createElement("i");
+    dependsIcon.className = "fa fa-link";
+    depends.appendChild(dependsIcon);
+
+    var blocks = document.createElement("span");
+    blocks.className = "badge blocks";
+    blocks.title = "Blocker";
+    if (bug.blocks.length >= 1) {
+        blocks.style.display = "";
+    } else {
+        blocks.style.display = "none";
+    }
+    var blocksIcon = document.createElement("i");
+    blocksIcon.className = "fa fa-ban";
+    blocks.appendChild(blocksIcon);
+
     card.appendChild(buglink);
     card.appendChild(summary);
     card.appendChild(meta);
@@ -801,6 +825,8 @@ function createCard(bug) {
     icons.appendChild(priority);
     icons.appendChild(severity);
     icons.appendChild(comment);
+    icons.appendChild(depends);
+    icons.appendChild(blocks);
     icons.appendChild(deadline);
     assignee.appendChild(fullname);
     assignee.appendChild(picture);
