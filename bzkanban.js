@@ -453,7 +453,6 @@ function loadColumns() {
         statuses.forEach(function(status) {
             addBoardColumn(status);
         });
-        updateUnconfirmedColumnVisibilty();
 
         if (bzProduct !== "" && bzProductMilestone !== "") {
             loadBoard();
