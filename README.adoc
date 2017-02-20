@@ -25,7 +25,7 @@ https://rawgit.com/leif81/bzkanban/master/index.html?product=Bugzilla&milestone=
 
 == Usage
 
- . Open the `index.html` in your web brower.
+ . Open the `index.html` in your web browser.
  . Pick a product and milestone and view the board!
  . Log in to enable editing cards, which includes dragging cards between columns.
 
