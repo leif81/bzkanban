@@ -810,7 +810,7 @@ function createCard(bug) {
 
     var blocks = document.createElement("span");
     blocks.className = "badge blocks";
-    blocks.title = "Blocker";
+    blocks.title = "Blocks";
     if (bug.blocks.length >= 1) {
         blocks.style.display = "";
     } else {
