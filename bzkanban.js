@@ -1589,13 +1589,17 @@ function showBugModal(bugCurrent, bugUpdate) {
         var blocksLabel = document.createElement("label");
         blocksLabel.innerText = "Blocks";
         var blocks = document.createElement("textarea");
-        blocks.disabled = true;
         blocks.name = "blocks";
         if (bugCurrent.blocks.length >= 1) {
             bugCurrent.blocks.forEach(function(bug) {
                 blocks.value += bug + " ";
             });
         }
+
+        blocks.onchange = function() {
+            bugUpdate.blocks = blocks.value;
+        };
+
         blocksLabel.appendChild(blocks);
 
         meta.appendChild(blocksLabel);
@@ -1604,13 +1608,17 @@ function showBugModal(bugCurrent, bugUpdate) {
         var dependsOnLabel = document.createElement("label");
         dependsOnLabel.innerText = "Depends On";
         var dependsOn = document.createElement("textarea");
-        dependsOn.disabled = true;
         dependsOn.name = "dependson";
         if (bugCurrent.depends_on.length >= 1) {
             bugCurrent.depends_on.forEach(function(bug) {
                 dependsOn.value += bug + " ";
             });
         }
+
+        dependsOn.onchange = function() {
+            bugUpdate.depends_on = dependsOn.value;
+        };
+
         dependsOnLabel.appendChild(dependsOn);
 
         meta.appendChild(dependsOnLabel);
