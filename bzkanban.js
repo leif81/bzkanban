@@ -801,20 +801,22 @@ function createCard(bug) {
     depends.title = "Depends On";
     if (bug.depends_on.length === 0) {
         depends.style.display = "none";
+    } else {
+        var dependsIcon = document.createElement("i");
+        dependsIcon.className = "fa fa-link";
+        depends.appendChild(dependsIcon);
     }
-    var dependsIcon = document.createElement("i");
-    dependsIcon.className = "fa fa-link";
-    depends.appendChild(dependsIcon);
 
     var blocks = document.createElement("span");
     blocks.className = "badge blocks";
     blocks.title = "Blocks";
     if (bug.blocks.length === 0) {
         blocks.style.display = "none";
+    } else {
+        var blocksIcon = document.createElement("i");
+        blocksIcon.className = "fa fa-ban";
+        blocks.appendChild(blocksIcon);
     }
-    var blocksIcon = document.createElement("i");
-    blocksIcon.className = "fa fa-ban";
-    blocks.appendChild(blocksIcon);
 
     card.appendChild(buglink);
     card.appendChild(summary);
