@@ -799,9 +799,7 @@ function createCard(bug) {
     var depends = document.createElement("span");
     depends.className = "badge depends";
     depends.title = "Depends On";
-    if (bug.depends_on.length >= 1) {
-        depends.style.display = "";
-    } else {
+    if (bug.depends_on.length === 0) {
         depends.style.display = "none";
     }
     var dependsIcon = document.createElement("i");
@@ -811,9 +809,7 @@ function createCard(bug) {
     var blocks = document.createElement("span");
     blocks.className = "badge blocks";
     blocks.title = "Blocks";
-    if (bug.blocks.length >= 1) {
-        blocks.style.display = "";
-    } else {
+    if (bug.blocks.length === 0) {
         blocks.style.display = "none";
     }
     var blocksIcon = document.createElement("i");
