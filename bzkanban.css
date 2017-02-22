@@ -273,9 +273,6 @@ body {
     margin-left: 10px;
     width: 100%;
 }
-.bug-meta textarea {
-    height: inherit;
-}
 .bug-comment {
     border-style: solid;
     border-color: darkgrey;

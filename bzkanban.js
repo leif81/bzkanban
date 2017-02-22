@@ -1588,7 +1588,7 @@ function showBugModal(bugCurrent, bugUpdate) {
         // Blocks list
         var blocksLabel = document.createElement("label");
         blocksLabel.innerText = "Blocks";
-        var blocks = document.createElement("textarea");
+        var blocks = document.createElement("input");
         blocks.name = "blocks";
         if (bugCurrent.blocks.length >= 1) {
             bugCurrent.blocks.forEach(function(bug) {
@@ -1607,7 +1607,7 @@ function showBugModal(bugCurrent, bugUpdate) {
         // Depends On list
         var dependsOnLabel = document.createElement("label");
         dependsOnLabel.innerText = "Depends On";
-        var dependsOn = document.createElement("textarea");
+        var dependsOn = document.createElement("input");
         dependsOn.name = "dependson";
         if (bugCurrent.depends_on.length >= 1) {
             bugCurrent.depends_on.forEach(function(bug) {
