@@ -1227,7 +1227,9 @@ function loadBacklogCards(callback) {
         // force a recount now that we have a new column.
         showColumnCounts();
 
-        callback();
+        if (callback !== undefined) {
+            callback();
+        }
     });
 }
 
