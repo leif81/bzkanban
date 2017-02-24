@@ -317,19 +317,26 @@ a:hover {
     cursor: wait;
 }
 @media only screen and (max-device-width: 480px) {
-    #nav span {
-        display: inline-block;
-    }
-    span#whoami {
-        display: none;
+    body {
+        background-attachment: fixed;
     }
     #board {
-        flex-direction: column;
+        display: block;
     }
-    .board-column {
-        display: inline;
+    #modalBug .modal-body,
+    #modalNewBug .modal-body {
+        flex-direction: column;
     }
     .modal-content {
         width: initial;
+    }
+    .bug-comments {
+        display: block;
+        min-width: initial;
+        max-width: initial;
+    }
+    .bug-meta {
+        display: block;
+        margin-left: 0;
     }
 }
