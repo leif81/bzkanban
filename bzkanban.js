@@ -1590,13 +1590,9 @@ function showBugModal(bugCurrent, bugUpdate) {
         blocks.name = "blocks";
         if (bugCurrent.blocks.length >= 1) {
             bugCurrent.blocks.forEach(function(bug) {
-                blocks.value += bug + " ";
+                blocks.value += bug + ",";
             });
         }
-
-        blocks.onchange = function() {
-            bugUpdate.blocks = blocks.value;
-        };
 
         blocksLabel.appendChild(blocks);
 
@@ -1609,13 +1605,9 @@ function showBugModal(bugCurrent, bugUpdate) {
         dependsOn.name = "dependson";
         if (bugCurrent.depends_on.length >= 1) {
             bugCurrent.depends_on.forEach(function(bug) {
-                dependsOn.value += bug + " ";
+                dependsOn.value += bug + ",";
             });
         }
-
-        dependsOn.onchange = function() {
-            bugUpdate.depends_on = dependsOn.value;
-        };
 
         dependsOnLabel.appendChild(dependsOn);
 
@@ -1630,6 +1622,18 @@ function showBugModal(bugCurrent, bugUpdate) {
     submit.onclick = function() {
         bugUpdate.comment = {};
         bugUpdate.comment.body = document.querySelector("#commentBoxText").value;
+
+        // Converting from Array to Object
+        // And support space or comma delimited list
+        delete bugUpdate.depends_on;
+        dependsOn.value = dependsOn.value.replace(/\ /g, ",");
+        bugUpdate.depends_on = {};
+        bugUpdate.depends_on.set = dependsOn.value.split(",");
+        delete bugUpdate.blocks;
+        blocks.value = blocks.value.replace(/\ /g, ",");
+        bugUpdate.blocks = {};
+        bugUpdate.blocks.set = blocks.value.split(",");
+
         hideModal();
         writeBug(bugUpdate);
     };
