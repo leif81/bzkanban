@@ -39,5 +39,3 @@ These are some settings that can be manually controlled via the page URL.
  ** Show comment counts on cards. WARNING: it's expensive, one more request per card. e.g. `comments=true/false`
  * `autorefresh`
  ** Reload the board when external changes to bugs are detected. e.g. `autorefresh=true/false`
- * `gravatar`
- ** Show user gravatar images. e.g. `gravatar=true/false`

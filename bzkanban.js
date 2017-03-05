@@ -6,7 +6,6 @@
 var bzSiteUrl = "http://bugzilla.msec.local";
 var bzOrder = "priority,bug_severity,assigned_to";
 var bzAllowEditBugs = true;
-var bzShowGravatar = true;
 var bzAddCommentOnChange = true;
 var bzLoadComments = false;
 var bzCheckForUpdates = true;
@@ -75,11 +74,6 @@ function loadParams() {
     var comments = getURLParameter("comments");
     if (comments !== null) {
         bzLoadComments = isTrue(comments);
-    }
-
-    var pictures = getURLParameter("gravatar");
-    if (pictures !== null) {
-        bzShowGravatar = isTrue(pictures);
     }
 
     var autorefresh = getURLParameter("autorefresh");
@@ -367,7 +361,7 @@ function loadBoard(callbackLoadBoard) {
         },
         function(callback) {
             // Needed for Bugzilla 6 because email not returned in bug info anymore.
-            if (isLoggedIn() && bzShowGravatar) {
+            if (isLoggedIn()) {
                 loadEmailAddress(callback);
             } else {
                 callback();
@@ -758,12 +752,10 @@ function createCard(bug) {
     var picture = document.createElement("img");
     picture.className = "gravatar";
     picture.style.display = "none";
-    if (bzShowGravatar) {
-        // Email field removed in Bugzilla 6.
-        if (bug.assigned_to_detail.email !== undefined) {
-            picture.src = getPictureSrc(bug.assigned_to_detail.email);
-            picture.style.display = "block";
-        }
+    // Email field removed in Bugzilla 6.
+    if (bug.assigned_to_detail.email !== undefined) {
+        picture.src = getPictureSrc(bug.assigned_to_detail.email);
+        picture.style.display = "block";
     }
 
     var icons = document.createElement("span");
@@ -1258,7 +1250,6 @@ function updateAddressBar() {
     newURL += "?product=" + bzProduct;
     newURL += "&milestone=" + bzProductMilestone;
     newURL += "&assignee=" + bzAssignedTo;
-    newURL += "&gravatar=" + bzShowGravatar;
     newURL += "&comments=" + bzLoadComments;
     newURL += "&autorefresh=" + bzAutoRefresh;
     newURL += "&site=" + bzSiteUrl;
