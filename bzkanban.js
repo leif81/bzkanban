@@ -346,7 +346,12 @@ function loadBoard(callbackLoadBoard) {
     clearCards();
     hideNotification();
     showNewBugButton();
-    showBacklogButton();
+    if (bzProductMilestone === "---") {
+        hideBacklog();
+        hideBacklogButton();
+    } else {
+        showBacklogButton();
+    }
     updateAddressBar();
 
     async.series([
