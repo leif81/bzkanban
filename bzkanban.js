@@ -183,13 +183,8 @@ function createQueryFields() {
     milestoneList.addEventListener("input", function() {
         bzProductMilestone = document.getElementById("textMilestone").value;
 
-        // Clear affected state.
-        bzAssignedTo = "";
-        hideNotification();
-
         // Hot load the board without a form submit.
         loadBoard();
-        updateAddressBar();
     });
 
     var assignee = document.createElement("span");
@@ -349,6 +344,10 @@ function loadBoard(callbackLoadBoard) {
     showSpinner();
     clearAssigneesList();
     clearCards();
+    hideNotification();
+    showNewBugButton();
+    showBacklogButton();
+    updateAddressBar();
 
     async.series([
         loadBugs,
@@ -368,8 +367,6 @@ function loadBoard(callbackLoadBoard) {
             }
         }
     ], function(err, results) {
-        showNewBugButton();
-        showBacklogButton();
         hideSpinner();
         console.log("Board loaded!");
         if (callbackLoadBoard !== undefined) {
