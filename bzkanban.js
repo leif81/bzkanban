@@ -754,7 +754,7 @@ function createCard(bug) {
     picture.style.display = "none";
     // Email field removed in Bugzilla 6.
     if (bug.assigned_to_detail.email !== undefined) {
-        picture.src = getPictureSrc(bug.assigned_to_detail.email);
+        picture.src = getGravatarImgSrc(bug.assigned_to_detail.email);
         picture.style.display = "block";
     }
 
@@ -1235,7 +1235,7 @@ function removeChildren(elem) {
     }
 }
 
-function getPictureSrc(email) {
+function getGravatarImgSrc(email) {
     var hash = CryptoJS.MD5(email);
     var hashString = hash.toString(CryptoJS.enc.Base64);
 
@@ -1611,7 +1611,7 @@ function loadEmailAddress(callback) {
 
 function updateGravatarIcons(user) {
     var gravatarIcons = document.querySelectorAll(".assignee[data-assignee-name='" + user.name + "'] .gravatar");
-    var gravatar = getPictureSrc(user.email);
+    var gravatar = getGravatarImgSrc(user.email);
     gravatarIcons.forEach(function(icon) {
         icon.src = gravatar;
         icon.style.display = "block";
