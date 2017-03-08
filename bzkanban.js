@@ -401,8 +401,14 @@ function loadBugs(callback) {
         showColumnCounts();
         loadAssigneesList();
         if (bzAssignedTo !== "") {
-            var name = bzAssignees.get(bzAssignedTo).real_name;
-            filterByAssignee(name);
+            var assignee = bzAssignees.get(bzAssignedTo);
+            if (assignee === undefined) {
+                // This may happen when changing milestones if assignee had been selected but has no cards here.
+                // TODO: hide all cards?
+                console.log("No cards found assigned to " + bzAssignedTo + ". Showing all.");
+            } else {
+                filterByAssignee(assignee.real_name);
+            }
         }
         scheduleCheckForUpdates();
 
