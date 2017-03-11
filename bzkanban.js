@@ -730,16 +730,7 @@ function createCard(bug) {
         };
     }
 
-    var buglink = document.createElement("a");
-    buglink.href= bzSiteUrl + "/show_bug.cgi?id=" + bug.id;
-    buglink.target = "_blank"; // open in new tab
-    buglink.innerHTML = "#" + bug.id;
-    buglink.className = "card-ref";
-    buglink.onclick = function(ev) {
-        // On click follow href link.
-        // And prevent event propagation up to card click handler, which would cause modal to be shown.
-        ev.stopPropagation();
-    };
+    var buglink = createBugNumberElement(bug.id);
 
     var summary = document.createElement("div");
     summary.appendChild(document.createTextNode(bug.summary)); // so that we get HTML string escaping for free
@@ -1609,6 +1600,20 @@ function createCommentsBox() {
     commentBoxLabel.appendChild(commentBox);
 
     return commentBoxLabel;
+}
+
+function createBugNumberElement(bugId) {
+    var bugNumber = document.createElement("a");
+    bugNumber.className = "card-ref";
+    bugNumber.innerHTML = "#" + bugId;
+    bugNumber.href = bzSiteUrl + "/show_bug.cgi?id=" + bugId;
+    bugNumber.target = "_blank"; // open in new tab
+    bugNumber.onclick = function(ev) {
+        // On click follow href link.
+        // And prevent event propagation up to card click handler, which would cause modal to be shown.
+        ev.stopPropagation();
+    };
+    return bugNumber;
 }
 
 function loadEmailAddress(callback) {
