@@ -267,6 +267,9 @@ body {
 #modalNewBug .modal-body {
     flex-direction: row;
 }
+#modalBug .card-ref {
+    margin-left: 10px;
+}
 .bug-comments {
     display: flex;
     flex-direction: column;

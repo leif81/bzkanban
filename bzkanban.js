@@ -1401,7 +1401,6 @@ function showBugModal(bugCurrent, bugUpdate) {
 
     var card = getCardElement(bugCurrent.id);
     var bugTitle = card.querySelector(".card-summary").innerText;
-    var bugNumber = document.createTextNode(" #" + bugCurrent.id);
     var bugTitleText = document.createElement("label");
     bugTitleText.innerText = bugTitle;
     bugTitleText.id = "showBugTitleText";
@@ -1412,6 +1411,7 @@ function showBugModal(bugCurrent, bugUpdate) {
         bugTitleText.parentNode.replaceChild(inputBugTitle, bugTitleText);
         inputBugTitle.value = labelText;
     }
+    var bugNumber = createBugNumberElement(bugCurrent.id);
 
     header.appendChild(bugTitleText);
     header.appendChild(bugNumber);
