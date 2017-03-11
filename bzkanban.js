@@ -384,7 +384,7 @@ function loadBugs(callback) {
     bzBoardLoadTime = new Date().toISOString();
 
     bzRestGetBugsUrl = "/rest.cgi/bug?product=" + bzProduct;
-    bzRestGetBugsUrl += "&include_fields=summary,status,resolution,id,severity,priority,assigned_to,last_updated,deadline";
+    bzRestGetBugsUrl += "&include_fields=summary,status,resolution,id,severity,priority,assigned_to,last_updated,deadline,blocks,depends_on";
     bzRestGetBugsUrl += "&order=" + bzOrder;
     bzRestGetBugsUrl += "&target_milestone=" + bzProductMilestone;
     bzRestGetBugsUrl += "&component=" + bzComponent;
@@ -726,6 +726,8 @@ function createCard(bug) {
             bugObject.priority = bug.priority;
             bugObject.severity = bug.severity;
             bugObject.resolution = bug.resolution;
+            bugObject.blocks = bug.blocks;
+            bugObject.depends_on = bug.depends_on;
             showBugModal(bugObject, bugObject);
         };
     }
@@ -794,6 +796,28 @@ function createCard(bug) {
     severity.appendChild(severityIcon);
     severity.appendChild(document.createTextNode(bug.severity));
 
+    var depends = document.createElement("span");
+    depends.className = "badge depends";
+    depends.title = "Depends On";
+    if (bug.depends_on.length === 0) {
+        depends.style.display = "none";
+    } else {
+        var dependsIcon = document.createElement("i");
+        dependsIcon.className = "fa fa-link";
+        depends.appendChild(dependsIcon);
+    }
+
+    var blocks = document.createElement("span");
+    blocks.className = "badge blocks";
+    blocks.title = "Blocks";
+    if (bug.blocks.length === 0) {
+        blocks.style.display = "none";
+    } else {
+        var blocksIcon = document.createElement("i");
+        blocksIcon.className = "fa fa-ban";
+        blocks.appendChild(blocksIcon);
+    }
+
     card.appendChild(buglink);
     card.appendChild(summary);
     card.appendChild(meta);
@@ -801,6 +825,8 @@ function createCard(bug) {
     icons.appendChild(priority);
     icons.appendChild(severity);
     icons.appendChild(comment);
+    icons.appendChild(depends);
+    icons.appendChild(blocks);
     icons.appendChild(deadline);
     assignee.appendChild(fullname);
     assignee.appendChild(picture);
@@ -1555,6 +1581,36 @@ function showBugModal(bugCurrent, bugUpdate) {
         };
 
         meta.appendChild(severityLabel);
+
+        // Blocks list
+        var blocksLabel = document.createElement("label");
+        blocksLabel.innerText = "Blocks";
+        var blocks = document.createElement("input");
+        blocks.name = "blocks";
+        if (bugCurrent.blocks.length >= 1) {
+            bugCurrent.blocks.forEach(function(bug) {
+                blocks.value += bug + ",";
+            });
+        }
+
+        blocksLabel.appendChild(blocks);
+
+        meta.appendChild(blocksLabel);
+
+        // Depends On list
+        var dependsOnLabel = document.createElement("label");
+        dependsOnLabel.innerText = "Depends On";
+        var dependsOn = document.createElement("input");
+        dependsOn.name = "dependson";
+        if (bugCurrent.depends_on.length >= 1) {
+            bugCurrent.depends_on.forEach(function(bug) {
+                dependsOn.value += bug + ",";
+            });
+        }
+
+        dependsOnLabel.appendChild(dependsOn);
+
+        meta.appendChild(dependsOnLabel);
     } else {
         comments.appendChild(createCommentsBox());
     }
@@ -1565,6 +1621,18 @@ function showBugModal(bugCurrent, bugUpdate) {
     submit.onclick = function() {
         bugUpdate.comment = {};
         bugUpdate.comment.body = document.querySelector("#commentBoxText").value;
+
+        // Converting from Array to Object
+        // And support space or comma delimited list
+        delete bugUpdate.depends_on;
+        dependsOn.value = dependsOn.value.replace(/\ /g, ",");
+        bugUpdate.depends_on = {};
+        bugUpdate.depends_on.set = dependsOn.value.split(",");
+        delete bugUpdate.blocks;
+        blocks.value = blocks.value.replace(/\ /g, ",");
+        bugUpdate.blocks = {};
+        bugUpdate.blocks.set = blocks.value.split(",");
+
         hideModal();
         writeBug(bugUpdate);
     };
