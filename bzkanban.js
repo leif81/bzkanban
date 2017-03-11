@@ -728,6 +728,9 @@ function createCard(bug) {
             bugObject.resolution = bug.resolution;
             showBugModal(bugObject, bugObject);
         };
+    } else {
+        var link = bzSiteUrl + "/show_bug.cgi?id=" + bug.id;
+        window.open(link, "_blank");
     }
 
     var buglink = createBugNumberElement(bug.id);
