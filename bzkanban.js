@@ -1400,20 +1400,18 @@ function showBugModal(bugCurrent, bugUpdate) {
     var footer = modal.querySelector(".modal-footer");
 
     var card = getCardElement(bugCurrent.id);
-    var bugTitle = card.querySelector(".card-summary").innerText;
-    var bugTitleText = document.createElement("label");
-    bugTitleText.innerText = bugTitle;
-    bugTitleText.id = "showBugTitleText";
-    bugTitleText.onclick = function() {
-        var labelText = document.getElementById("showBugTitleText").innerText;
+    var bugTitle = document.createElement("span");
+    bugTitle.innerText = card.querySelector(".card-summary").innerText; // grab title from card
+    bugTitle.className = "card-summary";
+    bugTitle.onclick = function() {
         var inputBugTitle = document.createElement("input");
-        inputBugTitle.id = "showBugTitleText";
-        bugTitleText.parentNode.replaceChild(inputBugTitle, bugTitleText);
-        inputBugTitle.value = labelText;
+        inputBugTitle.id = "card-summary-new";
+        inputBugTitle.value = bugTitle.innerText;
+        bugTitle.parentNode.replaceChild(inputBugTitle, bugTitle);
     }
     var bugNumber = createBugNumberElement(bugCurrent.id);
 
-    header.appendChild(bugTitleText);
+    header.appendChild(bugTitle);
     header.appendChild(bugNumber);
 
     // Card was dragged
@@ -1569,7 +1567,7 @@ function showBugModal(bugCurrent, bugUpdate) {
         bugUpdate.comment = {};
         bugUpdate.comment.body = document.querySelector("#commentBoxText").value;
 
-        var newBugSummary = document.querySelector("input#showBugTitleText");
+        var newBugSummary = document.querySelector("#card-summary-new");
         if (newBugSummary) {
             bugUpdate.summary = newBugSummary.value;
         }
