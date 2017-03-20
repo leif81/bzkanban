@@ -729,8 +729,10 @@ function createCard(bug) {
             showBugModal(bugObject, bugObject);
         };
     } else {
-        var link = bzSiteUrl + "/show_bug.cgi?id=" + bug.id;
-        window.open(link, "_blank");
+        card.onclick = function() {
+            var link = bzSiteUrl + "/show_bug.cgi?id=" + bug.id;
+            window.open(link, "_blank");
+        };
     }
 
     var buglink = createBugNumberElement(bug.id);
@@ -803,7 +805,6 @@ function createCard(bug) {
     if (isLoggedIn() && bzAllowEditBugs) {
         card.draggable = "true";
         card.addEventListener("dragstart", dragCard);
-        card.style.cursor = "pointer";
     }
 
     if (bzLoadComments) {
