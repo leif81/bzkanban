@@ -33,7 +33,7 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    margin: 4px;
+    margin: 0 4px;
 }
 .board-column.drag-card {
     outline-width: 2px;
