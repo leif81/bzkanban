@@ -735,8 +735,6 @@ function createCard(bug) {
         };
     }
 
-    var buglink = createBugNumberElement(bug.id);
-
     var summary = document.createElement("div");
     summary.appendChild(document.createTextNode(bug.summary)); // so that we get HTML string escaping for free
     summary.className = "card-summary";
@@ -765,6 +763,10 @@ function createCard(bug) {
     var icons = document.createElement("span");
     icons.className = "badges";
 
+    var bugnumber = document.createElement("span");
+    bugnumber.className = "badge bug-number";
+    bugnumber.append(createBugNumberElement(bug.id));
+
     var comment = document.createElement("span");
     comment.className = "badge comment-count";
     comment.style.display = "none";
@@ -790,10 +792,10 @@ function createCard(bug) {
     severity.appendChild(severityIcon);
     severity.appendChild(document.createTextNode(bug.severity));
 
-    card.appendChild(buglink);
     card.appendChild(summary);
     card.appendChild(meta);
     meta.appendChild(icons);
+    icons.appendChild(bugnumber);
     icons.appendChild(priority);
     icons.appendChild(severity);
     icons.appendChild(comment);
