@@ -866,7 +866,7 @@ function clearCards() {
         el.innerHTML = "";
     });
     document.querySelectorAll(".board-column-card-count").forEach(function(el) {
-        el.innerHTML = "";
+        el.remove();
     });
 }
 
