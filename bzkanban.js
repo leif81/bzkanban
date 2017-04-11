@@ -1067,7 +1067,7 @@ function showColumnCounts() {
                 count++;
             }
         });
-        cardCount.innerText += "(" + count + ")";
+        cardCount.innerText += count;
         var title = col.firstChild;
         title.appendChild(cardCount);
     });

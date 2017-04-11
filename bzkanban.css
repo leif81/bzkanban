@@ -26,9 +26,14 @@ body {
     align-self: stretch;
 }
 .board-column-card-count {
-    font-size: small;
+    font-weight: normal;
     color: grey;
     margin-left: 10px;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 5px;
+    border-color: lightgrey;
+    padding: 2px 3px;
 }
 .board-column {
     flex: 1;
