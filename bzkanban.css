@@ -35,8 +35,8 @@ body {
     display: flex;
     flex-direction: column;
     margin: 0 4px;
-    min-width: 300px;
-    max-width: 300px;
+    min-width: 350px;
+    max-width: 400px;
 }
 .board-column.drag-card {
     outline-width: 2px;
