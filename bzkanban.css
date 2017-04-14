@@ -158,20 +158,20 @@ body {
     border-radius: 0 3px 3px 0;
 }
 #query span {
-    margin-right: 15px;
+    margin-right: 8px;
 }
 #whoami {
     font-size: small;
 }
 #notification {
     display: none;
-    margin-left: 5px;
+    margin-left: 8px;
 }
 #nav {
     flex: none;
     display: flex;
     flex-wrap: wrap;
-    padding: 20px;
+    padding: 20px 4px;
 }
 #nav span {
     align-self: center;
@@ -328,7 +328,7 @@ a:hover {
 }
 #actions button,
 #actions span {
-    margin-left: 5px;
+    margin-left: 8px;
 }
 .busy {
     cursor: wait;
