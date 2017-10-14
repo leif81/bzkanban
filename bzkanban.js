@@ -777,19 +777,12 @@ function createCard(bug) {
     priority.className = "badge priority";
     priority.title = "Priority";
     priority.dataset.priority = bug.priority;
-    var priorityIcon = document.createElement("i");
-    priorityIcon.className = "fa fa-sort";
-    priority.appendChild(priorityIcon);
     priority.appendChild(document.createTextNode(bug.priority));
 
     var severity = document.createElement("span");
     severity.className = "badge severity";
     severity.title = "Severity";
     severity.dataset.severity = bug.severity;
-    var severityIcon = document.createElement("i");
-    severityIcon.className = "fa";
-    severityIcon.classList.add("fa-lightbulb-o");
-    severity.appendChild(severityIcon);
     severity.appendChild(document.createTextNode(bug.severity));
 
     card.appendChild(summary);
