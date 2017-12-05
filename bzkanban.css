@@ -1,6 +1,6 @@
 body {
     background: #83a4d4; /* fallback for old browsers */
-    background: linear-gradient(to bottom, #83a4d4 , #b6fbff);
+    background: linear-gradient(to bottom, #d7d3c8, #f6f4ec);
     font-family: sans-serif;
     margin: 0;
 }
@@ -16,6 +16,7 @@ body {
 }
 .board-column-title {
     font-weight: bold;
+    color: #0095dd;
     padding: 10px 5px 5px 5px;
     padding-top: 10px;
     border-radius: 3px 3px 0 0;
