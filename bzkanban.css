@@ -20,6 +20,9 @@ body {
     padding: 10px 5px 5px 5px;
     padding-top: 10px;
     border-radius: 3px 3px 0 0;
+    border-color: darkgrey;
+    border-width: 1px 1px 0 1px;
+    border-style: solid;
     background: #E2E4E6;
 }
 .cards {
@@ -54,6 +57,9 @@ body {
     flex-direction: column;
     overflow-y: auto;
     border-radius: 0 0 3px 3px;
+    border-color: darkgrey;
+    border-width: 0 1px 1px 1px;
+    border-style: solid;
     background: #E2E4E6;
 }
 #BACKLOG .board-column-title,
