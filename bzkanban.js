@@ -1413,12 +1413,6 @@ function showBugModal(bugCurrent, bugUpdate) {
     header.appendChild(bugTitle);
     header.appendChild(bugNumber);
 
-    // Card was dragged
-    if (bugCurrent.status !== bugUpdate.status) {
-        // TODO show what's changed in modal as confirmation?
-        console.log("Bug " + bugCurrent.id + " moved from " + bugCurrent.status + " to " + bugUpdate.status);
-    }
-
     var comments = document.createElement("div");
     comments.className = "bug-comments";
 
@@ -1556,6 +1550,11 @@ function showBugModal(bugCurrent, bugUpdate) {
 
         meta.appendChild(severityLabel);
     } else {
+        // Card was dragged
+
+        // TODO show what's changed in modal as confirmation?
+        console.log("Bug " + bugCurrent.id + " moved from " + bugCurrent.status + " to " + bugUpdate.status);
+
         comments.appendChild(createCommentsBox());
     }
 
