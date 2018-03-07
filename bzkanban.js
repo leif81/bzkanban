@@ -1263,7 +1263,7 @@ function createModal(elementId) {
     // When the user clicks anywhere outside of the modal, close it
     modal.addEventListener("click", function(e) {
         if (e.target == modal) {
-            hideModal();
+            hideModalCheckDraft();
         }
     });
 
@@ -1277,7 +1277,7 @@ function createModal(elementId) {
     close.className = "fa fa-close modalClose";
     close.title = "Close window";
     close.onclick = function() {
-        hideModal();
+        hideModalCheckDraft();
     };
 
     header.appendChild(close);
@@ -1579,6 +1579,24 @@ function showBugModal(bugCurrent, bugUpdate) {
     document.querySelector(bzDomElement).appendChild(modal);
 }
 
+function modalHasDraft() {
+    var commentBox = document.querySelector(".modal #commentBoxText");
+    if (commentBox != null) {
+        return commentBox.value.length > 0;
+    }
+    return false;
+}
+
+function hideModalCheckDraft() {
+    if (modalHasDraft()) {
+        if (!confirm("Discard your changes?")) {
+            return;
+        }
+    }
+
+    hideModal();
+}
+
 function hideModal() {
     var modal = document.querySelector(".modal");
     if (modal !== null) {
@@ -1659,6 +1677,6 @@ document.addEventListener("visibilitychange", function() {
 
 document.addEventListener("keyup", function(e) {
     if (e.code === "Escape") {
-        hideModal();
+        hideModalCheckDraft();
     }
 });
