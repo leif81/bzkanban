@@ -15,7 +15,7 @@ https://rawgit.com/leif81/bzkanban/master/index.html?product=Bugzilla&milestone=
 
 == Requirements
 
- . Client: A modern web browser capable of HTML5, CSS3, and JavaScript.
+ . Client: A modern web browser capable of HTML5, CSS3, and JavaScript (tested with Chrome and Edge)
  . Server: A Bugzilla 5.0+ server with REST API enabled.
 
 == Installation
