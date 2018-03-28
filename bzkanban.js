@@ -143,7 +143,7 @@ function createQueryFields() {
     productList.disabled = "true"; // until content is loaded
 
     // When the user changes the Product drop down
-    productList.addEventListener("input", function() {
+    productList.addEventListener("change", function() {
         bzProduct = document.getElementById("textProduct").value;
 
         // Disable Milestones until it's refreshed
@@ -180,7 +180,7 @@ function createQueryFields() {
     milestoneList.disabled = "true"; // until content is loaded
 
     // When the user changes the Milestone drop down
-    milestoneList.addEventListener("input", function() {
+    milestoneList.addEventListener("change", function() {
         bzProductMilestone = document.getElementById("textMilestone").value;
 
         // Hot load the board without a form submit.
@@ -199,7 +199,7 @@ function createQueryFields() {
     assigneeList.disabled = "true"; // until content is loaded
 
     // When the user changes the Assignee drop down
-    assigneeList.addEventListener("input", function() {
+    assigneeList.addEventListener("change", function() {
         bzAssignedTo = document.getElementById("textAssignee").value;
         updateAddressBar();
         var name = bzAssignees.get(bzAssignedTo).real_name;
