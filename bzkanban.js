@@ -657,8 +657,11 @@ function loadCheckForUpdates() {
 
 function loadDefaultPrioritySeverityFields(callback) {
     httpGet("/rest.cgi/parameters", function(response) {
-        bzDefaultPriority = response.parameters.defaultpriority;
-        bzDefaultSeverity = response.parameters.defaultseverity;
+        // HACK: The BMO site returns "no such method" response for some reason.
+        if (!response.error) {
+            bzDefaultPriority = response.parameters.defaultpriority;
+            bzDefaultSeverity = response.parameters.defaultseverity;
+        }
         callback();
     });
 }
