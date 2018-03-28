@@ -765,7 +765,7 @@ function createCard(bug) {
 
     var bugnumber = document.createElement("span");
     bugnumber.className = "badge bug-number";
-    bugnumber.append(createBugNumberElement(bug.id));
+    bugnumber.appendChild(createBugNumberElement(bug.id));
 
     var comment = document.createElement("span");
     comment.className = "badge comment-count";
