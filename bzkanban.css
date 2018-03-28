@@ -1,8 +1,12 @@
+html {
+    height: 100%;
+}
 body {
     background: #83a4d4; /* fallback for old browsers */
     background: linear-gradient(to bottom, #83a4d4 , #b6fbff);
     font-family: sans-serif;
     margin: 0;
+    height: 100%;
 }
 #bzkanban {
     display: flex;
