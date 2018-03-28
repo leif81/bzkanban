@@ -1016,7 +1016,7 @@ function hideNotification() {
 
 function doAuth(user, password) {
     showSpinner();
-    httpGet("/rest.cgi/login?login=" + user + "&password=" + password, function(response) {
+    httpGet("/rest.cgi/login?login=" + user + "&password=" + encodeURIComponent(password), function(response) {
         bzAuthObject = { 'userID': response.id, 'userToken': response.token };
         localStorage.setItem(bzSiteUrl, JSON.stringify(bzAuthObject));
         // force page refresh to rebuild entire page state based on users privelges.
@@ -1237,7 +1237,7 @@ function removeChildren(elem) {
 }
 
 function getGravatarImgSrc(email) {
-    var hash = CryptoJS.MD5(email);
+    var hash = CryptoJS.MD5(email.toLowerCase());
     var hashString = hash.toString(CryptoJS.enc.Base64);
 
     if (hashString !== "") {
