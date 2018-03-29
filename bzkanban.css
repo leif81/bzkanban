@@ -17,7 +17,6 @@ body {
 .board-column-title {
     font-weight: bold;
     padding: 10px 5px 5px 5px;
-    border-radius: 3px 3px 0 0;
     background: #E2E4E6;
 }
 .cards {
