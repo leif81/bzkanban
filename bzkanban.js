@@ -859,7 +859,7 @@ function removeBoard() {
 
 function clearCards() {
     document.querySelectorAll(".cards").forEach(function(el) {
-        el.innerHTML = "";
+        removeChildren(el);
     });
     document.querySelectorAll(".board-column-card-count").forEach(function(el) {
         el.remove();
@@ -1230,6 +1230,7 @@ function isTrue(string) {
     return (string === 'true');
 }
 
+// https://stackoverflow.com/a/3955238/52176
 function removeChildren(elem) {
     while (elem.firstChild) {
         elem.removeChild(elem.firstChild);
