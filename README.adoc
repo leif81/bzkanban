@@ -2,9 +2,10 @@
 
 == About
 
-Visualize Bugzilla milestones as cards and columns with a Kanban inspired board.
+This allows you to visualize your Bugzilla product milestones with a Kanban inspired board.
 
-The goal is to compliment an existing Bugzilla workflow, so board columns represent actual bug statuses.
+The goal is to compliment an existing Bugzilla workflow, so the board columns represent the bug statuses and the cards represent the bugs.
+Cards can be opened to view comments or add a new comment.
 Cards can be dragged from one column to another to change the bug status.
 
 It is implemented as a single-page application using Ajax with the http://bugzilla.readthedocs.io/en/latest/api/index.html[Bugzilla 5 server REST API].
