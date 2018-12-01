@@ -2,16 +2,18 @@
 /* global async, linkifyHtml, timeago, CryptoJS, Map, Set */
 'use strict';
 
-// Configuration options.
-var bzSiteUrl = "http://bugzilla.msec.local";
-var bzOrder = "priority,bug_severity,assigned_to";
-var bzAllowEditBugs = true;
-var bzAddCommentOnChange = true;
-var bzLoadComments = false;
-var bzCheckForUpdates = true;
-var bzAutoRefresh = false;
-var bzDomElement = "#bzkanban";
-var bzBacklogDefaultStatus = "CONFIRMED";
+// Override these by passing in an object with any of these key/value pairs into the initBzkanban function on startup.
+var bzOptions = {
+//    siteUrl: "https://bugzilla.mozilla.org",
+    order: "priority,bug_severity,assigned_to",
+    allowEditBugs: true,
+    addCommentOnChange: true,
+    loadComments: false,
+    checkForUpdates: true,
+    autoRefresh: false,
+    domElement: "#bzkanban",
+    backlogDefaultStatus: "CONFIRMED"
+};
 
 // "Private" global variables. Do not touch.
 var bzProduct = "";
@@ -35,7 +37,8 @@ var bzDefaultSeverity;
 var bzDefaultMilestone;
 var bzAuthObject;
 
-function initBzkanban() {
+function initBzkanban(options) {
+    bzOptions = Object.assign(bzOptions, options); // Merge user options onto defaults.
     loadParams();
     async.parallel([
         initNav,
@@ -66,28 +69,28 @@ function loadParams() {
     // For most permanent deployments just change the hardcodecoded bzSiteUrl.
     var site = getURLParameter("site");
     if (site !== null) {
-        bzSiteUrl = site;
+        bzOptions.siteUrl = site;
     }
 
     // Loading comments is expensive becase it's one extra request per bug.
     // Causing some Bugzilla servers to respond with "too many requests" errors.
     var comments = getURLParameter("comments");
     if (comments !== null) {
-        bzLoadComments = isTrue(comments);
+        bzOptions.loadComments = isTrue(comments);
     }
 
     var autorefresh = getURLParameter("autorefresh");
     if (autorefresh !== null) {
-        bzAutoRefresh = isTrue(autorefresh);
+        bzOptions.autoRefresh = isTrue(autorefresh);
     }
 
-    bzAuthObject = JSON.parse(localStorage.getItem(bzSiteUrl));
+    bzAuthObject = JSON.parse(localStorage.getItem(bzOptions.siteUrl));
 }
 
 function initNav(callback) {
     var nav = document.createElement("div");
     nav.id = "nav";
-    document.querySelector(bzDomElement).appendChild(nav);
+    document.querySelector(bzOptions.domElement).appendChild(nav);
 
     nav.appendChild(createQueryFields());
 
@@ -111,7 +114,7 @@ function initNav(callback) {
 function initBoard(callbackInitBoard) {
     var board = document.createElement("div");
     board.id = "board";
-    document.querySelector(bzDomElement).appendChild(board);
+    document.querySelector(bzOptions.domElement).appendChild(board);
 
     async.parallel([
         loadColumnsAndCards,
@@ -249,7 +252,7 @@ function createActions() {
             showNewBugModal();
         } else {
             // Open Bugzilla page
-            window.open(bzSiteUrl + "/enter_bug.cgi?product=" + bzProduct + "&target_milestone=" + bzProductMilestone);
+            window.open(bzOptions.siteUrl + "/enter_bug.cgi?product=" + bzProduct + "&target_milestone=" + bzProductMilestone);
         }
     });
 
@@ -328,7 +331,7 @@ function showLoginModal() {
     body.appendChild(passwordLabel);
     footer.appendChild(submit);
 
-    document.querySelector(bzDomElement).appendChild(loginModal);
+    document.querySelector(bzOptions.domElement).appendChild(loginModal);
 }
 
 
@@ -385,7 +388,7 @@ function loadBugs(callback) {
 
     bzRestGetBugsUrl = "/rest.cgi/bug?product=" + bzProduct;
     bzRestGetBugsUrl += "&include_fields=summary,status,resolution,id,severity,priority,assigned_to,last_updated,deadline";
-    bzRestGetBugsUrl += "&order=" + bzOrder;
+    bzRestGetBugsUrl += "&order=" + bzOptions.order;
     bzRestGetBugsUrl += "&target_milestone=" + bzProductMilestone;
     bzRestGetBugsUrl += "&component=" + bzComponent;
     bzRestGetBugsUrl += "&priority=" + bzPriority;
@@ -636,19 +639,19 @@ function loadVersionsList(callback) {
 
 function loadCheckForUpdates() {
     if (bzBoardLoadTime === "") {
-        bzCheckForUpdates = false;
+        bzOptions.checkForUpdates = false;
         return;
     }
     httpGet(bzRestGetBugsUrl + "&last_change_time=" + bzBoardLoadTime, function(response) {
         if (response.bugs.length > 0) {
-            if (bzAutoRefresh) {
+            if (bzOptions.autoRefresh) {
                 loadBoard();
             } else {
                 showNotification(response.bugs.length + " bug(s) have been updated externally. Hit refresh!");
             }
         }
 
-        if (bzCheckForUpdates) {
+        if (bzOptions.checkForUpdates) {
             // Repeat.
             scheduleCheckForUpdates();
         }
@@ -685,7 +688,7 @@ function addBoardColumn(status) {
     var div = document.createElement("div");
     div.className = "board-column";
     div.id = status;
-    if (isLoggedIn() && bzAllowEditBugs) {
+    if (isLoggedIn() && bzOptions.allowEditBugs) {
         div.addEventListener("drag", dragCardStart);
         div.addEventListener("dragend", dragCardEnd);
         div.addEventListener("dragover", dragCardOver);
@@ -721,7 +724,7 @@ function createCard(bug) {
     card.dataset.bugSeverity = bug.severity;
     card.dataset.bugResolution = bug.resolution;
 
-    if (isLoggedIn() && bzAllowEditBugs) {
+    if (isLoggedIn() && bzOptions.allowEditBugs) {
         card.onclick = function() {
             var bugObject = {};
             bugObject.id = bug.id;
@@ -733,7 +736,7 @@ function createCard(bug) {
         };
     } else {
         card.onclick = function() {
-            var link = bzSiteUrl + "/show_bug.cgi?id=" + bug.id;
+            var link = bzOptions.siteUrl + "/show_bug.cgi?id=" + bug.id;
             window.open(link, "_blank");
         };
     }
@@ -800,12 +803,12 @@ function createCard(bug) {
     assignee.appendChild(picture);
     meta.appendChild(assignee);
 
-    if (isLoggedIn() && bzAllowEditBugs) {
+    if (isLoggedIn() && bzOptions.allowEditBugs) {
         card.draggable = "true";
         card.addEventListener("dragstart", dragCard);
     }
 
-    if (bzLoadComments) {
+    if (bzOptions.loadComments) {
         loadComments(bug);
     }
 
@@ -918,7 +921,7 @@ function httpRequest(method, url, dataObj, successCallback, errorCallback) {
         if (xhr.readyState == XMLHttpRequest.DONE) {
             var response = xhr.responseText;
             if (response === "") {
-                var msg = "No response from " + bzSiteUrl + " for request " + url;
+                var msg = "No response from " + bzOptions.siteUrl + " for request " + url;
                 console.warn(msg);
                 return;
             }
@@ -960,7 +963,7 @@ function httpRequest(method, url, dataObj, successCallback, errorCallback) {
         url += "token=" + bzAuthObject.userToken;
     }
 
-    xhr.open(method, bzSiteUrl + url);
+    xhr.open(method, bzOptions.siteUrl + url);
     xhr.setRequestHeader("Accept", "application/json");
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send(JSON.stringify(dataObj));
@@ -1018,7 +1021,7 @@ function doAuth(user, password) {
     showSpinner();
     httpGet("/rest.cgi/login?login=" + user + "&password=" + encodeURIComponent(password), function(response) {
         bzAuthObject = { 'userID': response.id, 'userToken': response.token };
-        localStorage.setItem(bzSiteUrl, JSON.stringify(bzAuthObject));
+        localStorage.setItem(bzOptions.siteUrl, JSON.stringify(bzAuthObject));
         // force page refresh to rebuild entire page state based on users privelges.
         location.reload();
     }, function(error) {
@@ -1033,7 +1036,7 @@ function isLoggedIn() {
 }
 
 function signOut() {
-    localStorage.removeItem(bzSiteUrl);
+    localStorage.removeItem(bzOptions.siteUrl);
     showSignInButton();
 }
 
@@ -1144,7 +1147,7 @@ function dropCard(ev) {
     var bugUpdate = {};
     bugUpdate.id = bugCurrent.id;
     if (ev.currentTarget.id === "BACKLOG") {
-        bugUpdate.status = bzBacklogDefaultStatus;
+        bugUpdate.status = bzOptions.backlogDefaultStatus;
         bugUpdate.target_milestone = "---";
         bugUpdate.priority = bzDefaultPriority;
     } else {
@@ -1152,7 +1155,7 @@ function dropCard(ev) {
         bugUpdate.target_milestone = bzProductMilestone;
     }
 
-    if (bzAddCommentOnChange) {
+    if (bzOptions.addCommentOnChange) {
         showBugModal(bugCurrent, bugUpdate);
     } else {
         writeBug(bugUpdate);
@@ -1201,7 +1204,7 @@ function loadBacklogCards(callback) {
 
     bzRestGetBacklogUrl = "/rest.cgi/bug?product=" + bzProduct;
     bzRestGetBacklogUrl += "&include_fields=summary,status,id,severity,priority,assigned_to,last_updated,deadline";
-    bzRestGetBacklogUrl += "&order=" + bzOrder;
+    bzRestGetBacklogUrl += "&order=" + bzOptions.order;
     bzRestGetBacklogUrl += "&target_milestone=---";
     bzRestGetBacklogUrl += "&resolution=---";
     bzRestGetBacklogUrl += "&component=" + bzComponent;
@@ -1252,9 +1255,9 @@ function updateAddressBar() {
     newURL += "?product=" + bzProduct;
     newURL += "&milestone=" + bzProductMilestone;
     newURL += "&assignee=" + bzAssignedTo;
-    newURL += "&comments=" + bzLoadComments;
-    newURL += "&autorefresh=" + bzAutoRefresh;
-    newURL += "&site=" + bzSiteUrl;
+    newURL += "&comments=" + bzOptions.loadComments;
+    newURL += "&autorefresh=" + bzOptions.autoRefresh;
+    newURL += "&site=" + bzOptions.siteUrl;
 
     history.pushState({}, '', newURL);
 }
@@ -1393,7 +1396,7 @@ function showNewBugModal() {
         versions.appendChild(opt);
     });
 
-    document.querySelector(bzDomElement).appendChild(modal);
+    document.querySelector(bzOptions.domElement).appendChild(modal);
 }
 
 function showBugModal(bugCurrent, bugUpdate) {
@@ -1580,7 +1583,7 @@ function showBugModal(bugCurrent, bugUpdate) {
 
     footer.appendChild(submit);
 
-    document.querySelector(bzDomElement).appendChild(modal);
+    document.querySelector(bzOptions.domElement).appendChild(modal);
 }
 
 function modalHasDraft() {
@@ -1624,7 +1627,7 @@ function createBugNumberElement(bugId) {
     var bugNumber = document.createElement("a");
     bugNumber.className = "card-ref";
     bugNumber.innerHTML = "#" + bugId;
-    bugNumber.href = bzSiteUrl + "/show_bug.cgi?id=" + bugId;
+    bugNumber.href = bzOptions.siteUrl + "/show_bug.cgi?id=" + bugId;
     bugNumber.target = "_blank"; // open in new tab
     bugNumber.onclick = function(ev) {
         // On click follow href link.
@@ -1672,9 +1675,9 @@ function updateGravatarIcons(user) {
 // Background checking for updates to visible cards
 document.addEventListener("visibilitychange", function() {
     if (document.hidden) {
-        bzCheckForUpdates = false;
+        bzOptions.checkForUpdates = false;
     } else {
-        bzCheckForUpdates = true;
+        bzOptions.checkForUpdates = true;
         loadCheckForUpdates();
     }
 });

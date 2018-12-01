@@ -24,7 +24,7 @@ https://rawgit.com/leif81/bzkanban/master/index.html?product=Bugzilla&milestone=
 == Installation
 
  . Clone this git repo.
- . Configure which Bugzilla instance to connect to by modifying the hardcoded `bzSiteUrl` value in the `bzkanban.js` code.
+ . Configure which Bugzilla instance to connect to by modifying the `siteUrl` value in the `index.html` file.
 
 == Usage
 
@@ -37,7 +37,7 @@ https://rawgit.com/leif81/bzkanban/master/index.html?product=Bugzilla&milestone=
 These are some settings that can be manually controlled via the page URL.
 
  * `site`
- ** The Bugzilla instance to load data from. Overrides the internal `bzSiteUrl` setting. e.g. `site=https://bugzilla.mozilla.org`
+ ** The Bugzilla instance to load data from. Overrides the `siteUrl` setting. e.g. `site=https://bugzilla.mozilla.org`
  * `comments`
  ** Show comment counts on cards. WARNING: it's expensive, one more request per card. e.g. `comments=true/false`
  * `autorefresh`
