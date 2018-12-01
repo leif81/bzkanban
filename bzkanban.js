@@ -38,7 +38,7 @@ var bzDefaultMilestone;
 var bzAuthObject;
 
 function initBzkanban(options) {
-    bzOptions = Object.assign(bzOptions, options); // Merge user options onto defaults.
+    bzOptions = Object.assign(bzOptions, options); // Merge custom options into defaults.
     loadParams();
     async.parallel([
         initNav,
