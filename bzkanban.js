@@ -398,7 +398,8 @@ function loadBugs(callback) {
 
         bugs.forEach(function(bug) {
             var card = createCard(bug);
-            document.querySelector("#" + bug.status + " .cards").appendChild(card);
+            var status = bug.status.replace( / /g, '\\ ');
+            document.querySelector("#" + status + " .cards").appendChild(card);
         });
 
         showColumnCounts();
