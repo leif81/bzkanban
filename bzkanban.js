@@ -12,7 +12,8 @@ var bzOptions = {
     checkForUpdates: true,
     autoRefresh: false,
     domElement: "#bzkanban",
-    backlogDefaultStatus: "CONFIRMED"
+    backlogDefaultStatus: "CONFIRMED",
+    requiresResolution: { "RESOLVED": true }
 };
 
 // "Private" global variables. Do not touch.
@@ -1430,8 +1431,7 @@ function showBugModal(bugCurrent, bugUpdate) {
     body.appendChild(comments);
     body.appendChild(meta);
 
-    // TODO replace hard coded column name somehow.
-    if (bugUpdate.status === "RESOLVED") {
+    if ( bzOptions.requiresResolution[bugUpdate.status] ) {
         //  Resolution field.
         var resolutionLabel = document.createElement("label");
         resolutionLabel.innerText = "Resolution";
