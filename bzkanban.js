@@ -209,16 +209,33 @@ function createQueryFields() {
         filterByAssignee(name);
     });
 
+    var filter = document.createElement("span");
+
+    var filterIcon = document.createElement("i");
+    filterIcon.className = "fa fa-search";
+    filterIcon.title = "Filter";
+
+    var filterText = document.createElement("input");
+    filterText.id = 'textFilter';
+    filterText.name = 'textFilter';
+    filterText.placeholder = 'Filter';
+    filterText.addEventListener( "keyup", function() {
+        debounce( filterByString( document.getElementById("textFilter").value ), 500);
+    });
+
     product.appendChild(productIcon);
     product.appendChild(productList);
     milestone.appendChild(milestoneIcon);
     milestone.appendChild(milestoneList);
     assignee.appendChild(assigneeIcon);
     assignee.appendChild(assigneeList);
+    filter.appendChild(filterIcon);
+    filter.appendChild(filterText);
 
     query.appendChild(product);
     query.appendChild(milestone);
     query.appendChild(assignee);
+    query.appendChild(filter);
 
     return query;
 }
@@ -896,6 +913,21 @@ function filterByAssignee(name) {
     showColumnCounts();
 }
 
+function filterByString(string) {
+    var cards = document.querySelectorAll(".card");
+    cards.forEach(function(card) {
+        var regex = new RegExp( string, "i" );
+        if ( card.innerHTML.match( regex ) || string == "") {
+            card.style.display = "block";
+        } else {
+            card.style.display = "none";
+        }
+    });
+
+    // force reload
+    showColumnCounts();
+}
+
 function updateUnconfirmedColumnVisibilty() {
     var col = document.querySelector(".board-column#UNCONFIRMED");
     if (col !== null) {
@@ -906,6 +938,28 @@ function updateUnconfirmedColumnVisibilty() {
         }
     }
 }
+
+function debounce(func, wait, immediate) {
+  var timeout;
+
+  return function executedFunction() {
+    var context = this;
+    var args = arguments;
+
+    var later = function() {
+      timeout = null;
+      if (!immediate) func.apply(context, args);
+    };
+
+    var callNow = immediate && !timeout;
+
+    clearTimeout(timeout);
+
+    timeout = setTimeout(later, wait);
+
+    if (callNow) func.apply(context, args);
+  };
+};
 
 function httpPut(url, dataObj, successCallback, errorCallback) {
     httpRequest("PUT", url, dataObj, successCallback, errorCallback);
