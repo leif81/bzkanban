@@ -154,7 +154,7 @@ body {
     background-color: white;
 
 }
-#query select {
+#query select, #query input {
     width: 150px;
     border-width: 1px 1px 1px 0;
     border-radius: 0 3px 3px 0;
@@ -312,11 +312,7 @@ select, textarea, input, button {
     border-width: 1px;
     border-color: darkgrey;
 }
-input {
-    padding: 4px;
-}
 button {
-    padding: 4px;
     background-color: #E2E4E6;
 }
 button:hover {
