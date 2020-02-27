@@ -352,6 +352,10 @@ function showLoginModal() {
     document.querySelector(bzOptions.domElement).appendChild(loginModal);
 }
 
+function loginModalVisible() {
+    return document.querySelector(bzOptions.domElement).querySelector("#loginModal") != null;
+}
+
 
 function loadBoard(callbackLoadBoard) {
     if (bzProduct === "" || bzProductMilestone === "") {
@@ -989,19 +993,25 @@ function httpRequest(method, url, dataObj, successCallback, errorCallback) {
 
             if (obj.error !== null) {
                 hideSpinner();
+                console.error(obj.message);
+
                 switch (obj.code) {
                     case "32000":
                         // auth token has expired
                         signOut();
                         break;
+                    case "410":
+                        // "You must log in before using this part of Bugzilla."
+                        if(!loginModalVisible()) {
+                            showLoginModal();
+                        }
+                        break;
                 }
-
-                console.error(obj.message);
 
                 if (errorCallback !== undefined) {
                     errorCallback(obj);
                 } else {
-                    alert(obj.message);
+                    //alert(obj.message);
                 }
             }
         }
