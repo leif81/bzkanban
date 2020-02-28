@@ -981,7 +981,7 @@ function httpRequest(method, url, dataObj, successCallback, errorCallback) {
         if (xhr.readyState == XMLHttpRequest.DONE) {
             var response = xhr.responseText;
             if (response === "") {
-                var msg = "No response from " + bzOptions.siteUrl + " for request " + url;
+                var msg = "No response from " + bzOptions.siteUrl + url;
                 console.warn(msg);
                 return;
             }
