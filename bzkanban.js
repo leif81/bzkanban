@@ -1143,6 +1143,8 @@ function writeBug(dataObj) {
 
     httpPut("/rest.cgi/bug/" + dataObj.id, dataObj, function() {
         loadBoard();
+    }, function(bzError) {
+        alert(bzError.message);
     });
 }
 
