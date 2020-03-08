@@ -154,6 +154,9 @@ body {
     background-color: white;
 
 }
+input#textFilter {
+    padding: 4px;
+}
 #query select, #query input {
     width: 150px;
     border-width: 1px 1px 1px 0;
