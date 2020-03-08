@@ -214,12 +214,12 @@ function createQueryFields() {
 
     var filterIcon = document.createElement("i");
     filterIcon.className = "fa fa-search";
-    filterIcon.title = "Filter";
+    filterIcon.title = "Search Cards";
 
     var filterText = document.createElement("input");
     filterText.id = 'textFilter';
     filterText.name = 'textFilter';
-    filterText.placeholder = 'Filter';
+    filterText.placeholder = 'Search Cards';
     filterText.addEventListener( "keyup", function() {
         debounce( filterByString( document.getElementById("textFilter").value ), 500);
     });
