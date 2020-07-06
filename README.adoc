@@ -40,7 +40,7 @@ Note: This method uses the latest and greatest version of the bzkanban applicati
 If you'd prefer to run a copy of the bzkanban app from your local PC do the following:
 
  . Clone this git repo (e.g. `~/Downloads/bzkbanban`)
- . Open `index.html` and change which Bugzilla instance to connect to by modifying the `siteUrl` option.
+ . Open `~/Downloads/bzkbanban/index.html` and change which Bugzilla instance to connect to by modifying the `siteUrl` option.
  . Dougle click the `index.html` to run Bzkanban in your web browser. Bookmark it!
  
 === Server side app install
