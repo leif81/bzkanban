@@ -2,7 +2,7 @@
 
 == About
 
-This allows you to visualize bugs from any Bugzilla instance on a Kanban inspired board. And to make it even better, no server side installation is required!
+This allows you to visualize bugs from any Bugzilla instance on a Kanban inspired board.
 
 The goal of bzkanban is to compliment the Bugzilla workflow you are already using, so the board columns represent the Bugzilla bug statuses (i.e. NEW, ASSIGNED, REOPENED, RESOLVED, CLOSED -- or whatever your site has renamed them to) and of course each cards represents one bug. Cards can be opened by clicking on them to view comments or add a new comment. And cards can be dragged from one column to another to change the bug status.
 
