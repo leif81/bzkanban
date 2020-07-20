@@ -13,7 +13,17 @@ var bzOptions = {
     autoRefresh: false,
     domElement: "#bzkanban",
     backlogDefaultStatus: "CONFIRMED",
-    requiresResolution: { "RESOLVED": true }
+    requiresResolution: { "RESOLVED": true },
+    hiddenColumns: [],
+    defaultProduct: "",
+    defaultMilestone: "",
+    predefinedProducts: [],
+    predefinedStatuses: [],
+    predefinedResolutions: [],
+    predefinedPriorities: [],
+    predefinedSeverities: [],
+    predefinedComponents: [],
+    predefinedVersions: []
 };
 
 // "Private" global variables. Do not touch.
@@ -54,11 +64,15 @@ function loadParams() {
     var product = getURLParameter("product");
     if (product !== null) {
         bzProduct = product;
+    } else {
+        bzProduct = bzOptions.defaultProduct;
     }
 
     var milestone = getURLParameter("milestone");
     if (milestone !== null) {
         bzProductMilestone = milestone;
+    } else {
+        bzProductMilestone = bzOptions.defaultMilestone;
     }
 
     var assignee = getURLParameter("assignee");
@@ -108,6 +122,9 @@ function initNav(callback) {
     ],
     function(err, results) {
         console.log("Nav initialized!");
+        if (isLoggedIn() && bzProduct !== "" && bzProductMilestone !== "") {
+            loadBoard();
+        }
         callback();
     });
 }
@@ -444,9 +461,8 @@ function loadBugs(callback) {
 }
 
 function loadProductsList(callback) {
-    httpGet("/rest.cgi/product?type=enterable&include_fields=name", function(response) {
+    var processProducts_ = function(products) {
         document.getElementById("textProduct").disabled = false;
-        var products = response.products;
         products.sort(function(a, b) {
             return a.name.localeCompare(b.name);
         });
@@ -458,9 +474,20 @@ function loadProductsList(callback) {
         });
         // select it in list.
         document.getElementById("textProduct").value = bzProduct;
-
+    };
+    if (bzOptions.predefinedProducts.length <= 0) {
+        httpGet("/rest.cgi/product?type=enterable&include_fields=name", function(response) {
+            var products = response.products;
+            processProducts_(products);
+            callback();
+        });
+    } else {
+        var products = bzOptions.predefinedProducts.map(function(val) {
+            return {name: val};
+        });
+        processProducts_(products);
         callback();
-    });
+    }
 }
 
 function loadMilestonesList(callback) {
@@ -534,18 +561,36 @@ function loadColumnsAndCards(callback) {
 }
 
 function loadColumns(callback) {
-    httpGet("/rest.cgi/field/bug/status/values", function(response) {
+    if (bzOptions.predefinedStatuses.length <= 0) {
+        httpGet("/rest.cgi/field/bug/status/values", function(response) {
+            // Always add a backlog as first column
+            var backlog = addBoardColumn("BACKLOG");
+            hideBacklog();
+
+            var statuses = response.values;
+            statuses.forEach(function(status) {
+                addBoardColumn(status);
+                if (bzOptions.hiddenColumns.includes(status)) {
+                    hideColumn(status);
+                }
+            });
+
+            callback();
+        });
+    } else {
         // Always add a backlog as first column
         var backlog = addBoardColumn("BACKLOG");
         hideBacklog();
 
-        var statuses = response.values;
-        statuses.forEach(function(status) {
+        bzOptions.predefinedStatuses.forEach(function(status) {
             addBoardColumn(status);
+            if (bzOptions.hiddenColumns.includes(status)) {
+                hideColumn(status);
+            }
         });
 
         callback();
-    });
+    }
 }
 
 function loadComments(bug) {
@@ -582,82 +627,107 @@ function loadName(callback) {
 }
 
 function loadResolutions(callback) {
-    bzProductResolutions = new Set();
-    httpGet("/rest.cgi/field/bug/resolution", function(response) {
-        var arrayResolutions = response.fields;
-        arrayResolutions[0].values.forEach(function(resolution) {
-            var resolutionName = resolution.name;
-            if (resolutionName === "") {
-                return;
-            }
-            bzProductResolutions.add(resolutionName);
+    if (bzOptions.predefinedResolutions.length <= 0) {
+        bzProductResolutions = new Set();
+        httpGet("/rest.cgi/field/bug/resolution", function(response) {
+            var arrayResolutions = response.fields;
+            arrayResolutions[0].values.forEach(function(resolution) {
+                var resolutionName = resolution.name;
+                if (resolutionName === "") {
+                    return;
+                }
+                bzProductResolutions.add(resolutionName);
+            });
+            callback();
         });
+    } else {
+        bzProductResolutions = new Set(bzOptions.predefinedResolutions);
         callback();
-    });
+    }
 }
 
 function loadPriorities(callback) {
-    bzProductPriorities = new Set();
-    httpGet("/rest.cgi/field/bug/priority", function(response) {
-        var arrayPriorities = response.fields;
-        arrayPriorities[0].values.forEach(function(priority) {
-            var priorityName = priority.name;
-            if (priorityName === "") {
-                return;
-            }
-            bzProductPriorities.add(priorityName);
+    if (bzOptions.predefinedPriorities.length <= 0) {
+        bzProductPriorities = new Set();
+        httpGet("/rest.cgi/field/bug/priority", function(response) {
+            var arrayPriorities = response.fields;
+            arrayPriorities[0].values.forEach(function(priority) {
+                var priorityName = priority.name;
+                if (priorityName === "") {
+                    return;
+                }
+                bzProductPriorities.add(priorityName);
+            });
+            callback();
         });
+    } else {
+        bzProductPriorities = new Set(bzOptions.predefinedPriorities);
         callback();
-    });
+    }
 }
 
 function loadSeverities(callback) {
-    bzProductSeverities = new Set();
-    httpGet("/rest.cgi/field/bug/bug_severity", function(response) {
-        var arraySeverities = response.fields;
-        arraySeverities[0].values.forEach(function(severity) {
-            var severityName = severity.name;
-            if (severityName === "") {
-                return;
-            }
-            bzProductSeverities.add(severityName);
+    if (bzOptions.predefinedSeverities.length <= 0) {
+        bzProductSeverities = new Set();
+        httpGet("/rest.cgi/field/bug/bug_severity", function(response) {
+            var arraySeverities = response.fields;
+            arraySeverities[0].values.forEach(function(severity) {
+                var severityName = severity.name;
+                if (severityName === "") {
+                    return;
+                }
+                bzProductSeverities.add(severityName);
+            });
+            callback();
         });
+    } else {
+        bzProductSeverities = new Set(bzOptions.predefinedSeverities);
         callback();
-    });
+    }
 }
 
 function loadComponentsList(callback) {
-    bzProductComponents = new Set();
-    httpGet("/rest.cgi/product/" + bzProduct + "?type=enterable&include_fields=components", function(response) {
-        var components = response.products[0].components;
-        components.sort(function(a, b) {
-            return a.name.localeCompare(b.name);
+    if (bzOptions.predefinedComponents.length <= 0) {
+        bzProductComponents = new Set();
+        httpGet("/rest.cgi/product/" + bzProduct + "?type=enterable&include_fields=components", function(response) {
+            var components = response.products[0].components;
+            components.sort(function(a, b) {
+                return a.name.localeCompare(b.name);
+            });
+            components.forEach(function(component) {
+                if (!component.is_active) {
+                    return;
+                }
+                bzProductComponents.add(component.name);
+            });
+            callback();
         });
-        components.forEach(function(component) {
-            if (!component.is_active) {
-                return;
-            }
-            bzProductComponents.add(component.name);
-        });
+    } else {
+        bzProductComponents = new Set(bzOptions.predefinedComponents);
         callback();
-    });
+    }
 }
 
 function loadVersionsList(callback) {
-    bzProductVersions = new Set();
-    httpGet("/rest.cgi/product/" + bzProduct + "?type=enterable&include_fields=versions", function(response) {
-        var versions = response.products[0].versions;
-        versions.sort(function(a, b) {
-            return a.name.localeCompare(b.name);
+    if (bzOptions.predefinedVersions.length <= 0) {
+        bzProductVersions = new Set();
+        httpGet("/rest.cgi/product/" + bzProduct + "?type=enterable&include_fields=versions", function(response) {
+            var versions = response.products[0].versions;
+            versions.sort(function(a, b) {
+                return a.name.localeCompare(b.name);
+            });
+            versions.forEach(function(version) {
+                if (!version.is_active) {
+                    return;
+                }
+                bzProductVersions.add(version.name);
+            });
+            callback();
         });
-        versions.forEach(function(version) {
-            if (!version.is_active) {
-                return;
-            }
-            bzProductVersions.add(version.name);
-        });
+    } else {
+        bzProductVersions = new Set(bzOptions.predefinedVersions);
         callback();
-    });
+    }
 }
 
 function loadCheckForUpdates() {
@@ -1757,3 +1827,20 @@ document.addEventListener("keyup", function(e) {
         hideModalCheckDraft();
     }
 });
+
+function hideColumn(status) {
+    var col = document.querySelector("#"+status+".board-column");
+    if (isColumnVisible(status)) {
+        col.style.display = "none";
+    }
+}
+
+function isColumnVisible(status) {
+    var col = document.querySelector("#"+status+".board-column");
+    if (col.style.display === "") {
+        return true;
+    } else {
+        return false;
+    }
+}
+
