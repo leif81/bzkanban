@@ -144,26 +144,17 @@ body {
     font-size: small;
     margin-left: 15px;
 }
-#query .fa {
-    vertical-align: bottom;
-    border-radius: 3px 0 0 3px;
-    border-style: solid;
-    border-width: 1px 0 1px 1px;
-    border-color: darkgrey;
+#query label, #query span {
     padding: 3.5px;
-    background-color: #E2E4E6;
-
+    font-size: small;
+    margin-right: 8px;
 }
 input#textFilter {
     padding: 4px;
 }
 #query select, #query input {
     width: 150px;
-    border-width: 1px 1px 1px 0;
-    border-radius: 0 3px 3px 0;
-}
-#query span {
-    margin-right: 8px;
+    margin-left: 5px;
 }
 #whoami {
     font-size: small;
@@ -309,14 +300,9 @@ input#textFilter {
     font-size: x-small;
 }
 select, textarea, input, button {
-    padding: 3px;
-    border-radius: 3px;
-    border-style: solid;
-    border-width: 1px;
-    border-color: darkgrey;
+    padding: 4px;
 }
 button {
-    background-color: #E2E4E6;
 }
 button:hover {
     background-color: lightgrey;

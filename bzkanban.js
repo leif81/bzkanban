@@ -135,12 +135,8 @@ function createQueryFields() {
     var query = document.createElement("span");
     query.id = "query";
 
-    var product = document.createElement("span");
-
-    var productIcon = document.createElement("i");
-    productIcon.className = "fa fa-archive";
-    productIcon.title = "Product";
-
+    var product = document.createElement("label");
+    var productLabel = document.createTextNode("Product");
     var productList = document.createElement("select");
     productList.id = "textProduct";
     productList.name = "product";
@@ -172,12 +168,8 @@ function createQueryFields() {
         });
     });
 
-    var milestone = document.createElement("span");
-
-    var milestoneIcon = document.createElement("i");
-    milestoneIcon.className = "fa fa-flag";
-    milestoneIcon.title = "Milestone";
-
+    var milestone = document.createElement("label");
+    var milestoneLabel = document.createTextNode("Milestone");
     var milestoneList = document.createElement("select");
     milestoneList.id = "textMilestone";
     milestoneList.name = "milestone";
@@ -191,12 +183,8 @@ function createQueryFields() {
         loadBoard();
     });
 
-    var assignee = document.createElement("span");
-
-    var assigneeIcon = document.createElement("i");
-    assigneeIcon.className = "fa fa-user";
-    assigneeIcon.title = "Assignee";
-
+    var assignee = document.createElement("label");
+    var assigneeLabel = document.createTextNode("Assignee");
     var assigneeList = document.createElement("select");
     assigneeList.id = "textAssignee";
     assigneeList.name = "assignee";
@@ -224,11 +212,11 @@ function createQueryFields() {
         debounce( filterByString( document.getElementById("textFilter").value ), 500);
     });
 
-    product.appendChild(productIcon);
+    product.appendChild(productLabel);
     product.appendChild(productList);
-    milestone.appendChild(milestoneIcon);
+    milestone.appendChild(milestoneLabel);
     milestone.appendChild(milestoneList);
-    assignee.appendChild(assigneeIcon);
+    assignee.appendChild(assigneeLabel);
     assignee.appendChild(assigneeList);
     filter.appendChild(filterIcon);
     filter.appendChild(filterText);
