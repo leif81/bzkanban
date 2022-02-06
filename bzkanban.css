@@ -151,7 +151,6 @@ body {
 #query label, #query span {
     padding: 3.5px;
     font-size: small;
-    margin-right: 8px;
 }
 input#textFilter {
     padding: 4px;
