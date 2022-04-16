@@ -2,11 +2,17 @@
 
 == About
 
-This allows you to visualize bugs from any Bugzilla instance on a Kanban board.
+The bzkanban app allows you to visualize bugs from a Bugzilla server on a Kanban board.
 
-The goal of bzkanban is to compliment the Bugzilla workflow you are already using, so the board columns represent the Bugzilla bug statuses (i.e. NEW, ASSIGNED, REOPENED, RESOLVED, CLOSED -- or whatever your site has renamed them to) and of course each cards represents one bug. Cards can be opened by clicking on them to view comments or add a new comment. And cards can be dragged from one column to another to change the bug status.
+The goal of bzkanban is to compliment the Bugzilla workflow you are already using.
+Each card represents one bug.
+And each board column represent the Bugzilla bug statuses (i.e. NEW, ASSIGNED, REOPENED, RESOLVED, CLOSED -- or whatever your site has renamed them to).
+Basic actions like filtering, commenting, and changing the bug state (by dragging the card) can be done with the app.
 
-Bzkanban is implemented as a client side single-page application using Ajax with the http://bugzilla.readthedocs.io/en/latest/api/index.html[Bugzilla 5 server REST API]. So what? It means installation is extremely simple. For more details read the Installation section below.
+The bzkanban app is implemented as a client side single-page application using Ajax with the http://bugzilla.readthedocs.io/en/latest/api/index.html[Bugzilla 5 server REST API].
+So what?
+Installation is very simple, it just needs access to your Bugzilla server.
+And your Bugzilla server database is the single source of truth, the bzkanban app is just a view of your Bugzilla database.
 
 == Screenshot
 
@@ -19,39 +25,53 @@ http://leif81.github.io/bzkanban/index.html?product=Bugzilla&milestone=Bugzilla+
 == Requirements
 
  . Client: A modern web browser capable of HTML5, CSS3, and JavaScript (tested with Chrome and Edge)
- . Server: A Bugzilla 5.0+ server with REST API enabled.
+ . Server: Access to the Bugzilla 5.0+ server with the REST API enabled.
 
 == Installation
 
-Chose one of the following options to use Bzkanban.
+Chose one of the following options to use the Bzkanban app.
 
-=== No install!
+=== No install! Cloud version
 
-This is the easiest way to use and try out bzkbanban.
+This is the easiest way to both try and use bzkbanban app.
 
-1. Start by browsing to the demo URL above.
-1. Change the `site=` parameter in the URL to the URL of your Bugzilla instance. 
-1. Book mark it and you're done!
+Your Bugzilla server URL must be accessible from the internet (not a private intranet) for this option to work.
 
-Note: This method uses the latest and greatest version of the bzkanban application hosted on the GitHub `master` branch. You will get the latest fixes and enhancements automatically.
+1. In your web browser, navigate to the URL in the Demo section above.
+1. In your browser address bar, change the `site=` parameter in the URL to the address of your Bugzilla instance (e.g. `http://mycompany.com/bugzilla`)
+1. Bookmark this new URL and you're done!
 
-=== Local app install
+Note: This method uses the latest version of the source code in the GitHub `master` branch. You will always have the latest fixes and enhancements when you reload the app URL. The intent is the `master` branch is kept stable although there's no gaurantee. Please report any issues using the GitHub issue tracker and include a proposed PR for the quickest resolution to the issue.
 
-If you'd prefer to run a copy of the bzkanban app from your local PC do the following:
+== Locally hosted
 
- . Clone this git repo (e.g. `~/Downloads/bzkbanban`)
- . Open `~/Downloads/bzkbanban/index.html` and change which Bugzilla instance to connect to by modifying the `siteUrl` option.
- . Double click the `index.html` to run Bzkanban in your web browser. Bookmark it!
+Use this method if your Bugzilla server is on a private intranet.
+
+ . Clone this git repo onto your web server.
+ . Open `bzkbanban/index.html` and change the `siteUrl` option to the address of your Bugzilla instance.
+ . Start your web server (Note: A simple option is by running `npm http-server` within the bzkanban folder where the `index.html` file is)
+ . In your web browser navigate to the address of the `index.html` file (i.e. `http://www.mycompany.com/bzkbanban/index.html`). Bookmark it! 
  
-=== Server side app install
-
-1. Do the same thing as the above "Local app install", but host the `bzkbanban` folder on a web server.
-1. In your web browser navigate to the path of the `index.html` file (i.e. `http://www.mycompany.com/bzkbanban/index.html`). Bookmark it!
+Note: To update the app, periodically do a "git pull" to receive the latest updates from the `master` branch.
 
 == Usage
 
- . In the drop down menu in the top left of the app, pick a product and milestone. The board will load.
- . To modify cards using the app, log in with your Bugzilla account (top right). You will then be able to drag cards between columns to change their state and add comments by clicking on a card.
+=== Basic board access
+
+ 1. In your web browser, navigate to the bzkanban app URL you bookmarked above.
+ 1. Load a board by picking a product from the 'Product' list and a milestone from the 'Milestone' list.
+
+== Board filtering ==
+
+ . Filter cards by the assignee with the 'Assignee' list. Clear the filter by choosing "ALL".
+ . Filter cards by text words with the "Search Cards" text search box.
+
+=== Bug modification
+
+ . Bugs can be modified by modifying the original bug in Bugzilla and then reloading the bzkanban board, or with bzkanban app.
+ . Within the bzkanban app, click the log in button (top right) and enter your Bugzilla user account details.
+ . To add a comment, click on a card to open it and enter a new comment.
+ . To modify the bug state, drag a card between columns.
 
 === Advanced Configuration
 
