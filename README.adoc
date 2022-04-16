@@ -37,9 +37,9 @@ This is the easiest way to both try and use bzkbanban app.
 
 Your Bugzilla server URL must be accessible from the internet (not a private intranet) for this option to work.
 
-1. In your web browser, navigate to the URL in the Demo section above.
-1. In your browser address bar, change the `site=` parameter in the URL to the address of your Bugzilla instance (e.g. `http://mycompany.com/bugzilla`)
-1. Bookmark this new URL and you're done!
+1. Copy this address `https://leif81.github.io/bzkanban/index.html?site=https://bugzilla.mozilla.org`. Change the `site=` parameter to be the address of your Bugzilla server.
+1. In your web browser, paste and load this URL.
+1. Bookmark and share this URL with your team.
 
 Note: This method uses the latest version of the source code in the GitHub `master` branch. You will always have the latest fixes and enhancements when you reload the app URL. The intent is the `master` branch is kept stable although there's no gaurantee. Please report any issues using the GitHub issue tracker and include a proposed PR for the quickest resolution to the issue.
 
