@@ -54,14 +54,14 @@ Use this method if your Bugzilla server is on a private intranet.
  
 Note: To update the app, periodically do a "git pull" to receive the latest updates from the `master` branch.
 
-== Usage
+== Use
 
 === Basic board access
 
  1. In your web browser, navigate to the bzkanban app URL you bookmarked above.
  1. Load a board by picking a product from the 'Product' list and a milestone from the 'Milestone' list.
 
-== Board filtering ==
+=== Board filtering
 
  . Filter cards by the assignee with the 'Assignee' list. Clear the filter by choosing "ALL".
  . Filter cards by text words with the "Search Cards" text search box.
@@ -73,7 +73,7 @@ Note: To update the app, periodically do a "git pull" to receive the latest upda
  . To add a comment, click on a card to open it and enter a new comment.
  . To modify the bug state, drag a card between columns.
 
-=== Advanced Configuration
+== Configuration
 
 These are some settings that can be manually controlled via the page URL parameters. To apply these permanently modify them in the top section of the `bzkanban.js` file.
 
