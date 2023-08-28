@@ -9,7 +9,7 @@ Each card represents one bug.
 And each board column represent the Bugzilla bug statuses (i.e. NEW, ASSIGNED, REOPENED, RESOLVED, CLOSED -- or whatever your site has renamed them to).
 Basic actions like filtering, commenting, and changing the bug state (by dragging the card) can be done with the app.
 
-The bzkanban app is implemented as a client side single-page application using Ajax with the http://bugzilla.readthedocs.io/en/latest/api/index.html[Bugzilla 5 server REST API].
+The bzkanban app is implemented as a client side single-page application (SPA) using Ajax with the http://bugzilla.readthedocs.io/en/latest/api/index.html[Bugzilla 5 server REST API].
 So what?
 Installation is very simple, it just needs access to your Bugzilla server.
 And your Bugzilla server database is the single source of truth, the bzkanban app is just a view of your Bugzilla database.
