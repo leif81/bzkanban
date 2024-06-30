@@ -22,9 +22,9 @@ image::screenshot.png[title="bzkanban example board"]
 
 Note: These are live production Bugzilla instances being viewed with bzkanban.
 
-- http://leif81.github.io/bzkanban/index.html?product=Bugzilla&milestone=Bugzilla+6.0&assignee=&comments=false&site=https%3A%2F%2Fbugzilla.mozilla.org[Mozilla Bugzilla]
+- https://leif81.github.io/bzkanban/index.html?product=Bugzilla&milestone=Bugzilla+6.0&assignee=&comments=false&site=https%3A%2F%2Fbugzilla.mozilla.org[Mozilla Bugzilla]
 
-- http://leif81.github.io/bzkanban/index.html?site=https://bugzilla.redhat.com/[Red Hat Bugzilla]
+- https://leif81.github.io/bzkanban/index.html?site=https://bugzilla.redhat.com/[Red Hat Bugzilla]
 
 == Requirements
 
