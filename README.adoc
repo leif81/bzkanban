@@ -23,7 +23,7 @@ image::screenshot.png[title="bzkanban example board"]
 == Demo
 
 Note: These below links are to live production Bugzilla instances being viewed with bzkanban.
-If you log in with your acocunt and making changes to the bugs it should be done with the same respect and awareness as if you were using the native Bugzilla interface.
+If you log in with your account and making changes to the bugs it should be done with the same respect and awareness as if you were using the native Bugzilla interface.
 
 - https://leif81.github.io/bzkanban/index.html?product=Bugzilla&milestone=Bugzilla+6.0&assignee=&comments=false&site=https%3A%2F%2Fbugzilla.mozilla.org[Mozilla Bugzilla]
 
