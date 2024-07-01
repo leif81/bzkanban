@@ -2,17 +2,19 @@
 
 == About
 
-The bzkanban app allows you to visualize bugs from a Bugzilla server on a Kanban board.
+The bzkanban app allows you to visualize Bugzilla bugs as cards on a Kanban board.
 
-The goal of bzkanban is to compliment the Bugzilla workflow you are already using.
-Each card represents one bug.
-And each board column represent the Bugzilla bug statuses (i.e. NEW, ASSIGNED, REOPENED, RESOLVED, CLOSED -- or whatever your site has renamed them to).
-Basic actions like filtering, commenting, and changing the bug state (by dragging the card) can be done with the app.
+The board columns are the bug statuses your Bugzilla server is using (e.g. NEW, ASSIGNED, REOPENED, RESOLVED, CLOSED, etc).
 
-The bzkanban app is implemented as a client side single-page application (SPA) using Ajax with the http://bugzilla.readthedocs.io/en/latest/api/index.html[Bugzilla 5 server REST API].
+Actions such as loading the board, filtering by bug assignee or by bug title are possible without logging in if your Bugzilla server is open to the public.
+Otherwise you must login with your Bugzilla account first.
+
+Actions such as changing the bug state (by dragging the card between columns), and adding a comment require logging in first.
+
+The bzkanban app is implemented as a client side Single-Page Application (SPA) with the http://bugzilla.readthedocs.io/en/latest/api/index.html[Bugzilla 5 server REST API].
 So what?
-Installation is very simple, it just needs access to your Bugzilla server.
-And your Bugzilla server database is the single source of truth, the bzkanban app is just a view of your Bugzilla database.
+Installation is simple.
+See the Installation section below for steps.
 
 == Screenshot
 
@@ -20,7 +22,8 @@ image::screenshot.png[title="bzkanban example board"]
 
 == Demo
 
-Note: These are live production Bugzilla instances being viewed with bzkanban.
+Note: These below links are to live production Bugzilla instances being viewed with bzkanban.
+If you log in with your acocunt and making changes to the bugs it should be done with the same respect and awareness as if you were using the native Bugzilla interface.
 
 - https://leif81.github.io/bzkanban/index.html?product=Bugzilla&milestone=Bugzilla+6.0&assignee=&comments=false&site=https%3A%2F%2Fbugzilla.mozilla.org[Mozilla Bugzilla]
 
