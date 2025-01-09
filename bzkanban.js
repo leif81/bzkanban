@@ -4,7 +4,7 @@
 
 // Override these by passing in an object with any of these key/value pairs into the initBzkanban function on startup.
 var bzOptions = {
-//    siteUrl: "https://bugzilla.mozilla.org",
+    // siteUrl: "https://bugzilla.mozilla.org",
     order: "priority,bug_severity,assigned_to",
     allowEditBugs: true,
     addCommentOnChange: true,
@@ -104,7 +104,8 @@ function initNav(callback) {
     async.parallel([
         loadName,
         loadProductsList,
-        loadMilestonesList
+        loadMilestonesList,
+        loadComponentsList
     ],
     function(err, results) {
         console.log("Nav initialized!");
@@ -162,6 +163,7 @@ function createQueryFields() {
         hideNotification();
         async.parallel([
             loadMilestonesList,
+            loadComponentsList,
             loadProductInfo
         ], function(err, result) {
             hideSpinner();
@@ -212,6 +214,17 @@ function createQueryFields() {
         debounce( filterByString( document.getElementById("textFilter").value ), 500);
     });
 
+    var component = document.createElement("label");
+    var componentLabel = document.createTextNode("Component");
+    var componentList = document.createElement("select");
+    componentList.id = "textComponent";
+    componentList.name = "components";
+    componentList.disabled = "true"; // until content is loaded
+    componentList.addEventListener("change", function() {
+        bzComponent = document.getElementById("textComponent").value;
+        loadBoard();
+    });
+
     product.appendChild(productLabel);
     product.appendChild(productList);
     milestone.appendChild(milestoneLabel);
@@ -220,8 +233,11 @@ function createQueryFields() {
     assignee.appendChild(assigneeList);
     filter.appendChild(filterIcon);
     filter.appendChild(filterText);
+    component.appendChild(componentLabel);
+    component.appendChild(componentList);
 
     query.appendChild(product);
+    query.appendChild(component);
     query.appendChild(milestone);
     query.appendChild(assignee);
     query.appendChild(filter);
@@ -402,6 +418,7 @@ function loadBugs(callback) {
     bzRestGetBugsUrl += "&target_milestone=" + bzProductMilestone;
     bzRestGetBugsUrl += "&component=" + bzComponent;
     bzRestGetBugsUrl += "&priority=" + bzPriority;
+    console.log(bzRestGetBugsUrl);
 
     httpGet(bzRestGetBugsUrl, function(response) {
         var bugs = response.bugs;
@@ -503,7 +520,6 @@ function loadProductInfo(callback) {
     async.parallel([
         loadUnconfirmedVisibility,
         loadDefaultMilestone,
-        loadComponentsList,
         loadVersionsList
     ],
     function(err, results) {
@@ -617,16 +633,19 @@ function loadSeverities(callback) {
 function loadComponentsList(callback) {
     bzProductComponents = new Set();
     httpGet("/rest.cgi/product/" + bzProduct + "?type=enterable&include_fields=components", function(response) {
+        document.getElementById("textComponent").disabled = false;
         var components = response.products[0].components;
         components.sort(function(a, b) {
             return a.name.localeCompare(b.name);
         });
         components.forEach(function(component) {
-            if (!component.is_active) {
-                return;
-            }
             bzProductComponents.add(component.name);
+            var option = document.createElement("option");
+            option.value = component.name;
+            option.text = component.name;
+            document.getElementById("textComponent").appendChild(option);
         });
+        document.getElementById("textComponent").value = bzComponent;
         callback();
     });
 }
