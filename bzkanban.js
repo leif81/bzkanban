@@ -4,7 +4,7 @@
 
 // Override these by passing in an object with any of these key/value pairs into the initBzkanban function on startup.
 var bzOptions = {
-    siteUrl: "https://bugzilla.mozilla.org",
+    // siteUrl: "https://bugzilla.mozilla.org",
     order: "priority,bug_severity,assigned_to",
     allowEditBugs: true,
     addCommentOnChange: true,
