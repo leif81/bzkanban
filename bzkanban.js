@@ -37,6 +37,7 @@ var bzDefaultPriority;
 var bzDefaultSeverity;
 var bzDefaultMilestone;
 var bzAuthObject;
+var bzAPIKey;
 
 function initBzkanban(options) {
     bzOptions = Object.assign(bzOptions, options); // Merge custom options into defaults.
@@ -86,6 +87,7 @@ function loadParams() {
     }
 
     bzAuthObject = JSON.parse(localStorage.getItem(bzOptions.siteUrl));
+    bzAPIKey = localStorage.getItem("bzAPIKey");
 }
 
 function initNav(callback) {
@@ -270,7 +272,7 @@ function createActions() {
     newbug.innerText = "New Bug";
     newbug.style.display = "none";
     newbug.addEventListener("click", function() {
-        if (isLoggedIn()) {
+        if (isLoggedInPW() || isLoggedInAPIKey()) {
             showNewBugModal();
         } else {
             // Open Bugzilla page
@@ -308,7 +310,7 @@ function showLoginModal() {
     var body = loginModal.querySelector(".modal-body");
     var footer = loginModal.querySelector(".modal-footer");
 
-    header.appendChild(document.createTextNode("Please log in"));
+    header.appendChild(document.createTextNode("Please log in through username or API Key"));
 
     var usernameLabel = document.createElement("label");
     usernameLabel.innerText = "Username";
@@ -316,7 +318,6 @@ function showLoginModal() {
     var username = document.createElement("input");
     username.id="textUsername";
     username.type = "text";
-    username.required = true;
 
     usernameLabel.appendChild(username);
 
@@ -326,7 +327,6 @@ function showLoginModal() {
     var password = document.createElement("input");
     password.id="textPassword";
     password.type = "password";
-    password.required = true;
 
     // When the user presses enter, in the Login password form
     password.addEventListener("keyup", function(event) {
@@ -338,6 +338,20 @@ function showLoginModal() {
 
     passwordLabel.appendChild(password);
 
+    let div = document.createElement('div');
+    div.textContent = "or";
+    div.style.paddingTop = '20px';
+    div.style.paddingBottom = '20px';  
+
+    var APIKeyLabel = document.createElement("label");
+    APIKeyLabel.innerText = "API Key";
+
+    var APIKey = document.createElement("input");
+    APIKey.id="textAPIKey";
+    APIKey.type = "text";
+
+    APIKeyLabel.appendChild(APIKey);
+
     var submit = document.createElement("button");
     submit.id = "btnAuthSubmit";
     submit.innerText = "Submit";
@@ -345,12 +359,21 @@ function showLoginModal() {
     submit.addEventListener("click", function() {
         var user = document.getElementById("textUsername").value;
         var password = document.getElementById("textPassword").value;
-        doAuth(user, password);
+        if (user !== "" && password !== "") {
+            doAuth(user, password);
+        }
+        var APIKey = document.getElementById("textAPIKey").value;
+        if (APIKey != null) {
+            localStorage.setItem("bzAPIKey", APIKey);
+            location.reload()
+        }
         hideModal();
     });
 
     body.appendChild(usernameLabel);
     body.appendChild(passwordLabel);
+    body.appendChild(div)
+    body.appendChild(APIKeyLabel)
     footer.appendChild(submit);
 
     document.querySelector(bzOptions.domElement).appendChild(loginModal);
@@ -394,7 +417,7 @@ function loadBoard(callbackLoadBoard) {
         },
         function(callback) {
             // Needed for Bugzilla 6 because email not returned in bug info anymore.
-            if (isLoggedIn()) {
+            if (isLoggedInPW()) {
                 loadEmailAddress(callback);
             } else {
                 callback();
@@ -570,7 +593,7 @@ function loadComments(bug) {
 }
 
 function loadName(callback) {
-    if (!isLoggedIn()) {
+    if (!isLoggedInPW()) {
         return callback();
     }
     httpGet("/rest.cgi/user/" + bzAuthObject.userID, function(response) {
@@ -718,7 +741,7 @@ function addBoardColumn(status) {
     var div = document.createElement("div");
     div.className = "board-column";
     div.id = status;
-    if (isLoggedIn() && bzOptions.allowEditBugs) {
+    if ((isLoggedInPW() || isLoggedInAPIKey()) && bzOptions.allowEditBugs) {
         div.addEventListener("drag", dragCardStart);
         div.addEventListener("dragend", dragCardEnd);
         div.addEventListener("dragover", dragCardOver);
@@ -754,7 +777,7 @@ function createCard(bug) {
     card.dataset.bugSeverity = bug.severity;
     card.dataset.bugResolution = bug.resolution;
 
-    if (isLoggedIn() && bzOptions.allowEditBugs) {
+    if ((isLoggedInPW() || isLoggedInAPIKey()) && bzOptions.allowEditBugs) {
         card.onclick = function() {
             var bugObject = {};
             bugObject.id = bug.id;
@@ -833,7 +856,7 @@ function createCard(bug) {
     assignee.appendChild(picture);
     meta.appendChild(assignee);
 
-    if (isLoggedIn() && bzOptions.allowEditBugs) {
+    if ((isLoggedInPW() || isLoggedInAPIKey()) && bzOptions.allowEditBugs) {
         card.draggable = "true";
         card.addEventListener("dragstart", dragCard);
     }
@@ -1027,6 +1050,8 @@ function httpRequest(method, url, dataObj, successCallback, errorCallback) {
     // Append login token to every request.
     // Becase some Bugzilla instances require auth for even viewing bugs, etc.
     if (bzAuthObject !== null ) {
+        hideSignInButton();
+
         if (url.indexOf("?") == -1) {
             url += "?";
         } else {
@@ -1034,6 +1059,18 @@ function httpRequest(method, url, dataObj, successCallback, errorCallback) {
         }
 
         url += "token=" + bzAuthObject.userToken;
+    }
+
+    if (bzAPIKey) {
+        hideSignInButton();
+        
+        if (url.indexOf("?") == -1) {
+            url += "?";
+        } else {
+            url += "&";
+        }
+
+        url += "api_key=" + bzAPIKey;
     }
 
     xhr.open(method, bzOptions.siteUrl + url);
@@ -1104,12 +1141,17 @@ function doAuth(user, password) {
     });
 }
 
-function isLoggedIn() {
+function isLoggedInPW() {
     return bzAuthObject !== null;
+}
+
+function isLoggedInAPIKey() {
+    return bzAPIKey !== null;
 }
 
 function signOut() {
     localStorage.removeItem(bzOptions.siteUrl);
+    localStorage.removeItem(bzAPIKey);
     showSignInButton();
 }
 
@@ -1146,13 +1188,16 @@ function showColumnCounts() {
 }
 
 function writeBug(dataObj) {
-    dataObj.token = bzAuthObject.userToken;
+    if (bzAuthObject !== null) {
+        dataObj.token = bzAuthObject.userToken;
+    }
 
     httpPut("/rest.cgi/bug/" + dataObj.id, dataObj, function() {
         loadBoard();
     }, function(bzError) {
         alert(bzError.message);
     });
+    
 }
 
 function scheduleCheckForUpdates() {
