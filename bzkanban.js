@@ -776,6 +776,7 @@ function createCard(bug) {
     card.dataset.bugPriority = bug.priority;
     card.dataset.bugSeverity = bug.severity;
     card.dataset.bugResolution = bug.resolution;
+    card.dataset.assignee = bug.assigned_to_detail.name;
 
     if ((isLoggedInPW() || isLoggedInAPIKey()) && bzOptions.allowEditBugs) {
         card.onclick = function() {
@@ -785,6 +786,7 @@ function createCard(bug) {
             bugObject.priority = bug.priority;
             bugObject.severity = bug.severity;
             bugObject.resolution = bug.resolution;
+            bugObject.assigned_to = bug.assigned_to_detail.name;
             showBugModal(bugObject, bugObject);
         };
     } else {
@@ -1077,6 +1079,7 @@ function httpRequest(method, url, dataObj, successCallback, errorCallback) {
     xhr.setRequestHeader("Accept", "application/json");
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send(JSON.stringify(dataObj));
+
 }
 
 function getURLParameter(parameter) {
@@ -1243,8 +1246,10 @@ function dragCard(ev) {
         "id": bugID,
         "status": card.dataset.bugStatus,
         "priority": card.dataset.bugPriority,
-        "severity": card.dataset.bugSeverity
+        "severity": card.dataset.bugSeverity,
+        "assigned_to": card.dataset.assignee
     };
+    console.log(bugData);
     ev.dataTransfer.setData("text", JSON.stringify(bugData));
 }
 
@@ -1263,6 +1268,7 @@ function dropCard(ev) {
     ev.preventDefault();
 
     var bugCurrent = JSON.parse(ev.dataTransfer.getData("text"));
+    console.log(bugCurrent);
 
     var bugUpdate = {};
     bugUpdate.id = bugCurrent.id;
@@ -1576,10 +1582,7 @@ function showBugModal(bugCurrent, bugUpdate) {
         meta.appendChild(resolutionLabel);
     }
 
-    // Card was clicked
-    if (bugCurrent.status === bugUpdate.status) {
-
-        body.style.display = "none"; // HACK: hide until comments reponse comes back so layout isn't broken.
+    body.style.display = "none"; // HACK: hide until comments reponse comes back so layout isn't broken.
 
         showSpinner();
 
@@ -1675,13 +1678,41 @@ function showBugModal(bugCurrent, bugUpdate) {
         };
 
         meta.appendChild(severityLabel);
-    } else {
+
+        // Assignee field.
+        var assigneeLabel = document.createElement("label");
+        assigneeLabel.innerText = "Assignee";
+        var assignees = document.createElement("select");
+        assignees.name = "assignee";
+        assigneeLabel.appendChild(assignees);
+
+        var sorted = Array.from(bzAssignees.values()).sort(function(a, b) {
+            return a.real_name.localeCompare(b.real_name);
+        });
+ 
+        sorted.forEach(function(assignee) {
+            var option = document.createElement("option");
+            option.value = assignee.email;
+            option.text = assignee.real_name;
+            assignees.appendChild(option);
+            if (option.value === bugCurrent.assigned_to) {
+                option.selected = true;
+            }
+        });
+        // select it in list.
+
+        assignees.onchange = function() {
+            bugUpdate.assigned_to = assignees.value;
+            bugCurrent.status = "ASSIGNED";
+        };
+
+        meta.appendChild(assigneeLabel);
+
+    if (bugCurrent.status !== bugUpdate.status) {
         // Card was dragged
 
         // TODO show what's changed in modal as confirmation?
         console.log("Bug " + bugCurrent.id + " moved from " + bugCurrent.status + " to " + bugUpdate.status);
-
-        comments.appendChild(createCommentsBox());
     }
 
     var submit = document.createElement("button");
