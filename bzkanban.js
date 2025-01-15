@@ -449,7 +449,9 @@ function loadBugs(callback) {
         bugs.forEach(function(bug) {
             var card = createCard(bug);
             var status = bug.status.replace( / /g, '\\ ');
-            document.querySelector("#" + status + " .cards").appendChild(card);
+            if (["UNCONFIRMED", "CLOSED", "VERIFIED"].includes(status)) {
+                document.querySelector("#" + status + " .cards").appendChild(card);
+            }
         });
 
         showColumnCounts();
@@ -568,7 +570,9 @@ function loadColumns(callback) {
 
         var statuses = response.values;
         statuses.forEach(function(status) {
-            addBoardColumn(status);
+            if (["UNCONFIRMED", "CLOSED", "VERIFIED"].includes(status)) {
+                addBoardColumn(status);
+            }
         });
 
         callback();
