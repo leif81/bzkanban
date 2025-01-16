@@ -1493,6 +1493,16 @@ function showNewBugModal() {
         }
     });
 
+    bzProductComponents.forEach(function(component) {
+        var opt = document.createElement("option");
+        opt.innerText = component;
+        opt.value = component;
+        components.appendChild(opt);
+        if (opt.value == bzComponent) {
+            opt.selected = true;
+        }
+    });
+
     var submit = document.createElement("button");
     submit.innerText = "Submit";
     submit.id = "submitNewBug";
@@ -1532,13 +1542,6 @@ function showNewBugModal() {
     body.appendChild(meta);
 
     footer.appendChild(submit);
-
-    bzProductComponents.forEach(function(component) {
-        var opt = document.createElement("option");
-        opt.innerText = component;
-        opt.value = component;
-        components.appendChild(opt);
-    });
 
     bzProductVersions.forEach(function(version) {
         var opt = document.createElement("option");
