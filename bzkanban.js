@@ -449,7 +449,7 @@ function loadBugs(callback) {
         bugs.forEach(function(bug) {
             var card = createCard(bug);
             var status = bug.status.replace( / /g, '\\ ');
-            if (["UNCONFIRMED", "CLOSED", "VERIFIED"].includes(status)) {
+            if (!["UNCONFIRMED", "CLOSED", "VERIFIED"].includes(status)) {
                 document.querySelector("#" + status + " .cards").appendChild(card);
             }
         });
@@ -570,7 +570,7 @@ function loadColumns(callback) {
 
         var statuses = response.values;
         statuses.forEach(function(status) {
-            if (["UNCONFIRMED", "CLOSED", "VERIFIED"].includes(status)) {
+            if (!["UNCONFIRMED", "CLOSED", "VERIFIED"].includes(status)) {
                 addBoardColumn(status);
             }
         });
